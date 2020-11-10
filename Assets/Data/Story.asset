@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf5d5e33bab057c43929a11bc8f25f44, type: 3}
+  m_Name: Story
+  m_EditorClassIdentifier: 
+  _beats:
+  - _choices:
+    - _text: The first choice is to go one way...
+      _beatId: 2
+    - _text: The second choice is to go the alternative way...
+      _beatId: 3
+    _text: "The story starts here. \nSome stuff happens and then you are faced with
+      a choice. "
+    _id: 1
+  - _choices: []
+    _text: "You choose to go the first way and this is an ok choice, the story plays
+      out. You are happy. \n\nTHE END"
+    _id: 2
+  - _choices: []
+    _text: 'The alternative choice is where you want to go, it is a fine choice.
+      The story plays out and you are happy.
+
+
+      THE END.'
+    _id: 3
