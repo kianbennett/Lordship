@@ -221,7 +221,7 @@ SubShader {
 			output.color = input.color;
 			output.atlas =	input.texcoord0;
 			output.param =	float4(alphaClip, scale, bias, weight);
-			output.mask = half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy));
+			output.mask = float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy));
 			output.viewDir =	mul((float3x3)_EnvMatrix, _WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, vert).xyz);
 			#if (UNDERLAY_ON || UNDERLAY_INNER)
 			output.texcoord2 = float4(input.texcoord0 + bOffset, bScale, bBias);
@@ -251,8 +251,8 @@ SubShader {
 			float outline = (_OutlineWidth * _ScaleRatioA) * scale;
 			float softness = (_OutlineSoftness * _ScaleRatioA) * scale;
 
-			half4 faceColor = _FaceColor;
-			half4 outlineColor = _OutlineColor;
+			float4 faceColor = _FaceColor;
+			float4 outlineColor = _OutlineColor;
 
 			faceColor.rgb *= input.color.rgb;
 

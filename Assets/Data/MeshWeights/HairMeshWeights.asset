@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e212877bd633aa48954d4db6f3bc1f1, type: 3}
+  m_Name: HairMeshWeights
+  m_EditorClassIdentifier: 
+  bodyPart: 0
+  weightMap:
+    keys:
+    - name: Afro
+      mesh: {fileID: 2845007505429273049, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Long
+      mesh: {fileID: 7832516442140771838, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Monk
+      mesh: {fileID: -8646914905165416873, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Short
+      mesh: {fileID: 2556999236740468488, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: TailLong
+      mesh: {fileID: -2672993677669460587, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: TailShort
+      mesh: {fileID: -7896048696689465052, guid: 822eb920432f56a4986c37b6df0cc6e9, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d47696f97868c814eb5c9ea449bd4962, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Bald
+      mesh: {fileID: 0}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 0}
+        colourPalette2: {fileID: 0}
+    values:
+    - 0.2
+    - 1
+    - 0
+    - 1
+    - 1
+    - 1
+    - 0.1

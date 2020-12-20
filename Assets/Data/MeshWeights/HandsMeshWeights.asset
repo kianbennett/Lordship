@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e212877bd633aa48954d4db6f3bc1f1, type: 3}
+  m_Name: HandsMeshWeights
+  m_EditorClassIdentifier: 
+  bodyPart: 2
+  weightMap:
+    keys:
+    - name: Bare
+      mesh: {fileID: 0}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 1
+        additionalMaterials: []
+        colourPalette1: {fileID: 0}
+        colourPalette2: {fileID: 0}
+    - name: Gloved
+      mesh: {fileID: 0}
+      materials:
+        hasColour1: 1
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    values:
+    - 1
+    - 0.2

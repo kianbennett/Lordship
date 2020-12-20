@@ -237,8 +237,8 @@ SubShader {
             float outline = (_OutlineWidth * _ScaleRatioA) * scale;
             float softness = (_OutlineSoftness * _ScaleRatioA) * scale;
 
-            half4 faceColor = _FaceColor;
-            half4 outlineColor = _OutlineColor;
+            float4 faceColor = _FaceColor;
+            float4 outlineColor = _OutlineColor;
 
             faceColor.rgb *= input.color.rgb;
 

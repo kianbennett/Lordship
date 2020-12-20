@@ -112,8 +112,8 @@ SubShader {
 			fixed4	faceColor		: COLOR;
 			fixed4	outlineColor	: COLOR1;
 			float4	texcoord0		: TEXCOORD0;			// Texture UV, Mask UV
-			half4	param			: TEXCOORD1;			// Scale(x), BiasIn(y), BiasOut(z), Bias(w)
-			half4	mask			: TEXCOORD2;			// Position in clip space(xy), Softness(zw)
+			float4	param			: TEXCOORD1;			// Scale(x), BiasIn(y), BiasOut(z), Bias(w)
+			float4	mask			: TEXCOORD2;			// Position in clip space(xy), Softness(zw)
 		#if (UNDERLAY_ON | UNDERLAY_INNER)
 			float4	texcoord1		: TEXCOORD3;			// Texture UV, alpha, reserved
 			half2	underlayParam	: TEXCOORD4;			// Scale(x), Bias(y)
@@ -183,8 +183,8 @@ SubShader {
 				faceColor,
 				outlineColor,
 				float4(input.texcoord0.x, input.texcoord0.y, maskUV.x, maskUV.y),
-				half4(scale, bias - outline, bias + outline, bias),
-				half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy)),
+				float4(scale, bias - outline, bias + outline, bias),
+				float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy)),
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
 				float4(input.texcoord0 + layerOffset, input.color.a, 0),
 				half2(layerScale, layerBias),
@@ -199,7 +199,7 @@ SubShader {
 		fixed4 PixShader(pixel_t input) : SV_Target
 		{
 			half d = tex2D(_MainTex, input.texcoord0.xy).a * input.param.x;
-			half4 c = input.faceColor * saturate(d - input.param.w);
+			float4 c = input.faceColor * saturate(d - input.param.w);
 
 		#ifdef OUTLINE_ON
 			c = lerp(input.outlineColor, input.faceColor, saturate(d - input.param.z));

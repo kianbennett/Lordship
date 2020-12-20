@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e212877bd633aa48954d4db6f3bc1f1, type: 3}
+  m_Name: HatMeshWeights
+  m_EditorClassIdentifier: 
+  bodyPart: 3
+  weightMap:
+    keys:
+    - name: None
+      mesh: {fileID: 0}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 0}
+        colourPalette2: {fileID: 0}
+    - name: Feathered Bonnet
+      mesh: {fileID: 5977538081033554366, guid: 13477d81c07fce74d94663f0416cd552, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials:
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Floppy Hat
+      mesh: {fileID: 7683773705885618705, guid: 13477d81c07fce74d94663f0416cd552, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Wide Brimmed Hat
+      mesh: {fileID: -7774045524659871334, guid: 13477d81c07fce74d94663f0416cd552, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials:
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Box Hat
+      mesh: {fileID: -7383754572521682107, guid: 13477d81c07fce74d94663f0416cd552, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    values:
+    - 1
+    - 0.3
+    - 0.3
+    - 0.3
+    - 0.3

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e212877bd633aa48954d4db6f3bc1f1, type: 3}
+  m_Name: BodyMeshWeights
+  m_EditorClassIdentifier: 
+  bodyPart: 1
+  weightMap:
+    keys:
+    - name: Robe
+      mesh: {fileID: -6424493679509123494, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials:
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    - name: Short Robe
+      mesh: {fileID: 1820668192888114050, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+      materials:
+        hasColour1: 0
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials:
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
+        colourPalette2: {fileID: 0}
+    values:
+    - 1
+    - 1
