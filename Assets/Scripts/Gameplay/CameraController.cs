@@ -25,8 +25,8 @@ public class CameraController : Singleton<CameraController> {
 
     // A plane that a ray cast from a mouse position can collide with
     private Plane raycastPlane;
-    // Position of mouse last frmae, used to get the distance mouse has travelled
-    private Vector2 lastMousePos;
+    // Position of mouse when the left mouse button is pressed
+    private Vector2 grabbedMousePos;
 
     protected override void Awake() {
         base.Awake();
@@ -39,22 +39,7 @@ public class CameraController : Singleton<CameraController> {
     }
 
     void LateUpdate() {
-        // Use arrow keys to pan
-        if (Input.GetKey(KeyCode.LeftArrow)) CameraController.instance.panLeft();
-        if (Input.GetKey(KeyCode.RightArrow)) CameraController.instance.panRight();
-        if (Input.GetKey(KeyCode.UpArrow)) CameraController.instance.panForward();
-        if (Input.GetKey(KeyCode.DownArrow)) CameraController.instance.panBackward();
-
-        if (Input.GetMouseButtonDown(1)) grab();
-        if (Input.GetMouseButtonUp(1)) release();
-
-        Vector2 mouseDelta = (Vector2) Input.mousePosition - lastMousePos;
-        lastMousePos = (Vector2) Input.mousePosition;
-
-        if(Input.GetMouseButton(1) && mouseDelta.magnitude > 0) {
-            pan();
-        }
-
+        // TODO: Move this to InputHandler
         // Hold middle mouse to rotate
         isRotating = Input.GetMouseButton(2);
         bool pivot = Input.GetKey(KeyCode.LeftShift);
@@ -84,22 +69,22 @@ public class CameraController : Singleton<CameraController> {
         targetPosition += delta;
     }
 
-    private void panLeft() {
+    public void PanLeft() {
         if (isGrabbing) return;
         move(-transform.right * panSpeed * Time.deltaTime);
     }
 
-    private void panRight() {
+    public void PanRight() {
         if (isGrabbing) return;
         move(transform.right * panSpeed * Time.deltaTime);
     }
 
-    private void panForward() {
+    public void PanForward() {
         if (isGrabbing) return;
         move(transform.forward * panSpeed * Time.deltaTime);
     }
 
-    private void panBackward() {
+    public void PanBackward() {
         if (isGrabbing) return;
         move(-transform.forward * panSpeed * Time.deltaTime);
     }
@@ -112,16 +97,17 @@ public class CameraController : Singleton<CameraController> {
     }
 
     // Gets the ground position where the mouse right clicks
-    private void grab() {
+    public void Grab() {
         if(GetMousePointOnGround(out Vector3 point)) {
             worldSpaceGrab = point;
             worldSpaceGrabLast = worldSpaceGrab;
             isGrabbing = true;
+            grabbedMousePos = (Vector2) Input.mousePosition;
         }
     }
 
     // Called when the mouse moves while grabbing - find the new position and translate the camera in the opposite direction
-    private void pan() {
+    public void Pan() {
         if(GetMousePointOnGround(out Vector3 point)) {
             worldSpaceGrab = point;
             Vector3 delta = worldSpaceGrab - worldSpaceGrabLast;
@@ -129,7 +115,7 @@ public class CameraController : Singleton<CameraController> {
         }
     }
 
-    private void release() {
+    public void Release() {
         isGrabbing = false;
     }
 
@@ -142,6 +128,7 @@ public class CameraController : Singleton<CameraController> {
         }
     }
 
+    // Gets the point at which the mouse position ray hits a plane at y = 0
     public bool GetMousePointOnGround(out Vector3 point) {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         bool hit = raycastPlane.Raycast(ray, out float distance);

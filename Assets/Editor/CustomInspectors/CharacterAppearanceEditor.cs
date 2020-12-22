@@ -74,7 +74,7 @@ public class CharacterAppearanceEditor : Editor {
 
         // Draw properties
         GUILayout.BeginHorizontal();
-        GUILayout.Label(name, GUILayout.Width(EditorGUIUtility.labelWidth - 12));
+        GUILayout.Label(name, GUILayout.Width(EditorGUIUtility.labelWidth - 2));
         if(materialSet.hasColour1) {
             // Limit property values to colour palette size
             if (materialSet.colourPalette1.colours.Length > 0 && prop1.intValue >= materialSet.colourPalette1.colours.Length) prop1.intValue = materialSet.colourPalette1.colours.Length - 1;

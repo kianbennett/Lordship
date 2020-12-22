@@ -18,19 +18,6 @@ public class PlayerController : Singleton<PlayerController> {
         base.Awake();
     }
 
-    void Update() {
-        if(Input.GetMouseButtonDown(0) && selectableHovered) {
-            DeselectAllCharacters();
-            selectableHovered.OnLeftClick();
-        }
-        if(Input.GetMouseButtonDown(1)) {
-            if(selectableHovered) {
-                selectableHovered.OnRightClick();
-            } else {
-            }
-        }
-    }
-
     public void SelectCharacter(Character character) {
         if(!selectedCharacters.Contains(character)) {
             selectedCharacters.Add(character);
@@ -57,7 +44,10 @@ public class PlayerController : Singleton<PlayerController> {
         if (selectedCharacters.Count == 0) return;
 
         // Clear actions
-        foreach (Character character in selectedCharacters) character.actionHandler.ClearActions();
+        foreach (Character character in selectedCharacters) {
+            // character.actionHandler.ClearActions();
+            character.movement.MoveToPoint(target, false);
+        }
 
         // Spawn marker
         if (showMarker) Instantiate(moveMarkerPrefab, target, Quaternion.identity);

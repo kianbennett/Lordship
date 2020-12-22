@@ -9,7 +9,6 @@ public enum BodyPart {
     Hair, Body, Hands, Hat
 }
 
-[ExecuteInEditMode]
 public class CharacterAppearance : MonoBehaviour {
 
     public Animator modelAnim;
@@ -27,20 +26,24 @@ public class CharacterAppearance : MonoBehaviour {
     [HideInInspector] public int hat, hatColour1, hatColour2;
     [HideInInspector] public int skinColour;
 
+    private float headBoneHeightInit;
+
     void Awake() {
         if (randomiseOnAwake) Randomise();
             else ApplyAll();
+
+        headBoneHeightInit = headBone.transform.position.y;
     }
 
     void Update() {
         // Lerp towards the desired animation speed
-        // if (modelAnim) {
-        //     float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.movement.GetAnimSpeed(), Time.deltaTime * 10);
-        //     modelAnim.SetFloat("Speed", speed);
-        // }
+        if (modelAnim) {
+            float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.movement.GetAnimSpeed(), Time.deltaTime * 10);
+            modelAnim.SetFloat("Speed", speed);
+        }
 
-        // Debug.DrawRay(hairMesh.sharedMesh.bounds.center + Vector3.up * hairMesh.bounds.extents.y, Vector3.up * 0.1f);
-        // Debug.DrawLine(transform.position + Vector3.up * hairMesh.sharedMesh.bounds.min.y, transform.position + Vector3.up * hairMesh.sharedMesh.bounds.max.y);
+        // Debug.DrawRay(transform.position + Vector3.up * hairMesh.sharedMesh.bounds.max.y, Vector3.up);
+        // Debug.DrawLine(transform.position + Vector3.up * hairMesh.sharedMesh.bounds.min.y * modelAnim.transform.localScale.y, transform.position + Vector3.up * hairMesh.sharedMesh.bounds.max.y * modelAnim.transform.localScale.y, Color.white);
     }
 
     private void applyHair() {
@@ -72,10 +75,15 @@ public class CharacterAppearance : MonoBehaviour {
         updateHatPos();
     }
 
+    // Set hat position to top of hair (or head if there is no hair or the hair is below the top of the head, like the monk)
     private void updateHatPos() {
         float headHeight = headMesh.sharedMesh.bounds.max.y;
         float hairHeight = hairMesh.sharedMesh != null ? hairMesh.sharedMesh.bounds.max.y : 0;
-        hatMeshFilter.transform.position = transform.position + Vector3.up * Mathf.Max(hairHeight, headHeight) * modelAnim.transform.localScale.y;
+        float hatHeight = Mathf.Max(hairHeight, headHeight) * modelAnim.transform.localScale.y;
+        // If called in the editor headBoneHeightInit won't be set so check if it's 0 or not
+        float heightFromHeadBone = hatHeight - (headBoneHeightInit != 0 ? headBoneHeightInit : headBone.transform.position.y);
+        // Need to do along the angle of the head bone incase hat is switched while animating
+        hatMeshFilter.transform.position = headBone.transform.position + headBone.transform.up * heightFromHeadBone;
     }
 
     private void applySkin() {
