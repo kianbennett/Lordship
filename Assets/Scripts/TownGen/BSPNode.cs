@@ -48,28 +48,4 @@ public class BSPNode {
         // Split successfull
         return true;
     }
-
-    // Get the perimiter along the rectangle at which buildings can be placed
-    public float GetBuildingPerimeter() {
-        float border = 2.5f;
-        return width * 2 + height * 2 - border * 8;
-    }
-
-    // Get point a given distance along the rectangle at which buildings can be placed 
-    // public Vector3 GetPointAlongBuildingPerimeter(float distance) {
-    //     distance %= GetBuildingPerimeter();
-    //     float border = 2.5f;
-
-    //     Rect rect = new Rect(border, border, width - border * 2, height - border * 2);
-
-    //     if(distance < rect.height) {
-    //         return new Vector3(rect.x, 0, rect.y + distance);
-    //     } else if(distance < rect.height + rect.width) {
-    //         return new Vector3(rect.x + distance - rect.height, 0, rect.yMax);
-    //     } else if(distance < rect.height * 2 + rect.width) {
-    //         return new Vector3(rect.xMax, 0, rect.yMax - (distance - rect.width - rect.height));
-    //     } else {
-    //         return new Vector3(rect.xMax - (distance - rect.width - rect.height * 2), 0, rect.y);
-    //     }
-    // }
 }

@@ -10,6 +10,14 @@ public class MathHelper {
         return new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
     }
 
+    public static Vector3 RandomVector2(float min, float max) {
+        return new Vector2(Random.Range(min, max), Random.Range(min, max));
+    }
+
+    public static Vector3 AbsVector3(Vector3 v) {
+        return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z));
+    }
+
     // Get average point of array of vectors
     public static Vector3 AverageVector3(params Vector3[] vectors) {
         Vector3 result = Vector3.zero;
