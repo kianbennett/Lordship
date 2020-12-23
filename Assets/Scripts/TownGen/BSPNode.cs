@@ -48,4 +48,30 @@ public class BSPNode {
         // Split successfull
         return true;
     }
+
+    public float GetPerimeter(float inset) {
+        return width * 2 + height * 2 - inset * 8;
+    }
+
+    // Starting at bottom left, moving clockwise
+    public Vector2 GetPointAlongPerimeter(float inset, float distance) {
+        distance %= GetPerimeter(inset) - 4;
+
+        Rect rect = new Rect(inset, inset, width - inset * 2 - 1, height - inset * 2 - 1);
+
+        if(distance < rect.height) {
+            return new Vector2(0, distance);
+        } else if(distance < rect.height + rect.width) {
+            return new Vector2(distance - rect.height, rect.height);
+        } else if(distance < rect.height * 2 + rect.width) {
+            return new Vector2(rect.width, rect.height - (distance - rect.width - rect.height));
+        } else {
+            return new Vector2(rect.width - (distance - rect.height * 2 - rect.width), 0);
+        }
+    }
+
+    public Vector2 GetPointAtPercentageAlongPerimeter(float inset, float percentage) {
+        return GetPointAlongPerimeter(inset, GetPerimeter(inset) * percentage);
+    }
+
 }

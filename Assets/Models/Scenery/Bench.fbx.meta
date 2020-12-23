@@ -1,26 +1,13 @@
 fileFormatVersion: 2
-guid: b0858ae9f3f7bee4b844039d3402b909
+guid: ccd985ae8fb1ea049a0214a2031cac19
 ModelImporter:
   serializedVersion: 20101
-  internalIDToNameTable:
-  - first:
-      74: -623603649343465320
-    second: Scene
+  internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Mat_VertexColour
-    second: {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material_Colour1
-    second: {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material_Colour2
     second: {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
   materials:
     materialImportMode: 1
