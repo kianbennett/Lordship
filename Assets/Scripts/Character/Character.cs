@@ -11,7 +11,6 @@ public class Character : SelectableObject {
 
     public CharacterMovement movement;
     public CharacterAppearance appearance;
-    public CharacterActionHandler actionHandler;
 
     [SerializeField] private string charName;
     [SerializeField] private GameObject selectMarker;
@@ -20,7 +19,6 @@ public class Character : SelectableObject {
         base.Awake();
         movement = GetComponent<CharacterMovement>();
         appearance = GetComponent<CharacterAppearance>();
-        actionHandler = GetComponent<CharacterActionHandler>();
     }
 
     public override void SetHovered(bool hovered) {

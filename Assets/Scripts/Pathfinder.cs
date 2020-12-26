@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
+[ExecuteInEditMode]
 public class Pathfinder : Singleton<Pathfinder> {
 
     private List<GridPoint> pointsToBeTested = new List<GridPoint>();
     private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-    // TODO: Make this a coroutine
-    public List<GridPoint> GetPath(GridPoint[,] gridPoints, GridPoint start, GridPoint destination) {
+    public List<GridPoint> FindPath(GridPoint[,] gridPoints, GridPoint start, GridPoint destination) {
         List<GridPoint> path = new List<GridPoint>();
 
         // Make sure the start and end points are valid and can be travelled to
@@ -73,15 +74,6 @@ public class Pathfinder : Singleton<Pathfinder> {
                     neighbour.heuristic = heuristic(neighbour, destination);
                     neighbour.parent = currentNode;
                     pointsToBeTested.Add(neighbour);
-
-                    // Calculate the local goal of this location from our current location and test if it is lower than the local goal it currently holds,
-                    // if so then update it to be owned by the current node instead 
-                    // float possibleLocalGoal = currentNode.local + distance(currentNode, neighbour);
-                    // if (possibleLocalGoal < neighbour.local) {
-                    //     neighbour.parent = currentNode;
-                    //     neighbour.local = possibleLocalGoal;
-                    //     neighbour.global = neighbour.local + heuristic(neighbour, destination);
-                    // }
                 }
             }
         }
@@ -108,9 +100,9 @@ public class Pathfinder : Singleton<Pathfinder> {
         return path;
     }
 
-    // Length of a connection between two nodes (for now always one since it's a uniform grid)
+    // Length of a connection between two nodes
     private float distance(GridPoint a, GridPoint b) {
-        return 1;
+        return new Vector2(b.x - a.x, b.y - a.y).magnitude;
     }
 
     // Estimate how close two points are, atm this is just line of sight as a quick but slightly innacurate solution

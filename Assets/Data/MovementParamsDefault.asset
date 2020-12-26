@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MovementParamsDefault
   m_EditorClassIdentifier: 
   WalkSpeed: 1.25
-  RunSpeed: 2
+  RunSpeed: 2.5
   AccCurve:
     serializedVersion: 2
     m_Curve:

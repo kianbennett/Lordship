@@ -7,8 +7,6 @@ using UnityEngine.Events;
 public class CharacterMovementPath {
 
     private List<Vector3> nodes;
-    private Vector3[] additionalNodes;
-
     private MovementParams movementParams;
 
     // The distance over which to decelerate to zero
@@ -88,5 +86,11 @@ public class CharacterMovementPath {
 
     private void calculatePathLength() {
         totalPathLength = MathHelper.TotalVectorLengths(nodes.ToArray());
+    }
+
+    public void DrawDebugLines() {
+        for(int i = targetNode - 1; i < nodes.Count - 1; i++) {
+            Debug.DrawLine(nodes[i], nodes[i + 1]);
+        }
     }
 }

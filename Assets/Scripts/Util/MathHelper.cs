@@ -38,4 +38,18 @@ public class MathHelper {
         }
         return length;
     }
+
+    public static List<Vector3> BezierCurve(Vector3 p0, Vector3 p1, Vector3 control) {
+        List<Vector3> curve = new List<Vector3>();
+
+        int steps = 10;
+
+        for(int i = 0; i < steps; i++) {
+            float t = (float) i / (steps - 1);
+            Vector3 newPoint = Vector3.Lerp(Vector3.Lerp(p0, control, t), Vector3.Lerp(control, p1, t), t);
+            curve.Add(newPoint);
+        }
+
+        return curve;
+    }
 }

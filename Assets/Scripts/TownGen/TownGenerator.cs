@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridPoint {
     public enum Type {
-        Path, Grass, Obstacle
+        Path, Pavement, Grass, Obstacle
     }
 
     public int x, y;
@@ -20,7 +20,8 @@ public class GridPoint {
     public bool visited;
     public float cost {
         get { 
-            if(type == Type.Grass) return 10;
+            if(type == Type.Grass) return 6;
+            if(type == Type.Path) return 2;
             return 0;
         }
     }
@@ -36,7 +37,7 @@ public class GridPoint {
 }
 
 [ExecuteInEditMode]
-public class TownGenerator : MonoBehaviour {
+public class TownGenerator : Singleton<TownGenerator> {
 
     [Header("Debug")]
     public bool debugGrid;
@@ -80,8 +81,10 @@ public class TownGenerator : MonoBehaviour {
     private GridPoint[,] gridPoints;
     private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-    private GridPoint testPathStart, testPathEnd;
-    private List<GridPoint> testPath;
+    protected override void Awake() {
+        base.Awake();
+        Generate();
+    }
 
     void Update() {
         if(debugRoadPath && nodes != null) {
@@ -101,22 +104,22 @@ public class TownGenerator : MonoBehaviour {
             for(int i = 0; i < width; i++) Debug.DrawLine(new Vector3(originX + i, 0, originZ), new Vector3(originX + i, 0, originZ + height), new Color(1, 1, 1, 0.2f));
             for(int j = 0; j < height; j++) {
                 Debug.DrawLine(new Vector3(originX, 0, originZ + j), new Vector3(originX + width, 0, originZ + j), new Color(1, 1, 1, 0.2f));
-                // for(int i = 0; i < width; i++) {
-                //     if(debugNoise) {
-                //         float noiseValue = Mathf.PerlinNoise(i * debugNoiseScale, j * debugNoiseScale);  
-                //         if(noiseValue > debugNoiseThreshold) {
-                //             Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), Color.white);
-                //             Debug.DrawLine(new Vector3(originX + i + 0.25f, 0, originZ + j + 0.5f), new Vector3(originX + i + 0.75f, 0, originZ + j + 0.5f), Color.white);
-                //         }
-                //     } else {
-                //         Color color = Color.green;
-                //         if(gridPoints[i, j].type == GridPoint.Type.Path) color = Color.blue;
-                //         if(gridPoints[i, j].type == GridPoint.Type.Obstacle) color = Color.red;
-                //         if(gridPoints[i, j].type == GridPoint.Type.Grass) continue;
-                //         Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), color);
-                //         Debug.DrawLine(new Vector3(originX + i + 0.25f, 0, originZ + j + 0.5f), new Vector3(originX + i + 0.75f, 0, originZ + j + 0.5f), color);
-                //     }
-                // }
+                for(int i = 0; i < width; i++) {
+                    if(debugNoise) {
+                        float noiseValue = Mathf.PerlinNoise(i * debugNoiseScale, j * debugNoiseScale);  
+                        if(noiseValue > debugNoiseThreshold) {
+                            Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), Color.white);
+                            Debug.DrawLine(new Vector3(originX + i + 0.25f, 0, originZ + j + 0.5f), new Vector3(originX + i + 0.75f, 0, originZ + j + 0.5f), Color.white);
+                        }
+                    } else {
+                        Color color = Color.green;
+                        if(gridPoints[i, j].type == GridPoint.Type.Path) color = Color.blue;
+                        if(gridPoints[i, j].type == GridPoint.Type.Obstacle) color = Color.red;
+                        if(gridPoints[i, j].type == GridPoint.Type.Grass) continue;
+                        Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), color);
+                        Debug.DrawLine(new Vector3(originX + i + 0.25f, 0, originZ + j + 0.5f), new Vector3(originX + i + 0.75f, 0, originZ + j + 0.5f), color);
+                    }
+                }
             }
 
             // if(testPath != null) {
@@ -254,10 +257,10 @@ public class TownGenerator : MonoBehaviour {
             GameObject pavementB = Instantiate(pavementPrefab, new Vector3(x + node.width / 2f, 0, y + 1 + pavementWidth / 2f), Quaternion.identity, objectContainer);
             pavementL.transform.localScale = pavementR.transform.localScale = new Vector3(pavementWidth, pavementL.transform.localScale.y, node.height - 2);
             pavementT.transform.localScale = pavementB.transform.localScale = new Vector3(node.width - 2, pavementL.transform.localScale.y, pavementWidth);
-            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + 1, 1, node.height - 2, GridPoint.Type.Path);
-            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + node.height - 2, node.width - 2, 1, GridPoint.Type.Path);
-            setGridPointsFromRect(node.x + borderSize + node.width - 2, node.y + borderSize + 1, 1, node.height - 2, GridPoint.Type.Path);
-            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + 1, node.width - 2, 1, GridPoint.Type.Path);
+            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + 1, 1, node.height - 2, GridPoint.Type.Pavement);
+            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + node.height - 2, node.width - 2, 1, GridPoint.Type.Pavement);
+            setGridPointsFromRect(node.x + borderSize + node.width - 2, node.y + borderSize + 1, 1, node.height - 2, GridPoint.Type.Pavement);
+            setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + 1, node.width - 2, 1, GridPoint.Type.Pavement);
 
             // Add buildings
             float border = 2.5f;
@@ -329,8 +332,8 @@ public class TownGenerator : MonoBehaviour {
         GameObject gate1 = Instantiate(gatePrefab, new Vector3(width / 2f * (gate1Left ? -1 : 1), 0, gate1Pos), Quaternion.Euler(0, 90, 0), objectContainer);
         GameObject gate2 = Instantiate(gatePrefab, new Vector3(gate2Pos, 0, height / 2f * (gate2Bottom ? -1 : 1)), Quaternion.identity, objectContainer);
 
-        GridPoint gate1GridPoint = gridPointFromWorldPos(gate1.transform.position);
-        GridPoint gate2GridPoint = gridPointFromWorldPos(gate2.transform.position);
+        GridPoint gate1GridPoint = GridPointFromWorldPos(gate1.transform.position);
+        GridPoint gate2GridPoint = GridPointFromWorldPos(gate2.transform.position);
 
         // Add border buildings
         Bounds gate1Bounds = new Bounds(gate1.transform.position, MathHelper.AbsVector3(gate1.transform.rotation * new Vector3(8, 1, borderSize + 12)));
@@ -465,7 +468,7 @@ public class TownGenerator : MonoBehaviour {
             if(dist + buildingPrefab.width < length) {
                 Quaternion rot = Quaternion.LookRotation(edgeDir, Vector3.up);
                 Vector3 pos = start + edgeDir * dist + rot * new Vector3(buildingPrefab.size.y / 2, 0, buildingPrefab.size.x / 2);
-                GridPoint gridPoint = gridPointFromWorldPos(pos);
+                GridPoint gridPoint = GridPointFromWorldPos(pos);
                 float noiseValue = Mathf.PerlinNoise(gridPoint.x * buildingNoiseScale, gridPoint.y * buildingNoiseScale);
                 if (!ignoreBounds.Contains(pos) && noiseValue > buildingNoiseThreshold) {
                     Building building = Instantiate(buildingPrefab, pos, rot * Quaternion.Euler(0, 90, 0), objectContainer);
@@ -483,24 +486,16 @@ public class TownGenerator : MonoBehaviour {
     private void setGridPointConnections(GridPoint gridPoint) {
         gridPoint.connections = new List<GridPoint>();
 
-        int i = gridPoint.x;
-        int j = gridPoint.y;
+        for(int x = -1; x < 2; x++) {
+            for(int y = -1; y < 2; y++) {
+                if(x == 0 && y == 0) continue;
+                int i = gridPoint.x + x;
+                int j = gridPoint.y + y;
 
-        // Check tile above
-        if(isInBounds(i, j + 1) && gridPoints[i, j + 1].type != GridPoint.Type.Obstacle) {
-            gridPoint.connections.Add(gridPoints[i, j + 1]);
-        }
-        // Check tile below
-        if(isInBounds(i, j - 1) && gridPoints[i, j - 1].type != GridPoint.Type.Obstacle) {
-            gridPoint.connections.Add(gridPoints[i, j - 1]);
-        }
-        // Check tile left
-        if(isInBounds(i - 1, j) && gridPoints[i - 1, j].type != GridPoint.Type.Obstacle) {
-            gridPoint.connections.Add(gridPoints[i - 1, j]);
-        }
-        // Check tile right
-        if(isInBounds(i + 1, j) && gridPoints[i + 1, j].type != GridPoint.Type.Obstacle) {
-            gridPoint.connections.Add(gridPoints[i + 1, j]);
+                if(isInBounds(i, j) && gridPoints[i, j].type != GridPoint.Type.Obstacle) {
+                    gridPoint.connections.Add(gridPoints[i, j]);
+                }
+            }
         }
     }
 
@@ -547,20 +542,17 @@ public class TownGenerator : MonoBehaviour {
         gridPoints[x, y].type = type;
     }
 
-    private GridPoint gridPointFromWorldPos(Vector3 worldPos) {
+    public GridPoint GridPointFromWorldPos(Vector3 worldPos) {
+        if(gridPoints == null) return null;
         int x = Mathf.FloorToInt(worldPos.x + width / 2f);
         int y = Mathf.FloorToInt(worldPos.z + height / 2f);
         x = Mathf.Clamp(x, 0, width - 1);
         y = Mathf.Clamp(y, 0, height - 1);
-        if(isInBounds(x, y)) {
-            return gridPoints[x, y];
-        } else {
-            return null;
-        }
+        return gridPoints[x, y];
     }
 
-    private Vector3 gridPointToWorldPos(float x, float y) {
-        return new Vector3(x - width / 2f + borderSize, 0, y - height / 2f + borderSize);
+    public Vector3 GridPointToWorldPos(float x, float y) {
+        return new Vector3(x - width / 2f, 0, y - height / 2f);
     }
 
     private bool checkGridPointsAreType(int x, int y, int w, int h, GridPoint.Type type) {
@@ -634,5 +626,9 @@ public class TownGenerator : MonoBehaviour {
             lastDir = dir;
             prevPoint = path[i];
         }
+    }
+
+    public GridPoint[,] GetGridPoints() {
+        return gridPoints;
     }
 }

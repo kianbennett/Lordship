@@ -45,8 +45,9 @@ public class PlayerController : Singleton<PlayerController> {
 
         // Clear actions
         foreach (Character character in selectedCharacters) {
-            // character.actionHandler.ClearActions();
-            character.movement.MoveToPoint(target, false);
+            // Player characters always run (maybe allow to toggle this?)
+            character.movement.SetRunning(true);
+            character.movement.MoveToPoint(target, true);
         }
 
         // Spawn marker
