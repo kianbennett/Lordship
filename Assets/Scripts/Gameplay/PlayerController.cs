@@ -11,7 +11,7 @@ public class PlayerController : Singleton<PlayerController> {
 
     [SerializeField] private GameObject moveMarkerPrefab;
 
-    [HideInInspector] public List<Character> selectedCharacters;
+    [ReadOnly] public Character selectedCharacter;
     [ReadOnly] public SelectableObject selectableHovered;
 
     protected override void Awake() {
@@ -19,36 +19,27 @@ public class PlayerController : Singleton<PlayerController> {
     }
 
     public void SelectCharacter(Character character) {
-        if(!selectedCharacters.Contains(character)) {
-            selectedCharacters.Add(character);
-        }
         character.SetSelected(true);
+        if(selectedCharacter != null) DeselectSelectedCharacter();
+        selectedCharacter = character;
     }
 
     public void DeselectCharacter(Character character) {
-        if (selectedCharacters.Contains(character)) {
-            selectedCharacters.Remove(character);
-        }
         character.SetSelected(false);
     }
 
-    public void DeselectAllCharacters() {
-        foreach(Character character in selectedCharacters) {
-            character.SetSelected(false);
+    public void DeselectSelectedCharacter() {
+        if(selectedCharacter != null) {
+            DeselectCharacter(selectedCharacter);
         }
-        selectedCharacters.Clear();
     }
 
     // Move a group of characters around a target position so they don't all end up at the same point
     public void MoveCharacters(Vector3 target, bool showMarker) {
-        if (selectedCharacters.Count == 0) return;
+        if (selectedCharacter == null) return;
 
-        // Clear actions
-        foreach (Character character in selectedCharacters) {
-            // Player characters always run (maybe allow to toggle this?)
-            character.movement.SetRunning(true);
-            character.movement.MoveToPoint(target, true);
-        }
+        selectedCharacter.movement.SetRunning(true);
+        selectedCharacter.movement.MoveToPoint(target, true);
 
         // Spawn marker
         if (showMarker) Instantiate(moveMarkerPrefab, target, Quaternion.identity);

@@ -62,10 +62,23 @@ public class InputHandler : Singleton<InputHandler> {
         if (Input.GetKey(KeyCode.RightArrow)) CameraController.instance.PanRight();
         if (Input.GetKey(KeyCode.UpArrow)) CameraController.instance.PanForward();
         if (Input.GetKey(KeyCode.DownArrow)) CameraController.instance.PanBackward();
+
+        // Cycle between selected characters
+        if (Input.GetKeyDown(KeyCode.Space)) {
+
+            if(CameraController.instance.objectToFollow == PlayerController.instance.selectedCharacter.cameraTarget) {
+                CameraController.instance.objectToFollow = null;
+            } else {
+                CameraController.instance.objectToFollow = PlayerController.instance.selectedCharacter.cameraTarget;
+            }
+        }
     }
 
     private void onLeftClickDown() {
-        PlayerController.instance.DeselectAllCharacters();
+        // Delect the selected character unless the player is still hovering it
+        if(PlayerController.instance.selectableHovered != PlayerController.instance.selectedCharacter) {
+            PlayerController.instance.DeselectSelectedCharacter();
+        }
     }
 
     private void onLeftClickDragStart() {
@@ -76,7 +89,7 @@ public class InputHandler : Singleton<InputHandler> {
 
     private void onLeftClickRelease() {
         if (leftClickMoveDelta.magnitude == 0) {
-            PlayerController.instance.DeselectAllCharacters();
+            // PlayerController.instance.DeselectSelectedCharacter();
             if (PlayerController.instance.selectableHovered) {
                 PlayerController.instance.selectableHovered.OnLeftClick();
             }

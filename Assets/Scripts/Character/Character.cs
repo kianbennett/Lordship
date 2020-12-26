@@ -11,6 +11,7 @@ public class Character : SelectableObject {
 
     public CharacterMovement movement;
     public CharacterAppearance appearance;
+    public Transform cameraTarget;
 
     [SerializeField] private string charName;
     [SerializeField] private GameObject selectMarker;
@@ -37,8 +38,8 @@ public class Character : SelectableObject {
 
     public void Destroy() {
         Destroy(gameObject);
-        if (PlayerController.instance.selectedCharacters.Contains(this)) {
-            PlayerController.instance.selectedCharacters.Remove(this);
+        if (PlayerController.instance.selectedCharacter == this) {
+            PlayerController.instance.selectedCharacter = null;
         }
         if (PlayerController.instance.selectableHovered == this) {
             PlayerController.instance.selectableHovered = null;

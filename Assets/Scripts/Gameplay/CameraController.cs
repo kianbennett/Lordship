@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class CameraController : Singleton<CameraController> {
 
+    [ReadOnly] public Transform objectToFollow;
+
     [SerializeField] private new Camera camera;
     [SerializeField] private Transform cameraContainer;
 
@@ -57,6 +59,9 @@ public class CameraController : Singleton<CameraController> {
             zoom(scrollDelta * zoomSpeed * Time.deltaTime);
         }
 
+        if(objectToFollow != null) {
+            targetPosition = objectToFollow.transform.position;    
+        }
         transform.position = targetPosition;
         // Lerp towards camera zoom dist
         camera.transform.localPosition = new Vector3(0, 0, Mathf.Lerp(camera.transform.localPosition.z, cameraDist, Time.deltaTime * 10));
@@ -67,6 +72,7 @@ public class CameraController : Singleton<CameraController> {
 
     private void move(Vector3 delta) {
         targetPosition += delta;
+        objectToFollow = null;
     }
 
     public void PanLeft() {
