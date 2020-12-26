@@ -6,7 +6,7 @@ using System.Linq;
 public class CharacterMovement : MonoBehaviour {
 
     [SerializeField] private MovementParams movementParams;
-    [SerializeField] private bool drawDebugLines;
+    [SerializeField] private bool drawDebugLines, debugLogMessages;
 
     private Character character;
 
@@ -39,8 +39,8 @@ public class CharacterMovement : MonoBehaviour {
             transform.position += delta;
         }
         // Set transform rotation from LookDir
+        lookDir.y = 0; // Lock to xz axis
         if (lookDir != Vector3.zero) {
-            lookDir.y = 0; // Lock to xz axis
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5);
         }
 
@@ -73,10 +73,10 @@ public class CharacterMovement : MonoBehaviour {
 
     public void SetPath(List<Vector3> nodes) {
         if (nodes == null) {
-            Debug.Log("Character path is null!");
+            if(debugLogMessages) Debug.Log("Character path is null!");
             return;
         }
-        Debug.Log("Character path found!");
+        if(debugLogMessages) Debug.Log("Character path found!");
         createPath(nodes);
     }
 
@@ -109,6 +109,9 @@ public class CharacterMovement : MonoBehaviour {
             path.AddRange(points.Select(o => TownGenerator.instance.GridPointToWorldPos(o.x, o.y) + new Vector3(0.5f, 0, 0.5f)));
             path.Add(destination);
         }
+
+        path = Pathfinder.SmoothPath(path);
+        Pathfinder.RemoveRedundantNodes(path);
 
         onPathFound(path);
 
@@ -162,5 +165,11 @@ public class CharacterMovement : MonoBehaviour {
 
     public bool HasReachedDestination() {
         return hasReachedDestination;
+    }
+
+    void OnDrawGizmos() {
+        if(HasPath() && drawDebugLines) {
+            path.DrawDebugGizmos();
+        }
     }
 }

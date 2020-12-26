@@ -109,4 +109,47 @@ public class Pathfinder : Singleton<Pathfinder> {
     private float heuristic(GridPoint a, GridPoint b) {
         return Vector2.Distance(new Vector2(a.x, a.y), new Vector2(b.x, b.y));
     }
+
+    public static List<Vector3> SmoothPath(List<Vector3> path) {
+        List<Vector3> newPath = new List<Vector3>();
+
+        newPath.Add(path.First());
+
+        float dist = 0.4f;
+        int steps = 3;
+
+        for(int i = 1; i < path.Count - 1; i++) {
+            Vector3 prev = path[i - 1];
+            Vector3 next = path[i + 1];
+
+            Vector3 p0 = Vector3.Lerp(path[i], prev, dist);
+            Vector3 p1 = Vector3.Lerp(path[i], next, dist);
+
+            for(int s = 0; s < steps; s++) {
+                float t = (float) s / (steps - 1);
+                Vector3 p = Vector3.Lerp(Vector3.Lerp(p0, path[i], t), Vector3.Lerp(path[i], p1, t), t);
+                newPath.Add(p);
+            }
+        }
+
+        newPath.Add(path.Last());
+        return newPath;
+    }
+
+    public static void RemoveRedundantNodes(List<Vector3> path) {
+        List<Vector3> nodesToRemove = new List<Vector3>();
+
+        for(int i = 1; i < path.Count - 1; i++) {
+            Vector3 dirFromPrevious = (path[i] - path[i - 1]).normalized;
+            Vector3 dirToNext = (path[i + 1] - path[i]).normalized;
+
+            if(dirToNext == dirFromPrevious) {
+                nodesToRemove.Add(path[i]);
+            }
+        }
+
+        foreach(Vector3 node in nodesToRemove) {
+            path.Remove(node);
+        }
+    }
 }

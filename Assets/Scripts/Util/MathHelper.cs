@@ -5,6 +5,8 @@ using System.Linq;
 
 public class MathHelper {
 
+    public static System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
     // Returns Vector3 where each component is random value between min and max
     public static Vector3 RandomVector3(float min, float max) {
         return new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));

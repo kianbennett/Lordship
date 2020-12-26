@@ -31,6 +31,7 @@ public class PlayerController : Singleton<PlayerController> {
     public void DeselectSelectedCharacter() {
         if(selectedCharacter != null) {
             DeselectCharacter(selectedCharacter);
+            selectedCharacter = null;
         }
     }
 

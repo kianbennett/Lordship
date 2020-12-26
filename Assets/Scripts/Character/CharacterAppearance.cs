@@ -50,7 +50,7 @@ public class CharacterAppearance : MonoBehaviour {
         MeshMaterialSet meshSet = AssetManager.instance.hairMeshes[hair];
         updateMeshRenderer(hairMesh, meshSet.mesh);
         updateMeshMaterials(hairMesh, meshSet, hairColour1, hairColour2);
-        if(hairMesh.sharedMesh) hairMesh.sharedMesh.RecalculateBounds();
+        // if(hairMesh.sharedMesh) hairMesh.sharedMesh.RecalculateBounds();
         updateHatPos();
     }
 

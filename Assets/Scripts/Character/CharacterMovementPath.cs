@@ -50,6 +50,10 @@ public class CharacterMovementPath {
     public void IncrementDistTravlled(float dist) {
         distTravelled += dist;
     }
+    
+    public int GetTargetNode() {
+        return targetNode;
+    }
 
     public void SetTargetNode(int node) {
         //Debug.LogFormat("Set node: {0}/{1}", node, nodes.Count);
@@ -91,6 +95,13 @@ public class CharacterMovementPath {
     public void DrawDebugLines() {
         for(int i = targetNode - 1; i < nodes.Count - 1; i++) {
             Debug.DrawLine(nodes[i], nodes[i + 1]);
+        }
+    }
+
+    public void DrawDebugGizmos() {
+        for(int i = targetNode - 1; i < nodes.Count; i++) {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(nodes[i], 0.05f);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GridPoint {
     public enum Type {
@@ -79,7 +80,6 @@ public class TownGenerator : Singleton<TownGenerator> {
 
     private List<BSPNode> nodes;
     private GridPoint[,] gridPoints;
-    private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
     protected override void Awake() {
         base.Awake();
@@ -161,7 +161,7 @@ public class TownGenerator : Singleton<TownGenerator> {
     public void Generate() {
         Random.InitState(seed);
 
-        stopwatch.Restart();
+        MathHelper.stopwatch.Restart();
         nodes = new List<BSPNode>();
         BSPNode rootNode = new BSPNode(0, 0, width - borderSize * 2, height - borderSize * 2, minNodeSize);
         splitBSPNode(rootNode);
@@ -214,8 +214,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         //     }
         // }
 
-        stopwatch.Stop();
-        Debug.Log("Found " + nodes.Count + " nodes in " + ((float) stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond) + "ms");
+        MathHelper.stopwatch.Stop();
+        Debug.LogFormat("Generated town with {0} BSP nodes and {1} objects in {2}ms", nodes.Count, objectContainer.childCount, (float) MathHelper.stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond);
     }
 
     // Place objects from the generated BSP
@@ -555,6 +555,10 @@ public class TownGenerator : Singleton<TownGenerator> {
         return new Vector3(x - width / 2f, 0, y - height / 2f);
     }
 
+    public Vector3 GridPointToWorldPos(GridPoint gridPoint) {
+        return new Vector3(gridPoint.x - width / 2f, 0, gridPoint.y - height / 2f);
+    }
+
     private bool checkGridPointsAreType(int x, int y, int w, int h, GridPoint.Type type) {
         if(gridPoints == null) return false;
 
@@ -630,5 +634,15 @@ public class TownGenerator : Singleton<TownGenerator> {
 
     public GridPoint[,] GetGridPoints() {
         return gridPoints;
+    }
+
+    public GridPoint[] GetGridPoints(params GridPoint.Type[] types) {
+        List<GridPoint> points = new List<GridPoint>();
+        foreach(GridPoint point in gridPoints) {
+            if(types.Contains(point.type)) {
+                points.Add(point);
+            }
+        }
+        return points.ToArray();
     }
 }

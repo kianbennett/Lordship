@@ -60,7 +60,7 @@ public class CameraController : Singleton<CameraController> {
         }
 
         if(objectToFollow != null) {
-            targetPosition = objectToFollow.transform.position;    
+            targetPosition = objectToFollow.transform.position;
         }
         transform.position = targetPosition;
         // Lerp towards camera zoom dist
