@@ -205,3 +205,45 @@ MonoBehaviour:
   handsWeightMap: {fileID: 11400000, guid: 1dff99817dc06f14a88f7a84fe94afda, type: 2}
   hatWeightMap: {fileID: 11400000, guid: 3d888ab10b34bf643a6c26caff75ef96, type: 2}
   skinColours: {fileID: 11400000, guid: 16f2081ebdd58004d9a04cbfc74d8001, type: 2}
+  firstNames:
+  - Gerry
+  - Donald
+  - Patrick
+  - Gerard
+  - Barney
+  - Ambrose
+  - Osbert
+  - Philbert
+  - Cuthbert
+  - Cyril
+  - Eva
+  - Madeline
+  - Wilda
+  - Judy
+  - Myrtle
+  - Emily
+  - Margot
+  - Ivy
+  - Mary
+  - Sandra
+  lastNames:
+  - Hodges
+  - Hanson
+  - Ramsey
+  - Clayton
+  - Windrow
+  - Hampton
+  - Covington
+  - Banks
+  - Bowen
+  - Waters
+  - Houle
+  - Marsh
+  - Wright
+  - Stone
+  - Thompson
+  - Chambers
+  - Howe
+  - Cantrell
+  - Fudge
+  - Cooper

@@ -48,6 +48,10 @@ public class AssetManager : Singleton<AssetManager> {
     [Header("Colour Palettes")]
     public ColourPalette skinColours;
 
+    [Header("Character")]
+    public string[] firstNames;
+    public string[] lastNames;
+
     // When creating a new material for a specific colour, store reference to it so it can be reused
     private Dictionary<Color, Material> colouredMaterialDictionary = new Dictionary<Color, Material>();
 

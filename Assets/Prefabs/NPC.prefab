@@ -91,7 +91,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1230735375572812981}
   - component: {fileID: 9141767775161292007}
-  - component: {fileID: 1230735375572812979}
   - component: {fileID: 1230735375572812978}
   - component: {fileID: 1230735375572812976}
   - component: {fileID: 1230735375572812977}
@@ -131,24 +130,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ad183ba1edb5d4ab1f049bb47a4819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 1230735375572812979}
---- !u!114 &1230735375572812979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1230735375572812980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fc6381ff0f16b54ebfaf9c46d80fd56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   movement: {fileID: 1230735375572812976}
   appearance: {fileID: 1230735375572812978}
   cameraTarget: {fileID: 1230735376175648457}
-  charName: Lord Testington
   selectMarker: {fileID: 1230735376301897533}
+  charName: 
+  age: 0
+  occupation: 0
+  wealth: 0
+  disposition: 0
 --- !u!114 &1230735375572812978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelAnim: {fileID: 4243732540751502580}
-  character: {fileID: 1230735375572812979}
+  character: {fileID: 9141767775161292007}
   armature: {fileID: 7548258535192590848}
   headBone: {fileID: 478835528083728691}
   headMesh: {fileID: 8026699294904514590}
@@ -200,6 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementParams: {fileID: 11400000, guid: 772517790917d99409383d87a9cf3744, type: 2}
   drawDebugLines: 1
+  debugLogMessages: 0
 --- !u!136 &1230735375572812977
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -49,10 +49,7 @@ public class LevelManager : Singleton<LevelManager> {
             }
 
             NPC npc = Instantiate(npcPrefab, TownGenerator.instance.GridPointToWorldPos(bestCandidate) + new Vector3(0.5f, 0, 0.5f), Quaternion.identity, npcContainer);
-            // Set random appearance and rotation
-            npc.character.appearance.Randomise();
-            npc.character.movement.SetLookDir(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)));
-
+            npc.Randomise();
             npcs.Add(npc);
         }
 

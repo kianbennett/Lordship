@@ -15,10 +15,13 @@ public class CharacterMovement : MonoBehaviour {
     private bool isRunning;
     private float currentSpeed;
     private Vector3 lookDir;
+    private Character characterSpeaking;
     private bool canMove = true;
 
-    // Used to add nodes once the path is created
-    // private List<Vector3> additionalPathNodes = new List<Vector3>();
+    // Follow another character
+    private Character followedCharacter;
+    // Position of followed character, if this changes by a certain amount then recalculate path
+    private Vector3 lastFollowedCharPos;
 
     private Coroutine findPathCoroutine;
 
@@ -27,6 +30,13 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     void Update() {
+        if(followedCharacter != null) {
+            float distToLastPos = Vector3.Distance(followedCharacter.transform.position, lastFollowedCharPos);
+            if(distToLastPos > 1) {
+                MoveToPoint(followedCharacter.transform.position);
+            }
+        }
+
         if (path != null && !hasReachedDestination) {
             currentSpeed = path.GetCurrentSpeed(GetMaxSpeed());
 
@@ -39,8 +49,8 @@ public class CharacterMovement : MonoBehaviour {
             transform.position += delta;
         }
         // Set transform rotation from LookDir
-        lookDir.y = 0; // Lock to xz axis
         if (lookDir != Vector3.zero) {
+            lookDir.y = 0; // Lock to xz axis
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5);
         }
 
@@ -51,8 +61,10 @@ public class CharacterMovement : MonoBehaviour {
         setHeightFromGridPoint();
     }
 
-    public void MoveToPoint(Vector3 target, bool usePathFinding = true, bool ignoreCanMove = false) {
+    public void MoveToPoint(Vector3 target, bool run = false, bool usePathFinding = true, bool ignoreCanMove = false) {
         if (!ignoreCanMove && !canMove) return;
+
+        SetRunning(run);
 
         path = null;
         hasReachedDestination = false;
@@ -69,6 +81,7 @@ public class CharacterMovement : MonoBehaviour {
     // Moves to a position a tiny bit ahead of the direction they were moving (to account for deceleration) 
     public void StopMoving() {
         if(!hasReachedDestination) MoveToPoint(transform.position + lookDir * 0.1f, false);
+        CancelFollowing();
     }
 
     public void SetPath(List<Vector3> nodes) {
@@ -129,6 +142,38 @@ public class CharacterMovement : MonoBehaviour {
             path = null;
         });
         path.SetTargetNode(1);
+    }
+
+    public void SetSpeaking(Character character) {
+        characterSpeaking = character;
+
+        if(character != null) {
+            StopMoving();
+            SetLookDir(character.transform.position - transform.position);
+        }
+    }
+
+    public void FollowCharacter(Character followedCharacter, bool run = false) {
+        this.followedCharacter = followedCharacter;
+        lastFollowedCharPos = followedCharacter.transform.position;
+        Vector3 dir = followedCharacter.transform.position - transform.position;
+        // If too close then move back a bit
+        if(dir.magnitude < 2) {
+            MoveToPoint(followedCharacter.transform.position - dir.normalized * 3, run);
+        } else {
+            MoveToPoint(followedCharacter.transform.position, run);
+        }
+    }
+
+    public void CancelFollowing() {
+        followedCharacter = null;
+    }
+
+    public float FollowedCharacterDistance() {
+        if(followedCharacter != null) {
+            return Vector3.Distance(followedCharacter.transform.position, transform.position);
+        }
+        return 0;
     }
 
     // Raise the height if walking on pavement

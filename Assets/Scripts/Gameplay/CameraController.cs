@@ -5,11 +5,14 @@ using UnityEngine.EventSystems;
 
 public class CameraController : Singleton<CameraController> {
 
+    [Header("Transforms")]
     [ReadOnly] public Transform objectToFollow;
 
     [SerializeField] private new Camera camera;
     [SerializeField] private Transform cameraContainer;
+    [SerializeField] private Transform dialogueCameraPos;
 
+    [Header("Parameters")]
     [SerializeField] private float panSpeed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float zoomSpeed;
@@ -20,7 +23,7 @@ public class CameraController : Singleton<CameraController> {
     // TargetPosition is separate from Target.position to allow for interpolated camera movement
     [SerializeField, ReadOnly] private Vector3 targetPosition;
 
-    private bool isRotating, isGrabbing;
+    private bool isRotating, isGrabbing, inDialogue;
     // private Vector3 localCameraOffset;
     private float cameraDist;
     private Vector3 worldSpaceGrab, worldSpaceGrabLast;
@@ -41,36 +44,43 @@ public class CameraController : Singleton<CameraController> {
     }
 
     void LateUpdate() {
-        // TODO: Move this to InputHandler
-        // Hold middle mouse to rotate
-        isRotating = Input.GetMouseButton(2);
-        bool pivot = Input.GetKey(KeyCode.LeftShift);
+        if(!inDialogue) {
+            // TODO: Move this to InputHandler
+            // Hold middle mouse to rotate
+            isRotating = Input.GetMouseButton(2);
+            bool pivot = Input.GetKey(KeyCode.LeftShift);
 
-        if (isRotating) {
-            float rot = Input.GetAxis("Mouse X") * rotationSpeed;
-            // TODO: RotateAround not working properly
-            if (pivot) transform.RotateAround(camera.transform.position, Vector3.up, rot);
-                else transform.Rotate(Vector3.up, rot);
-        }
+            if (isRotating) {
+                float rot = Input.GetAxis("Mouse X") * rotationSpeed;
+                // TODO: RotateAround not working properly
+                if (pivot) transform.RotateAround(camera.transform.position, Vector3.up, rot);
+                    else transform.Rotate(Vector3.up, rot);
+            }
 
-        // Only zoom if the mouse isn't over a UI element to avoid zooming when scrolling
-        if (!EventSystem.current.IsPointerOverGameObject()) {
-            float scrollDelta = -Input.mouseScrollDelta.y;
-            zoom(scrollDelta * zoomSpeed * Time.deltaTime);
-        }
+            // Only zoom if the mouse isn't over a UI element to avoid zooming when scrolling
+            if (!EventSystem.current.IsPointerOverGameObject()) {
+                float scrollDelta = -Input.mouseScrollDelta.y;
+                zoom(scrollDelta * zoomSpeed * Time.deltaTime);
+            }
 
-        if(objectToFollow != null) {
-            targetPosition = objectToFollow.transform.position;
+            // Lerp towards camera zoom dist
+            camera.transform.localPosition = new Vector3(0, 0, Mathf.Lerp(camera.transform.localPosition.z, cameraDist, Time.deltaTime * 10));
+
+            if(objectToFollow != null) {
+                targetPosition = objectToFollow.transform.position;
+            }
+            transform.position = targetPosition;
+        } else {
+            camera.transform.localPosition = dialogueCameraPos.localPosition;
+            camera.transform.localRotation = dialogueCameraPos.localRotation;
         }
-        transform.position = targetPosition;
-        // Lerp towards camera zoom dist
-        camera.transform.localPosition = new Vector3(0, 0, Mathf.Lerp(camera.transform.localPosition.z, cameraDist, Time.deltaTime * 10));
 
         // cameraContainer.position = panSmoothing ? Vector3.Lerp(cameraContainer.position, targetPosition, Time.deltaTime * panSmoothingValue) : targetPosition;
         // camera.transform.localPosition = Vector3.Lerp(camera.transform.localPosition, localCameraOffset, Time.deltaTime * 10);
     }
 
     private void move(Vector3 delta) {
+        if(inDialogue) return; // Can't move the camera when in dialogue
         targetPosition += delta;
         objectToFollow = null;
     }
@@ -140,5 +150,19 @@ public class CameraController : Singleton<CameraController> {
         bool hit = raycastPlane.Raycast(ray, out float distance);
         point = ray.GetPoint(distance);
         return hit;
+    }
+
+    public void SetInDialogue(Character characterFocus, Character characterSpeaking) {
+        transform.position = characterFocus.transform.position;
+        Quaternion rot = Quaternion.LookRotation(characterFocus.transform.position - characterSpeaking.transform.position, Vector3.up);
+        cameraContainer.rotation = rot * Quaternion.Euler(cameraContainer.rotation.eulerAngles.x, 0, 0);
+        inDialogue = true;
+    }
+
+    public void CancelDialogue() {
+        cameraContainer.localRotation = Quaternion.Euler(cameraContainer.localRotation.eulerAngles.x, 0, 0);
+        camera.transform.localPosition = Vector3.forward * cameraDist;
+        camera.transform.localRotation = Quaternion.identity;
+        inDialogue = false;
     }
 }

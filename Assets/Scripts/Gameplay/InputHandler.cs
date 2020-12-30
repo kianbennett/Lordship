@@ -65,11 +65,16 @@ public class InputHandler : Singleton<InputHandler> {
 
         // Cycle between selected characters
         if (Input.GetKeyDown(KeyCode.Space)) {
-
             if(CameraController.instance.objectToFollow == PlayerController.instance.selectedCharacter.cameraTarget) {
                 CameraController.instance.objectToFollow = null;
             } else {
                 CameraController.instance.objectToFollow = PlayerController.instance.selectedCharacter.cameraTarget;
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            if(PlayerController.instance.IsInDialogue) {
+                PlayerController.instance.ExitDialogue();
             }
         }
     }
@@ -90,7 +95,7 @@ public class InputHandler : Singleton<InputHandler> {
     private void onLeftClickRelease() {
         if (leftClickMoveDelta.magnitude == 0) {
             // PlayerController.instance.DeselectSelectedCharacter();
-            if (PlayerController.instance.selectableHovered) {
+            if (PlayerController.instance.selectableHovered && !PlayerController.instance.IsInDialogue) {
                 PlayerController.instance.selectableHovered.OnLeftClick();
             }
         }
@@ -109,12 +114,12 @@ public class InputHandler : Singleton<InputHandler> {
     private void onRightClickRelease() {
         CameraController.instance.Release();
 
-        if (rightClickMoveDelta.magnitude < minDistForDrag) {
+        if (rightClickMoveDelta.magnitude < minDistForDrag && !PlayerController.instance.IsInDialogue) {
             if (PlayerController.instance.selectableHovered) {
                 PlayerController.instance.selectableHovered.OnRightClick();
             } else {
                 if(CameraController.instance.GetMousePointOnGround(out Vector3 point)) {
-                    PlayerController.instance.MoveCharacters(point, true);
+                    PlayerController.instance.MoveCharacter(point, true);
                 }
             }
         }

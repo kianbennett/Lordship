@@ -6,7 +6,9 @@ public class TextDisplay : MonoBehaviour
 {
     public enum State { Initialising, Idle, Busy }
 
-    private TMP_Text _displayText;
+    [SerializeField] private TMP_Text _displayText;
+    [SerializeField] private RectTransform _rectTransform;
+    [SerializeField] private float _shortWaitTime = 0.1f, _longWaitTime = 0.8f;
     private string _displayString;
     private WaitForSeconds _shortWait;
     private WaitForSeconds _longWait;
@@ -17,14 +19,22 @@ public class TextDisplay : MonoBehaviour
 
     private void Awake()
     {
-        _displayText = GetComponent<TMP_Text>();
-        _shortWait = new WaitForSeconds(0.1f);
-        _longWait = new WaitForSeconds(0.8f);
+        // _displayText = GetComponent<TMP_Text>();
+        _shortWait = new WaitForSeconds(_shortWaitTime);
+        _longWait = new WaitForSeconds(_longWaitTime);
 
         _displayText.text = string.Empty;
         _state = State.Idle;
     }
 
+    private void Update() 
+    {
+        // Update panel height from text
+        float height = Mathf.Lerp(_rectTransform.sizeDelta.y, _displayText.preferredHeight + 20, Time.deltaTime * 20);
+        _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+    }
+
+    // Coroutine that adds letters one by one to _displayText
     private IEnumerator DoShowText(string text)
     {
         int currentLetter = 0;
@@ -41,18 +51,20 @@ public class TextDisplay : MonoBehaviour
         _state = State.Idle;
     }
 
+    // Coroutine that adds blinking cursor to the end of _displayString when requiring input
     private IEnumerator DoAwaitingInput()
     {
         bool on = true;
 
         while (enabled)
         {
-            _displayText.text = string.Format( "{0}> {1}", _displayString, ( on ? "|" : " " ));
+            _displayText.text = string.Format("{0}> {1}", _displayString, ( on ? "|" : " "));
             on = !on;
             yield return _longWait;
         }
     }
 
+    // Coroutine that deletes the text backwards
     private IEnumerator DoClearText()
     {
         int currentLetter = 0;
@@ -80,6 +92,7 @@ public class TextDisplay : MonoBehaviour
         _state = State.Idle;
     }
 
+    // If the state is idle then start the coroutine that shows the text one letter at a time
     public void Display(string text)
     {
         if (_state == State.Idle)
@@ -90,6 +103,7 @@ public class TextDisplay : MonoBehaviour
         }
     }
 
+    // Once the text has finished scrolling, start the coroutine that shows the blinking cursor
     public void ShowWaitingForInput()
     {
         if (_state == State.Idle)
@@ -99,13 +113,15 @@ public class TextDisplay : MonoBehaviour
         }
     }
 
+    // Start the coroutine that deletes the text backwards
     public void Clear()
     {
-        if (_state == State.Idle)
-        {
-            StopAllCoroutines();
-            _state = State.Busy;
-            StartCoroutine(DoClearText());
-        }
+        // if (_state == State.Idle)
+        // {
+        //     StopAllCoroutines();
+        //     _state = State.Busy;
+        //     StartCoroutine(DoClearText());
+        // }
+        _displayText.text = "";
     }
 }

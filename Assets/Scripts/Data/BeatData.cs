@@ -12,4 +12,10 @@ public class BeatData
     public List<ChoiceData> Decision { get { return _choices; } }
     public string DisplayText { get { return _text; } }
     public int ID { get { return _id; } }
+
+    public BeatData(int id, string text, List<ChoiceData> choices) {
+        _id = id;
+        _text = text;
+        _choices = choices;
+    }
 }

@@ -13,7 +13,6 @@ public class Character : SelectableObject {
     public CharacterAppearance appearance;
     public Transform cameraTarget;
 
-    [SerializeField] private string charName;
     [SerializeField] private GameObject selectMarker;
 
     protected override void Awake() {
