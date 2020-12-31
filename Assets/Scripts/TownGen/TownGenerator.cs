@@ -81,6 +81,8 @@ public class TownGenerator : Singleton<TownGenerator> {
     private List<BSPNode> nodes;
     private GridPoint[,] gridPoints;
 
+    private List<Light> lampLights;
+
     protected override void Awake() {
         base.Awake();
         Generate();
@@ -230,6 +232,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         // Scale base plane correctly
         basePlane.localScale = new Vector3(width / 10f, 1, height / 10f);
 
+        lampLights = new List<Light>();
+
         for(int i = 0; i < nodes.Count; i++) {
             BSPNode node = nodes[i];
             int x = (int) (node.x - width / 2f + borderSize);
@@ -238,23 +242,25 @@ public class TownGenerator : Singleton<TownGenerator> {
             // Add roads
             if(node.y != 0) {
                 // TODO: Add function that adds a road and sets the grid types all in one
-                GameObject roadH = Instantiate(roadPrefab, new Vector3(x + node.width / 2f, 0.01f, y), Quaternion.Euler(90, 0, 0), objectContainer);
+                // Roads and pavements are raised by a small random value to avoid graphical glitches
+                // when point light interacts with overlapping geometry = needs changing
+                GameObject roadH = Instantiate(roadPrefab, new Vector3(x + node.width / 2f, 0.01f + Random.value * 0.001f, y), Quaternion.Euler(90, 0, 0), objectContainer);
                 roadH.transform.localScale = new Vector3(node.width, 2 /*Random.Range(1.5f, 2.5f)*/, 1);
                 setGridPointsFromRect(node.x + borderSize, node.y + borderSize - 1, node.width, 2, GridPoint.Type.Path);
 
             }
             if(node.x != 0) {
-                GameObject roadV = Instantiate(roadPrefab, new Vector3(x, 0.01f, y + node.height / 2f), Quaternion.Euler(90, 0, 0), objectContainer);
+                GameObject roadV = Instantiate(roadPrefab, new Vector3(x, 0.01f + Random.value * 0.001f, y + node.height / 2f), Quaternion.Euler(90, 0, 0), objectContainer);
                 roadV.transform.localScale = new Vector3(2, node.height, 1);
                 setGridPointsFromRect(node.x + borderSize - 1, node.y + borderSize, 2, node.height, GridPoint.Type.Path);
             }
 
             // Add pavements
             float pavementWidth = 0.8f;
-            GameObject pavementL = Instantiate(pavementPrefab, new Vector3(x + 1 + pavementWidth / 2f, 0, y + node.height / 2f), Quaternion.identity, objectContainer);
-            GameObject pavementR = Instantiate(pavementPrefab, new Vector3(x + node.width - 1 - pavementWidth / 2f, 0, y + node.height / 2f), Quaternion.identity, objectContainer);
-            GameObject pavementT = Instantiate(pavementPrefab, new Vector3(x + node.width / 2f, 0, y + node.height - 1 - pavementWidth / 2f), Quaternion.identity, objectContainer);
-            GameObject pavementB = Instantiate(pavementPrefab, new Vector3(x + node.width / 2f, 0, y + 1 + pavementWidth / 2f), Quaternion.identity, objectContainer);
+            GameObject pavementL = Instantiate(pavementPrefab, new Vector3(x + 1 + pavementWidth / 2f, Random.value * 0.001f, y + node.height / 2f), Quaternion.identity, objectContainer);
+            GameObject pavementR = Instantiate(pavementPrefab, new Vector3(x + node.width - 1 - pavementWidth / 2f, Random.value * 0.001f, y + node.height / 2f), Quaternion.identity, objectContainer);
+            GameObject pavementT = Instantiate(pavementPrefab, new Vector3(x + node.width / 2f, Random.value * 0.001f, y + node.height - 1 - pavementWidth / 2f), Quaternion.identity, objectContainer);
+            GameObject pavementB = Instantiate(pavementPrefab, new Vector3(x + node.width / 2f, Random.value * 0.001f, y + 1 + pavementWidth / 2f), Quaternion.identity, objectContainer);
             pavementL.transform.localScale = pavementR.transform.localScale = new Vector3(pavementWidth, pavementL.transform.localScale.y, node.height - 2);
             pavementT.transform.localScale = pavementB.transform.localScale = new Vector3(node.width - 2, pavementL.transform.localScale.y, pavementWidth);
             setGridPointsFromRect(node.x + borderSize + 1, node.y + borderSize + 1, 1, node.height - 2, GridPoint.Type.Pavement);
@@ -285,6 +291,7 @@ public class TownGenerator : Singleton<TownGenerator> {
             Vector3 pos = new Vector3(x + indent + (corner > 1 ? node.width - indent * 2 : 0), 0, y + indent + (corner == 1 || corner == 2 ? node.height - indent * 2 : 0));
             GameObject lamppost = Instantiate(lamppostPrefab, pos, Quaternion.Euler(0, -135 + 90 * corner, 0), objectContainer);
             setGridPointFromWorldPos(pos, GridPoint.Type.Obstacle);
+            lampLights.Add(lamppost.GetComponentInChildren<Light>(true));
 
             // Add benches
             // int benchCount = Random.Range(0, 3);
@@ -313,10 +320,10 @@ public class TownGenerator : Singleton<TownGenerator> {
         int roadAreaHeight = height - borderSize * 2;
 
         // Add border roads
-        GameObject roadL = Instantiate(roadPrefab, new Vector3(-roadAreaWidth / 2f, 0.01f, 0), Quaternion.Euler(90, 0, 0), objectContainer);
-        GameObject roadR = Instantiate(roadPrefab, new Vector3(roadAreaWidth / 2f, 0.01f, 0), Quaternion.Euler(90, 0, 0), objectContainer);
-        GameObject roadT = Instantiate(roadPrefab, new Vector3(0, 0.01f, roadAreaHeight / 2), Quaternion.Euler(90, 0, 0), objectContainer);
-        GameObject roadB = Instantiate(roadPrefab, new Vector3(0, 0.01f, -roadAreaHeight / 2), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadL = Instantiate(roadPrefab, new Vector3(-roadAreaWidth / 2f, 0.01f + Random.value * 0.001f, 0), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadR = Instantiate(roadPrefab, new Vector3(roadAreaWidth / 2f, 0.01f + Random.value * 0.001f, 0), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadT = Instantiate(roadPrefab, new Vector3(0, 0.01f + Random.value * 0.001f, roadAreaHeight / 2), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadB = Instantiate(roadPrefab, new Vector3(0, 0.01f + Random.value * 0.001f, -roadAreaHeight / 2), Quaternion.Euler(90, 0, 0), objectContainer);
         roadL.transform.localScale = roadR.transform.localScale = new Vector3(2, roadAreaHeight + 2, 1);
         roadT.transform.localScale = roadB.transform.localScale = new Vector3(roadAreaWidth + 2, 2, 1);
         setGridPointsFromRect(borderSize - 1, borderSize - 1, 2, roadAreaHeight + 2, GridPoint.Type.Path);
@@ -376,8 +383,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         // Add roads from the gates
-        GameObject roadGate1 = Instantiate(roadPrefab, new Vector3((width / 2f - borderSize / 2f) * (gate1Left ? -1 : 1), 0.01f, gate1Pos), Quaternion.Euler(90, 0, 0), objectContainer);
-        GameObject roadGate2 = Instantiate(roadPrefab, new Vector3(gate2Pos, 0.01f, (height / 2f - borderSize / 2f) * (gate2Bottom ? -1 : 1)), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadGate1 = Instantiate(roadPrefab, new Vector3((width / 2f - borderSize / 2f) * (gate1Left ? -1 : 1), 0.01f + Random.value * 0.001f, gate1Pos), Quaternion.Euler(90, 0, 0), objectContainer);
+        GameObject roadGate2 = Instantiate(roadPrefab, new Vector3(gate2Pos, 0.01f + Random.value * 0.001f, (height / 2f - borderSize / 2f) * (gate2Bottom ? -1 : 1)), Quaternion.Euler(90, 0, 0), objectContainer);
         roadGate1.transform.localScale = new Vector3(borderSize, 4, 1);
         roadGate2.transform.localScale = new Vector3(4, borderSize, 1);
         setGridPointsFromRect(gate1Left ? 0 : width - borderSize, gate1Pos + height / 2 - 2, borderSize + 1, 4, GridPoint.Type.Path);
@@ -395,6 +402,7 @@ public class TownGenerator : Singleton<TownGenerator> {
             Vector3 pos = new Vector3(-roadAreaWidth / 2f - indent + (i > 1 ? roadAreaWidth + indent * 2 : 0), 0, -roadAreaHeight / 2f - indent + (i == 1 || i == 2 ? roadAreaHeight + indent * 2 : 0));
             GameObject lamppost = Instantiate(lamppostPrefab, pos, Quaternion.Euler(0, 45 + 90 * i, 0), objectContainer);
             setGridPointFromWorldPos(pos, GridPoint.Type.Obstacle);
+            lampLights.Add(lamppost.GetComponentInChildren<Light>(true));
         }
 
         // Add trees
@@ -644,5 +652,9 @@ public class TownGenerator : Singleton<TownGenerator> {
             }
         }
         return points.ToArray();
+    }
+
+    public List<Light> getLampLights() {
+        return lampLights;
     }
 }

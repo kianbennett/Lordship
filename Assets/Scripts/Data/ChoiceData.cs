@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ChoiceType {
@@ -9,10 +10,16 @@ public enum ChoiceType {
 public class ChoiceData
 {
     [SerializeField] private string _text;
+    [SerializeField] private List<string> _randomTextList;
+    [SerializeField] private DefineType _textType;
     [SerializeField] private int _beatId;
-    [SerializeField] private ChoiceType _type; // Added
+    [SerializeField] private ChoiceType _type;
 
-    public string DisplayText { get { return _text; } }
+    // If the type is set to random then pick a random value from _randomTextList, otherwise use _text
+    public string DisplayText { get { 
+        if(_textType == DefineType.Predefined) return _text;
+            else return _randomTextList[UnityEngine.Random.Range(0, _randomTextList.Count)];
+    } }
     public int NextID { get { return _beatId; } }
     public ChoiceType Type { get { return _type; }}
 

@@ -8,7 +8,7 @@ public class CameraController : Singleton<CameraController> {
     [Header("Transforms")]
     [ReadOnly] public Transform objectToFollow;
 
-    [SerializeField] private new Camera camera;
+    public Camera camera;
     [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform dialogueCameraPos;
 

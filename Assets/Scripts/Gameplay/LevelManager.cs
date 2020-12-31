@@ -7,10 +7,13 @@ public class LevelManager : Singleton<LevelManager> {
     [SerializeField] private int npcsMin, npcsMax;
     [SerializeField] private NPC npcPrefab;
     [SerializeField] private Transform npcContainer;
+    [SerializeField] private DayNightCycle dayNightCycle;
+    [SerializeField] private float dayDuration;
 
     private List<NPC> npcs;
     // Need a reference to all grid points of type Path or Pavement to spawn NPCs on and to set where they walk to
     private GridPoint[] roadGridPoints; 
+    private float timeElapsed;
 
     protected override void Awake() {
         base.Awake();
@@ -19,6 +22,13 @@ public class LevelManager : Singleton<LevelManager> {
     // Spawn NPCs in Start after grid points get set in TownGenerator's Awake
     void Start() {
         spawnNpcs();
+    }
+
+    void Update() {
+        timeElapsed += Time.deltaTime; 
+        // For now wrap over to 0, this wouldn't happen in an actual level as the day would end
+        // if(timeElapsed > dayDuration) timeElapsed = 0;
+        dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
     }
 
     // Should probably move this to TownGenerator
