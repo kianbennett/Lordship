@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6c81477d8946a54f96e9109ee8d6ab1, type: 3}
+  m_Name: Rumours
+  m_EditorClassIdentifier: 
+  _startPoints:
+  - "{name}\u2019s apples haven\u2019t been selling that great lately. Hopefully
+    sales\u2019ll pick up soon!\r"
+  - "Don\u2019t tell anyone but I heard {name} just LOVES winter berries, can\u2019t
+    get enough of \u2018em!\r"
+  - "{name} is so upset that this year\u2019s summer fete has been cancelled, they
+    were so excited for it."
+  _midPoints:
+  - "If you vote for me I\u2019ll lower apple tax!\r"
+  - "If I get elected I\u2019ll be sure to import lots more winter berries.\r"
+  - "A vote for me is a vote to bring back the summer fete!\r"
+  _endPoints:
+  - "Oh that would be wonderful! You\u2019ve got my vote!"
+  - Oh that would be lust lovely!
+  - "Oh I\u2019ve missed that fete! I\u2019d so love to see it return."

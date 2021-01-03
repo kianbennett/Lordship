@@ -48,6 +48,7 @@ public class AssetManager : Singleton<AssetManager> {
     [Header("Colour Palettes")]
     public ColourPalette skinColours;
 
+    // Random names from https://blog.reedsy.com/character-name-generator/language/english/
     [Header("Character")]
     public string[] firstNames;
     public string[] lastNames;

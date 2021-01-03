@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GreetingsNeutral
   m_EditorClassIdentifier: 
   textList:
-  - "Pretty good weather today, isn\u2019t it?"
   - Who are you again?
+  - Pretty good weather we're having today, isn't it?

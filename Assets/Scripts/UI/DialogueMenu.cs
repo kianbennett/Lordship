@@ -27,15 +27,6 @@ public class DialogueMenu : MonoBehaviour {
     private float choicePanelHeight;
 
     void Awake() {
-        ShowChoicesPanel(
-            new ChoiceData("Flatter...", ChoiceType.Flatter),
-            new ChoiceData("Threaten...\nasd", ChoiceType.Threaten),
-            new ChoiceData("Bribe...", ChoiceType.Bribe),
-            new ChoiceData("Rumours\nasd", ChoiceType.Rumours),
-            new ChoiceData("Goodbye\nasd", ChoiceType.Goodbye)
-        );
-
-        SetActive(true);
     }
 
     void Update() {
@@ -44,16 +35,17 @@ public class DialogueMenu : MonoBehaviour {
         float y = Mathf.SmoothDamp(choicesPanel.anchoredPosition.y, isActive && isChoicesActive ? choicePanelHeight : -15, ref velocity, 0.05f, 3000f);
         choicesPanel.anchoredPosition = new Vector2(choicesPanel.anchoredPosition.x, y);
 
-        if(Input.GetKeyDown(KeyCode.Escape)) {
-            SetActive(!isActive);
-        }
+        // if(Input.GetKeyDown(KeyCode.Escape)) {
+        //     SetActive(!isActive);
+        // }
     }
 
     public void SetActive(bool active) {
         isActive = active;
         if(active) gameObject.SetActive(true);
-        npcSpeechAnim.SetTrigger(active ? "Appear" : "Hide");
-        npcInfoAnim.SetTrigger(active ? "Appear" : "Hide");
+        HideAllImmediate();
+        // npcSpeechAnim.SetTrigger(active ? "Appear" : "Hide");
+        // npcInfoAnim.SetTrigger(active ? "Appear" : "Hide");
     }
 
     public void ShowChoicesPanel(params ChoiceData[] choices) {
@@ -63,14 +55,19 @@ public class DialogueMenu : MonoBehaviour {
         }
         choiceButtons = new List<DialogueChoiceButton>();
 
-        float buttonY = -18;
+        float buttonY = -15;
         for(int i = 0; i < choices.Length; i++) {
-            DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity, choicesPanel);
+            DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity);
+            button.transform.SetParent(choicesPanel, false);
             button.SetValues(i, choices[i]);
             button.transform.localPosition = Vector3.up * buttonY;
+            // button.GetComponent<RectTransform>().localPosition = Vector2.zero;
+            // Debug.Log(choicesPanel.anchoredPosition);
             buttonY -= button.GetHeight() + 10;
+            choiceButtons.Add(button);
         }
 
+        choicesPanel.gameObject.SetActive(true);
         choicesPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, -buttonY + 50);
         choicePanelHeight = -buttonY + 20;
 
@@ -82,6 +79,7 @@ public class DialogueMenu : MonoBehaviour {
     }
 
     public void ShowNpcSpeech(string text) {
+        npcSpeechAnim.gameObject.SetActive(true);
         npcSpeechAnim.SetTrigger("Appear");
         npcSpeechText.Display(text);
     }
@@ -91,6 +89,7 @@ public class DialogueMenu : MonoBehaviour {
     }
 
     public void ShowNpcInfo(NPC npc) {
+        npcInfoAnim.gameObject.SetActive(true);
         npcInfoAnim.SetTrigger("Appear");
         textNpcName.text = npc.charName;
         textNpcAge.text = npc.GetAgeString();
@@ -109,17 +108,23 @@ public class DialogueMenu : MonoBehaviour {
         HideChoicesPanel();
     }
 
-    public Color GetDialogueChoiceColour(ChoiceType type) {
+    public void HideAllImmediate() {
+        npcSpeechAnim.gameObject.SetActive(false);
+        npcInfoAnim.gameObject.SetActive(false);
+        choicesPanel.gameObject.SetActive(false);
+    }
+
+    public Color GetDialogueChoiceColour(DialogueType type) {
         switch(type) {
-            case ChoiceType.Flatter:
+            case DialogueType.Flatter:
                 return flatterColour;
-            case ChoiceType.Threaten:
+            case DialogueType.Threaten:
                 return threatenColour;
-            case ChoiceType.Bribe:
+            case DialogueType.Bribe:
                 return bribeColour;
-            case ChoiceType.Rumours:
+            case DialogueType.Rumours:
                 return rumoursColour;
-            case ChoiceType.Goodbye:
+            case DialogueType.Goodbye:
                 return goodbyeColour;
         }
         return Color.white;

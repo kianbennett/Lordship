@@ -72,45 +72,38 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         }
     }
 
-    private void DisplayBeat(int id)
+    public void DisplayBeat(int id)
     {
         BeatData data = _data.GetBeatById(id);
         StartCoroutine(DoDisplay(data));
         _currentBeat = data;
     }
 
-    public void DisplayInitialBeat() {
-        HUD.instance.dialogueMenu.SetActive(true);
-
-        BeatData data = new BeatData(0, "Random greeting", new List<ChoiceData>() {
-            new ChoiceData("Flatter...", ChoiceType.Flatter),
-            new ChoiceData("Threaten...", ChoiceType.Threaten),
-            new ChoiceData("Bribe...", ChoiceType.Bribe),
-            new ChoiceData("Rumours", ChoiceType.Rumours),
-            new ChoiceData("Goodbye", ChoiceType.Goodbye),
-        });
-        DoDisplay(data);
-    }
-
     // Starts coroutines in order to scroll beat text and choices on the screen
     private IEnumerator DoDisplay(BeatData data)
     {
+        HUD.instance.dialogueMenu.SetActive(true);
+        NPC npcSpeaking = PlayerController.instance.npcSpeaking;
+
         TextDisplay npcSpeech = HUD.instance.dialogueMenu.NpcSpeechText;
         npcSpeech.Clear();
+
+        yield return new WaitForSeconds(0.3f);
 
         while (npcSpeech.IsBusy)
         {
             yield return null;
         }
 
-        npcSpeech.Display(data.DisplayText);
+        HUD.instance.dialogueMenu.ShowNpcSpeech(data.GetDisplayText(npcSpeaking.disposition));
+        // npcSpeech.Display(data.GetDisplayText(npcSpeaking.disposition));
 
         while(npcSpeech.IsBusy)
         {
             yield return null;
         }
 
-        HUD.instance.dialogueMenu.ShowNpcInfo(PlayerController.instance.npcSpeaking);
+        HUD.instance.dialogueMenu.ShowNpcInfo(npcSpeaking);
         // yield return _wait;
         HUD.instance.dialogueMenu.ShowChoicesPanel(data.Decision.ToArray());
 

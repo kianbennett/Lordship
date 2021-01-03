@@ -15,6 +15,10 @@ public class LevelManager : Singleton<LevelManager> {
     private GridPoint[] roadGridPoints; 
     private float timeElapsed;
 
+    private List<string> usedNpcNames = new List<string>();
+
+    public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
+
     protected override void Awake() {
         base.Awake();
     }
@@ -27,7 +31,7 @@ public class LevelManager : Singleton<LevelManager> {
     void Update() {
         timeElapsed += Time.deltaTime; 
         // For now wrap over to 0, this wouldn't happen in an actual level as the day would end
-        // if(timeElapsed > dayDuration) timeElapsed = 0;
+        if(timeElapsed > dayDuration) timeElapsed = 0;
         dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
     }
 

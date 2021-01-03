@@ -2,6 +2,7 @@
 Assembly-CSharp.csproj
 Assembly-CSharp.csproj.user
 Assembly-CSharp-Editor.csproj
+Build/
 Library/
 Logs/
 Temp/

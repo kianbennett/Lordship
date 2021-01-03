@@ -2,28 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ChoiceType {
-    Flatter, Threaten, Bribe, Rumours, Goodbye
+public enum DialogueType {
+    Greeting, Flatter, Threaten, Bribe, Rumours, Goodbye
+}
+
+public enum ChoiceTextType {
+    Predefined, RandomFlatter, RandomThreaten, RandomBribe
 }
 
 [Serializable]
 public class ChoiceData
 {
     [SerializeField] private string _text;
-    [SerializeField] private List<string> _randomTextList;
-    [SerializeField] private DefineType _textType;
+    [SerializeField] private TextList _textList;
+    [SerializeField] private ChoiceTextType _textType;
     [SerializeField] private int _beatId;
-    [SerializeField] private ChoiceType _type;
+    [SerializeField] private DialogueType _type;
 
     // If the type is set to random then pick a random value from _randomTextList, otherwise use _text
     public string DisplayText { get { 
-        if(_textType == DefineType.Predefined) return _text;
-            else return _randomTextList[UnityEngine.Random.Range(0, _randomTextList.Count)];
+        if(_textType == ChoiceTextType.Predefined) return _text;
+            else return _textList.RandomText();
     } }
     public int NextID { get { return _beatId; } }
-    public ChoiceType Type { get { return _type; }}
+    public DialogueType Type { get { return _type; }}
 
-    public ChoiceData(string text, ChoiceType type) {
+    public ChoiceData(string text, DialogueType type) {
         _text = text;
         _type = type;
     }

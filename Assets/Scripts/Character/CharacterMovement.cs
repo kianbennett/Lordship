@@ -11,6 +11,7 @@ public class CharacterMovement : MonoBehaviour {
     private Character character;
 
     private CharacterMovementPath path;
+    private bool searchingForPath;
     private bool hasReachedDestination;
     private bool isRunning;
     private float currentSpeed;
@@ -30,14 +31,23 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     void Update() {
+        // If following a character check their current position - if they moved more than a certain distance
+        // then move to their new position
         if(followedCharacter != null) {
             float distToLastPos = Vector3.Distance(followedCharacter.transform.position, lastFollowedCharPos);
             if(distToLastPos > 1) {
-                MoveToPoint(followedCharacter.transform.position);
+                MoveToPoint(followedCharacter.transform.position, true);
+                lastFollowedCharPos = followedCharacter.transform.position;
             }
         }
 
+        if(characterSpeaking != null) {
+            lookDir = characterSpeaking.transform.position - transform.position;
+        }
+
         if (path != null && !hasReachedDestination) {
+            if(drawDebugLines) path.DrawDebugLines();
+
             currentSpeed = path.GetCurrentSpeed(GetMaxSpeed());
 
             if(path.DistFromLastWaypoint(transform.position) > path.DistToNextWaypoint()) {
@@ -54,10 +64,6 @@ public class CharacterMovement : MonoBehaviour {
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5);
         }
 
-        if(path != null && drawDebugLines) {
-            path.DrawDebugLines();
-        }
-
         setHeightFromGridPoint();
     }
 
@@ -71,7 +77,7 @@ public class CharacterMovement : MonoBehaviour {
         // additionalPathNodes.Clear();
         if (usePathFinding) {
             // Start finding path asynchronously, call SetPath when complete
-            findPathAsync(TownGenerator.instance.GetGridPoints(), transform.position, target, SetPath);
+            findPathAsync(TownGenerator.instance.GridPoints, transform.position, target);
         } else {
             // Set a path on a straight line between current position and target
             createPath(new List<Vector3>() { transform.position, target });
@@ -79,36 +85,39 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     // Moves to a position a tiny bit ahead of the direction they were moving (to account for deceleration) 
-    public void StopMoving() {
-        if(!hasReachedDestination) MoveToPoint(transform.position + lookDir * 0.1f, false);
+    public void StopMoving(Vector3 lookDir = default) {
+        if(lookDir == default) lookDir = this.lookDir;
+        if(!hasReachedDestination) MoveToPoint(transform.position + lookDir * 0.1f, false, false);
         CancelFollowing();
     }
 
-    public void SetPath(List<Vector3> nodes) {
-        if (nodes == null) {
-            if(debugLogMessages) Debug.Log("Character path is null!");
-            return;
-        }
-        if(debugLogMessages) Debug.Log("Character path found!");
-        createPath(nodes);
-    }
-
-    // public void AddToPath(params Vector3[] nodes) {
-    //     if(path != null) path.AddToPath(nodes);
-    //         else additionalPathNodes.AddRange(nodes);
+    // private void setPath(List<Vector3> nodes) {
+    //     if (nodes == null) {
+    //         if(debugLogMessages) Debug.Log("Character path is null!");
+    //         return;
+    //     }
+    //     if(debugLogMessages) Debug.Log("Character path found!");
+        
+    //     searchingForPath = false;
+    //     createPath(nodes);
     // }
 
-    private void findPathAsync(GridPoint[,] gridPoints, Vector3 start, Vector3 destination, System.Action<List<Vector3>> onPathFound) {
-        // If already finding a path then stop it and find a new one to avoid overlapping
-        if(findPathCoroutine != null) StopCoroutine(findPathCoroutine);
-        findPathCoroutine = StartCoroutine(findPathIEnum(gridPoints, start, destination, onPathFound));
-    }
+    private void findPathAsync(GridPoint[,] gridPoints, Vector3 start, Vector3 destination) {
+        searchingForPath = true;
 
-    private IEnumerator findPathIEnum(GridPoint[,] gridPoints, Vector3 start, Vector3 destination, System.Action<List<Vector3>> onPathFound) {
         GridPoint gridPointStart = TownGenerator.instance.GridPointFromWorldPos(start);
         GridPoint gridPointEnd = TownGenerator.instance.GridPointFromWorldPos(destination);
-        List<GridPoint> points = Pathfinder.instance.FindPath(gridPoints, gridPointStart, gridPointEnd);
+        // If already finding a path then stop it and find a new one to avoid overlapping
+        if(findPathCoroutine != null) StopCoroutine(findPathCoroutine);
+        findPathCoroutine = StartCoroutine(
+            Pathfinder.instance.FindPath(gridPoints, gridPointStart, gridPointEnd, debugLogMessages, 
+            delegate(List<GridPoint> points) {
+                onPathComplete(start, destination, points);
+            })
+        );
+    }
 
+    private void onPathComplete(Vector3 start, Vector3 destination, List<GridPoint> points) {
         List<Vector3> path = new List<Vector3>();
 
         if(points != null) {
@@ -122,13 +131,13 @@ public class CharacterMovement : MonoBehaviour {
             path.AddRange(points.Select(o => TownGenerator.instance.GridPointToWorldPos(o.x, o.y) + new Vector3(0.5f, 0, 0.5f)));
             path.Add(destination);
         }
-
+        
+        // Smooth and clean path
         path = Pathfinder.SmoothPath(path);
         Pathfinder.RemoveRedundantNodes(path);
 
-        onPathFound(path);
-
-        yield return null;
+        searchingForPath = false;
+        createPath(path);
     }
 
     private void createPath(List<Vector3> nodes) {
@@ -147,22 +156,22 @@ public class CharacterMovement : MonoBehaviour {
     public void SetSpeaking(Character character) {
         characterSpeaking = character;
 
-        if(character != null) {
+        if(characterSpeaking != null) {
+            // Vector3 dir = characterSpeaking.transform.position - transform.position;
+            // if(dir.magnitude < 2) {
+            //     MoveToPoint(characterSpeaking.transform.position + dir.normalized * 2, false);
+            //     CancelFollowing();
+            // } else {
+                // StopMoving();
+            // }
             StopMoving();
-            SetLookDir(character.transform.position - transform.position);
         }
     }
 
     public void FollowCharacter(Character followedCharacter, bool run = false) {
         this.followedCharacter = followedCharacter;
         lastFollowedCharPos = followedCharacter.transform.position;
-        Vector3 dir = followedCharacter.transform.position - transform.position;
-        // If too close then move back a bit
-        if(dir.magnitude < 2) {
-            MoveToPoint(followedCharacter.transform.position - dir.normalized * 3, run);
-        } else {
-            MoveToPoint(followedCharacter.transform.position, run);
-        }
+        MoveToPoint(followedCharacter.transform.position, run);
     }
 
     public void CancelFollowing() {
@@ -188,6 +197,10 @@ public class CharacterMovement : MonoBehaviour {
         return path != null;
     }
 
+    public bool HasTarget() {
+        return path != null || searchingForPath;
+    }
+
     public CharacterMovementPath GetPath() {
         return path;
     }
@@ -210,6 +223,10 @@ public class CharacterMovement : MonoBehaviour {
 
     public bool HasReachedDestination() {
         return hasReachedDestination;
+    }
+
+    public bool IsSpeaking() {
+        return characterSpeaking;
     }
 
     void OnDrawGizmos() {

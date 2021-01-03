@@ -42,6 +42,15 @@ public class DayNightCycle : MonoBehaviour {
             RenderSettings.skybox = skyboxNight;
             RenderSettings.ambientLight = ambientNight;
         }
+
+        // Set the x rotation of directional light to give the effect of the sun setting and the moon rising
+        Vector3 lightRot = dayLight.transform.rotation.eulerAngles;
+        if(progress > 0.5f && progress < 0.7f) {
+            lightRot.x = 50 - 15 * (progress - 0.5f) / 0.2f;
+        } else if(progress > 0.7f && progress < 0.8f) {
+            lightRot.x = 35 + 15 * (progress - 0.7f) / 0.1f;
+        }
+        dayLight.transform.rotation = Quaternion.Euler(lightRot);
     }
 
     // Set the strengths of each lamp light and deactivate if outside camera bounds

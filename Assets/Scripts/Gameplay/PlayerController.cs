@@ -23,6 +23,7 @@ public class PlayerController : Singleton<PlayerController> {
     }
 
     void Update() {
+        // If following an npc and they get within a certain range, start dialogue
         if(npcFollowing != null && playerCharacter.movement.FollowedCharacterDistance() < 3) {
             startDialogue();
         }
@@ -73,24 +74,25 @@ public class PlayerController : Singleton<PlayerController> {
 
     private void startDialogue() {
         npcSpeaking = npcFollowing;
+        CancelFollowing();
         playerCharacter.movement.SetSpeaking(npcSpeaking);
         npcSpeaking.movement.SetSpeaking(playerCharacter);
-        CancelFollowing();
-        HUD.instance.screenFader.FadeOut(delegate {
-            HUD.instance.screenFader.FadeIn();
+        // HUD.instance.screenFader.FadeOut(delegate {
+        //     HUD.instance.screenFader.FadeIn();
             CameraController.instance.SetInDialogue(npcSpeaking, playerCharacter);    
-            DialogueSystem.instance.DisplayInitialBeat();
-        });
+            DialogueSystem.instance.DisplayBeat(1);
+        // });
     }
 
     public void ExitDialogue() {
         NPC speaking = npcSpeaking;
         npcSpeaking = null;
-        HUD.instance.screenFader.FadeOut(delegate {
-            HUD.instance.screenFader.FadeIn();
+        HUD.instance.dialogueMenu.HideAll();
+        // HUD.instance.screenFader.FadeOut(delegate {
+            // HUD.instance.screenFader.FadeIn();
             speaking.movement.SetSpeaking(null);
             playerCharacter.movement.SetSpeaking(null);
             CameraController.instance.CancelDialogue();
-        });
+        // });
     }
 }

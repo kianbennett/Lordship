@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum CharacterAge {
     Youthful, MiddleAged, Elderly
@@ -17,11 +18,35 @@ public enum CharacterOccupation {
 public class NPC : Character {
 
     [Header("Attributes")]
-    [ReadOnly] public string charName;
-    [ReadOnly] public CharacterAge age;
-    [ReadOnly] public CharacterOccupation occupation;
-    [ReadOnly] public CharacterWealth wealth;
-    [ReadOnly] public int disposition; // 0 to 100
+    public string charName;
+    public CharacterAge age;
+    public CharacterOccupation occupation;
+    public CharacterWealth wealth;
+    public int disposition; // 0 to 100
+
+    [Header("Movement")]
+    public bool wander;
+    private float pauseTimer;
+
+    protected override void Awake() {
+        base.Awake();
+
+        // Give random initial delay so loads of paths don't get calculated all at once
+        pauseTimer = Random.Range(0f, 3f);
+    }
+
+    protected override void Update() {
+        base.Update();
+
+        if(wander && !movement.HasTarget() && !movement.IsSpeaking() && pauseTimer <= 0) {
+            GridPoint[] roadGridPoints = LevelManager.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
+            GridPoint target = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
+            movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target));
+            bool pause = Random.value > 0.75f; // 75% chance to pause after reaching target
+            pauseTimer = pause ? Random.Range(1f, 5f) : 0;
+        }
+        if(pauseTimer > 0) pauseTimer -= Time.deltaTime;
+    }
 
     // Assign random attributes
     public void Randomise() {

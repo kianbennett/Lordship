@@ -13,21 +13,12 @@ public class GridPoint {
 
     // Pathfinding data
     public List<GridPoint> connections;
-    // public float global;
-    // public float local;
-    public float distFromStart;
-    public float heuristic;
-    public GridPoint parent;
-    public bool visited;
     public float cost {
         get { 
             if(type == Type.Grass) return 6;
             if(type == Type.Path) return 2;
             return 0;
         }
-    }
-    public float score {
-        get { return distFromStart + heuristic + cost; }
     }
 
     public GridPoint(int x, int y, Type type) {
@@ -83,6 +74,8 @@ public class TownGenerator : Singleton<TownGenerator> {
 
     private List<Light> lampLights;
 
+    public GridPoint[,] GridPoints { get { return gridPoints; }}
+
     protected override void Awake() {
         base.Awake();
         Generate();
@@ -116,6 +109,7 @@ public class TownGenerator : Singleton<TownGenerator> {
                     } else {
                         Color color = Color.green;
                         if(gridPoints[i, j].type == GridPoint.Type.Path) color = Color.blue;
+                        if(gridPoints[i, j].type == GridPoint.Type.Pavement) color = Color.cyan;
                         if(gridPoints[i, j].type == GridPoint.Type.Obstacle) color = Color.red;
                         if(gridPoints[i, j].type == GridPoint.Type.Grass) continue;
                         Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), color);
@@ -638,10 +632,6 @@ public class TownGenerator : Singleton<TownGenerator> {
             lastDir = dir;
             prevPoint = path[i];
         }
-    }
-
-    public GridPoint[,] GetGridPoints() {
-        return gridPoints;
     }
 
     public GridPoint[] GetGridPoints(params GridPoint.Type[] types) {

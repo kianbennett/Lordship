@@ -8,7 +8,7 @@ public class CameraController : Singleton<CameraController> {
     [Header("Transforms")]
     [ReadOnly] public Transform objectToFollow;
 
-    public Camera camera;
+    public new Camera camera;
     [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform dialogueCameraPos;
 
@@ -31,7 +31,10 @@ public class CameraController : Singleton<CameraController> {
     // A plane that a ray cast from a mouse position can collide with
     private Plane raycastPlane;
     // Position of mouse when the left mouse button is pressed
-    private Vector2 grabbedMousePos;
+    // private Vector2 grabbedMousePos;
+    private float rotBeforeDialogue;
+    // Store reference to objects that block the characters and get hidden during dialogue so they can be reactivated
+    private List<GameObject> objectsHiddenInDialogue;
 
     protected override void Awake() {
         base.Awake();
@@ -41,6 +44,7 @@ public class CameraController : Singleton<CameraController> {
         targetPosition = transform.position;
 
         raycastPlane = new Plane(Vector3.up, Vector3.zero);
+        objectsHiddenInDialogue = new List<GameObject>();
     }
 
     void LateUpdate() {
@@ -70,9 +74,6 @@ public class CameraController : Singleton<CameraController> {
                 targetPosition = objectToFollow.transform.position;
             }
             transform.position = targetPosition;
-        } else {
-            camera.transform.localPosition = dialogueCameraPos.localPosition;
-            camera.transform.localRotation = dialogueCameraPos.localRotation;
         }
 
         // cameraContainer.position = panSmoothing ? Vector3.Lerp(cameraContainer.position, targetPosition, Time.deltaTime * panSmoothingValue) : targetPosition;
@@ -118,7 +119,7 @@ public class CameraController : Singleton<CameraController> {
             worldSpaceGrab = point;
             worldSpaceGrabLast = worldSpaceGrab;
             isGrabbing = true;
-            grabbedMousePos = (Vector2) Input.mousePosition;
+            // grabbedMousePos = (Vector2) Input.mousePosition;
         }
     }
 
@@ -154,15 +155,42 @@ public class CameraController : Singleton<CameraController> {
 
     public void SetInDialogue(Character characterFocus, Character characterSpeaking) {
         transform.position = characterFocus.transform.position;
-        Quaternion rot = Quaternion.LookRotation(characterFocus.transform.position - characterSpeaking.transform.position, Vector3.up);
-        cameraContainer.rotation = rot * Quaternion.Euler(cameraContainer.rotation.eulerAngles.x, 0, 0);
+        rotBeforeDialogue = transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.LookRotation(characterFocus.transform.position - characterSpeaking.transform.position, Vector3.up);
+        camera.transform.localPosition = dialogueCameraPos.localPosition;
+        camera.transform.localRotation = dialogueCameraPos.localRotation;
         inDialogue = true;
+
+        // Cast rays to each character's feet and head to check if anything is blocking them from view of the camera
+        Ray[] rays = new Ray[] {
+            new Ray(camera.transform.position, characterFocus.transform.position - camera.transform.position),
+            new Ray(camera.transform.position, characterSpeaking.transform.position - camera.transform.position),
+            new Ray(camera.transform.position, characterFocus.transform.position + Vector3.up * 2f - camera.transform.position),
+            new Ray(camera.transform.position, characterSpeaking.transform.position + Vector3.up * 2f - camera.transform.position)
+        };
+
+        for(int i = 0; i < rays.Length; i++) {
+            // Move each ray back incase it's inside a collider
+            rays[i].origin -= rays[i].direction * 100; 
+
+            RaycastHit[] hits = Physics.RaycastAll(rays[i], Mathf.Infinity, LayerMask.GetMask("Scenery"));
+            foreach(RaycastHit hit in hits) {
+                hit.collider.gameObject.SetActive(false);
+                objectsHiddenInDialogue.Add(hit.collider.gameObject);
+            }
+        }
     }
 
     public void CancelDialogue() {
-        cameraContainer.localRotation = Quaternion.Euler(cameraContainer.localRotation.eulerAngles.x, 0, 0);
+        // Restore the camera Y rotation
+        transform.rotation = Quaternion.Euler(Vector3.up * rotBeforeDialogue);
         camera.transform.localPosition = Vector3.forward * cameraDist;
         camera.transform.localRotation = Quaternion.identity;
         inDialogue = false;
+
+        foreach(GameObject gameObject in objectsHiddenInDialogue) {
+            gameObject.SetActive(true);
+        }
+        objectsHiddenInDialogue.Clear();
     }
 }

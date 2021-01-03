@@ -13,37 +13,191 @@ MonoBehaviour:
   m_Name: Story
   m_EditorClassIdentifier: 
   _beats:
-  - _choices:
-    - _text: The first choice is to go one way...
-      _randomTextList: []
+  - _name: Greeting
+    _id: 1
+    _copyChoicesFromBeat: 0
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices:
+    - _text: Flatter...
+      _textList: {fileID: 0}
       _textType: 0
       _beatId: 2
-      _type: 0
-    - _text: The second choice is to go the alternative way...
-      _randomTextList: []
+      _type: 1
+    - _text: Threaten...
+      _textList: {fileID: 0}
       _textType: 0
       _beatId: 3
-      _type: 0
-    _choicesType: 0
-    _text: "The story starts here. \nSome stuff happens and then you are faced with
-      a choice. "
-    _randomTextList: []
+      _type: 2
+    - _text: Bribe...
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 4
+      _type: 3
+    - _text: Rumours
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 8
+      _type: 4
+    - _text: Goodbye
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 1
+      _type: 5
+    _beatType: 0
     _textType: 0
-    _id: 1
-  - _choices: []
-    _choicesType: 0
-    _text: "You choose to go the first way and this is an ok choice, the story plays
-      out. You are happy. \n\nTHE END"
-    _randomTextList: []
-    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 11400000, guid: 36680b6beaa073241b5860a528087989, type: 2}
+    _textListNeutral: {fileID: 11400000, guid: a5e13a7d75e089c42adad985976c7c63, type: 2}
+    _textListNegative: {fileID: 11400000, guid: 2f3de3451000ba54db06aa899c029a8a, type: 2}
+  - _name: FlatteryListen
     _id: 2
-  - _choices: []
+    _copyChoicesFromBeat: 0
+    _beatIdToCopyFrom: 1
     _choicesType: 0
-    _text: 'The alternative choice is where you want to go, it is a fine choice.
-      The story plays out and you are happy.
-
-
-      THE END.'
-    _randomTextList: []
+    _choices:
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 1
+      _beatId: 5
+      _type: 1
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 1
+      _beatId: 5
+      _type: 1
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 1
+      _beatId: 5
+      _type: 1
+    - _text: Nevermind
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 1
+      _type: 5
+    _beatType: 1
     _textType: 0
+    _text: 
+    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
+    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
+    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+  - _name: ThreatenListen
     _id: 3
+    _copyChoicesFromBeat: 0
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices:
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 2
+      _beatId: 6
+      _type: 1
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 2
+      _beatId: 6
+      _type: 1
+    - _text: New Beat Choice
+      _textList: {fileID: 0}
+      _textType: 2
+      _beatId: 6
+      _type: 1
+    - _text: Nevermind
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 1
+      _type: 4
+    _beatType: 2
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
+    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
+    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+  - _name: BribeListen
+    _id: 4
+    _copyChoicesFromBeat: 0
+    _beatIdToCopyFrom: 0
+    _choicesType: 0
+    _choices:
+    - _text: 20 gold
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 7
+      _type: 2
+    - _text: 200 gold
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 7
+      _type: 2
+    - _text: 500 gold
+      _textList: {fileID: 0}
+      _textType: 0
+      _beatId: 7
+      _type: 2
+    _beatType: 2
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
+    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
+    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+  - _name: FlatteryResponse
+    _id: 5
+    _copyChoicesFromBeat: 1
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices: []
+    _beatType: 1
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 0}
+    _textListNeutral: {fileID: 0}
+    _textListNegative: {fileID: 0}
+  - _name: ThreatenResponse
+    _id: 6
+    _copyChoicesFromBeat: 1
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices: []
+    _beatType: 1
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 0}
+    _textListNeutral: {fileID: 0}
+    _textListNegative: {fileID: 0}
+  - _name: BribeResponse
+    _id: 7
+    _copyChoicesFromBeat: 1
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices: []
+    _beatType: 3
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 0}
+    _textListNeutral: {fileID: 0}
+    _textListNegative: {fileID: 0}
+  - _name: RumourStart
+    _id: 8
+    _copyChoicesFromBeat: 1
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices: []
+    _beatType: 4
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 0}
+    _textListNeutral: {fileID: 0}
+    _textListNegative: {fileID: 0}
+  - _name: RumourEnd
+    _id: 9
+    _copyChoicesFromBeat: 1
+    _beatIdToCopyFrom: 1
+    _choicesType: 0
+    _choices: []
+    _beatType: 4
+    _textType: 0
+    _text: 
+    _textListPositive: {fileID: 0}
+    _textListNeutral: {fileID: 0}
+    _textListNegative: {fileID: 0}
