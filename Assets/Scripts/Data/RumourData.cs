@@ -6,6 +6,22 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+public class Rumour {
+    private string startText, middleText, endText;
+    public NPC targetNpc;
+
+    public string StartText { get { return startText.Replace("{name}", targetNpc.DisplayName); } }
+    public string MiddleText { get { return middleText; } }
+    public string EndText { get { return endText; } }
+
+    public Rumour(NPC npc, string start, string middle, string end) {
+        targetNpc = npc;
+        startText = start;
+        middleText = middle;
+        endText = end;
+    }
+}
+
 [Serializable]
 public class RumourData : ScriptableObject
 {
@@ -14,6 +30,8 @@ public class RumourData : ScriptableObject
     [SerializeField] private List<string> _startPoints;
     [SerializeField] private List<string> _midPoints;
     [SerializeField] private List<string> _endPoints;
+
+    public int RumourCount { get { return _startPoints.Count; } }
 
     public string GetRumourStart(int index) {
         return _startPoints[index];

@@ -24,16 +24,19 @@ MonoBehaviour:
     _textList:
     - I hate politicians. Especially you.
     - Do I really have to be talking to you?
-    - Alright but don't take long, I've got somewhere to be.
+    - Alright but don't take too long, I've got somewhere to be.
   _listeningPositive:
     _textList:
-    - I always love hearing what you have to say!
+    - I always love hearing what you have to say.
   _listeningNeutral:
     _textList:
     - Yes?
+    - Hmm?
+    - Go on.
   _listeningNegative:
     _textList:
-    - Ugh, If you must.
+    - Ugh, if you must.
+    - Hurry up please.
   _flatteryOccupation:
     keys: 000000000100000002000000030000000400000005000000
     values:
@@ -42,34 +45,34 @@ MonoBehaviour:
     - _textList:
       - I saw you training at the sword the other day, very impressive!
     - _textList:
-      - "I bought a table from you the other day, some of the finest work I\u2019ve
-        ever seen."
+      - I bought a table from you the other day, some of the finest work I've ever
+        seen.
     - _textList:
       - I must say your begonias are flourishing, {name}!
     - _textList:
       - I bought one of your pears at the market yesterday, delicious and crisp!
     - _textList:
-      - "You\u2019ve been looking great in the polls lately, I\u2019m so jealous."
+      - You've been looking great in the polls lately, I'm so jealous!
   _flatteryAge:
     keys: 000000000100000002000000
     values:
     - _textList:
-      - You look so young and strong!
+      - You are clearly wise beyond your years.
     - _textList: []
     - _textList:
-      - You are clearly wise beyond your years.
+      - I'm sure you have many wise stories to tell.
   _flatteryWealth:
     keys: 000000000100000002000000
     values:
     - _textList:
-      - "I walked by your mansion the other day, it\u2019s looking just splendid."
+      - I walked by your mansion the other day, it's looking quite splendid.
     - _textList: []
     - _textList:
-      - You deserve to earn so much more with all the hard work you put in.
+      - You deserve to earn so much more with all the hard work you're putting in!
   _flatteryResponsesSuccess:
     _textList:
     - How kind of you to say so!
-    - "That\u2019s wonderful to hear, thank you!"
+    - That's wonderful to hear, thank you!
     - Oh stop it, you!
   _flatteryResponsesFail:
     _textList:
@@ -109,8 +112,8 @@ MonoBehaviour:
       - Poor threat
   _threatenResponsesSuccess:
     _textList:
-    - Okay, okay! I'll do what you say!
-    - Alright, alright, I'll vote! Just leave me and my family alone!
+    - Okay, okay, I'll do what you want!
+    - Alright, alright, I'll vote! Just leave me alone!
   _threatenResponsesFail:
     _textList:
     - Who are you trying to frighten with that tone? It ain't working, pal.
@@ -120,3 +123,9 @@ MonoBehaviour:
   _bribeResponsesFail:
     _textList:
     - Is this a joke?
+  _rumourFail:
+    _textList:
+    - Well I'm not likely to tell you, am I?
+  _rumourUnknown:
+    _textList:
+    - None that I know of, sorry.

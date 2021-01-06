@@ -30,7 +30,7 @@ public class TextDisplay : MonoBehaviour
     private void Update() 
     {
         // Update panel height from text
-        float height = Mathf.Lerp(_rectTransform.sizeDelta.y, _displayText.preferredHeight + 20, Time.deltaTime * 20);
+        float height = Mathf.Lerp(_rectTransform.sizeDelta.y, _displayText.preferredHeight + 24, Time.deltaTime * 20);
         _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
     }
 

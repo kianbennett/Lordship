@@ -190,9 +190,12 @@ public class StoryEditor : EditorWindow
     private void OnGUI_BeatViewChoice(SerializedProperty choiceList, int index, SerializedProperty beatList)
     {
         SerializedProperty arrayElement = choiceList.GetArrayElementAtIndex(index);
+        SerializedProperty indexProperty = arrayElement.FindPropertyRelative("_index");
         SerializedProperty choiceType = arrayElement.FindPropertyRelative("_type");
         SerializedProperty textType = arrayElement.FindPropertyRelative("_textType");
         SerializedProperty beatId = arrayElement.FindPropertyRelative("_beatId");
+
+        indexProperty.intValue = index;
         
         EditorGUILayout.BeginVertical(GUILayout.MaxHeight(155));
 

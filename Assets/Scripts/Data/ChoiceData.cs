@@ -7,12 +7,13 @@ public enum DialogueType {
 }
 
 public enum ChoiceTextType {
-    Predefined, RandomFlatter, RandomThreaten
+    Predefined, RandomFlatter, RandomThreaten, RumourMid
 }
 
 [Serializable]
 public class ChoiceData
 {
+    [SerializeField] private int _index;
     [SerializeField] private string _text;
     // [SerializeField] private TextList _textList;
     [SerializeField] private ChoiceTextType _textType;
@@ -20,6 +21,7 @@ public class ChoiceData
     [SerializeField] private DialogueType _type;
     [SerializeField] private bool _correctChoice;
 
+    public int Index { get { return _index; } }
     // If the type is set to random then pick a random value from _randomTextList, otherwise use _text
     public string DisplayText { 
         get { return _text; } 
@@ -36,6 +38,8 @@ public class ChoiceData
 
     // Replace "{name}"s with the NPCs first name
     public string FormattedDisplayText(NPC npc) {
+        if(npc.charName == null) return DisplayText;
+
         return DisplayText.Replace("{name}", npc.charName.Item1);
     }
 

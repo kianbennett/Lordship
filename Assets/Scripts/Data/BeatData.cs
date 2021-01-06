@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // public enum ChoiceDefineType { Predefined, Random }
-public enum SpeechType { Greeting, Listening, FlatterResponse, ThreatenResponse, BribeResponse, Rumour }
+public enum SpeechType { Greeting, Listening, FlatterResponse, ThreatenResponse, BribeResponse, RumourStart, RumourEnd }
 
 [Serializable]
 public class BeatData

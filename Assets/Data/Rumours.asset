@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: Rumours
   m_EditorClassIdentifier: 
   _startPoints:
-  - "{name}\u2019s apples haven\u2019t been selling that great lately. Hopefully
-    sales\u2019ll pick up soon!\r"
-  - "Don\u2019t tell anyone but I heard {name} just LOVES winter berries, can\u2019t
-    get enough of \u2018em!\r"
-  - "{name} is so upset that this year\u2019s summer fete has been cancelled, they
-    were so excited for it."
+  - '{name}''s apples haven''t been selling that great lately. Hopefully sales''ll
+    pick up soon!'
+  - Don't tell anyone but I heard {name} just LOVES winter berries, can't get enough
+    of 'em!
+  - '{name} is so upset that this year''s summer fete has been cancelled, they were
+    so excited for it.'
   _midPoints:
-  - "If you vote for me I\u2019ll lower apple tax!\r"
-  - "If I get elected I\u2019ll be sure to import lots more winter berries.\r"
-  - "A vote for me is a vote to bring back the summer fete!\r"
+  - If you vote for me I'll lower apple tax!
+  - If I get elected I'll be sure to import lots more winter berries.
+  - A vote for me is a vote to bring back the summer fete!
   _endPoints:
-  - "Oh that would be wonderful! You\u2019ve got my vote!"
-  - Oh that would be lust lovely!
-  - "Oh I\u2019ve missed that fete! I\u2019d so love to see it return."
+  - Oh that would be wonderful! You've got my vote!
+  - Oh that would be just lovely!
+  - Oh how I've missed that fete! I'd so love to see it return.

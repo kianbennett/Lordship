@@ -137,6 +137,14 @@ public class NPC : Character {
         }
     }
 
+    public bool CanGiveRumour() {
+        return disposition > 60;
+    }
+
+    public void CompleteRumour() {
+        ChangeDisposition(Random.Range(40, 50));
+    }
+
     // Most enums can be represented by a string from a direct cast, but some need changes (spaces, hyphons etc)
     public string GetAgeString() {
         if(age == CharacterAge.MiddleAged) {

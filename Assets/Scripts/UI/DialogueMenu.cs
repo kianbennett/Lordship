@@ -68,11 +68,17 @@ public class DialogueMenu : MonoBehaviour {
         for(int i = 0; i < choices.Length; i++) {
             DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity);
             button.transform.SetParent(choicesPanel, false);
-            button.SetValues(i, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
+            button.SetValues(choices[i].Index, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
             button.transform.localPosition = Vector3.up * buttonY;
             // button.GetComponent<RectTransform>().localPosition = Vector2.zero;
             // Debug.Log(choicesPanel.anchoredPosition);
             buttonY -= button.GetHeight() + 10;
+
+            // Give a special golden border to unlocked rumours
+            if(choices[i].TextType == ChoiceTextType.RumourMid) {
+                button.SetSpecial();
+            }
+
             choiceButtons.Add(button);
         }
 

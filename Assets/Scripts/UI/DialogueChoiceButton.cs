@@ -9,6 +9,8 @@ public class DialogueChoiceButton : MonoBehaviour {
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image image;
+    [SerializeField] private Outline outline;
+    [SerializeField] private Color outlineColourSpecial;
 
     private int index;
 
@@ -25,5 +27,9 @@ public class DialogueChoiceButton : MonoBehaviour {
 
     public void Choose() {
         DialogueSystem.instance.PickChoice(index);
+    }
+
+    public void SetSpecial() {
+        outline.effectColor = outlineColourSpecial;
     }
 }

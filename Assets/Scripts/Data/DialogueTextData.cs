@@ -38,6 +38,9 @@ public class DialogueTextData : ScriptableObject
     [SerializeField] private TextList _bribeResponsesSuccess;
     [SerializeField] private TextList _bribeResponsesFail;
 
+    // Rumours
+    [SerializeField] private TextList _rumourFail, _rumourUnknown;
+
     public string GetRandomGreeting(DispositionType disposition) {
         switch(disposition) {
             case DispositionType.Positive:
@@ -195,6 +198,14 @@ public class DialogueTextData : ScriptableObject
     public string GetRandomBribeResponse(bool success) {
         if(success) return _bribeResponsesSuccess.RandomText;
             else return _bribeResponsesFail.RandomText;
+    }
+
+    public string GetRandomRumourFail() {
+        return _rumourFail.RandomText;
+    }
+
+    public string GetRandomRumourUnknown() {
+        return _rumourUnknown.RandomText;
     }
 
 #if UNITY_EDITOR

@@ -21,7 +21,8 @@ public class DialogueTextEditor : EditorWindow
         EditorGUILayout.BeginVertical();
         _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-        bool hasDrawnGreetingLabel = false, hasDrawnListeningLabel = false, hasDrawnFlatteryLabel = false, hasDrawnThreatenLabel = false, hasDrawnBribeLabel = false;
+        bool hasDrawnGreetingLabel = false, hasDrawnListeningLabel = false, hasDrawnFlatteryLabel = false;
+        bool hasDrawnThreatenLabel = false, hasDrawnBribeLabel = false, hasDrawnRumourLabel = false;
 
         // Iterate over each property in the object
         SerializedProperty iterator = dataObj.GetIterator();
@@ -55,6 +56,11 @@ public class DialogueTextEditor : EditorWindow
                         hasDrawnBribeLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Bribery", EditorStyles.boldLabel);
+                    }
+                    if(!hasDrawnRumourLabel && iterator.name.StartsWith("_rumour")) {
+                        hasDrawnRumourLabel = true;
+                        EditorGUILayout.Space();
+                        EditorGUILayout.LabelField("Rumours", EditorStyles.boldLabel);
                     }
 
                     // If it's a TextList variable

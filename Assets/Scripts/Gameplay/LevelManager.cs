@@ -16,6 +16,7 @@ public class LevelManager : Singleton<LevelManager> {
     private float timeElapsed;
 
     public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
+    public List<NPC> NpcList { get { return npcs; } }
 
     protected override void Awake() {
         base.Awake();
@@ -24,6 +25,7 @@ public class LevelManager : Singleton<LevelManager> {
     // Spawn NPCs in Start after grid points get set in TownGenerator's Awake
     void Start() {
         spawnNpcs();
+        DialogueSystem.instance.InitialiseRumours();
     }
 
     void Update() {
@@ -62,6 +64,7 @@ public class LevelManager : Singleton<LevelManager> {
 
             NPC npc = Instantiate(npcPrefab, TownGenerator.instance.GridPointToWorldPos(bestCandidate) + new Vector3(0.5f, 0, 0.5f), Quaternion.identity, npcContainer);
             npc.Randomise();
+            npc.name = "NPC (" + npc.DisplayName + ")";
             npcs.Add(npc);
         }
 
