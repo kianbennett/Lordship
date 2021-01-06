@@ -55,6 +55,7 @@ public class AssetManager : Singleton<AssetManager> {
 
     // When creating a new material for a specific colour, store reference to it so it can be reused
     private Dictionary<Color, Material> colouredMaterialDictionary = new Dictionary<Color, Material>();
+    private List<Tuple<string, string>> usedNames = new List<Tuple<string, string>>();
 
     // Gets a VertexColour material with a certain colour, or create a new one if it doesn't exist
     public static Material GetColouredMaterial(Color colour) {
@@ -84,5 +85,17 @@ public class AssetManager : Singleton<AssetManager> {
 
     public void ClearMaterialDictionary() {
         colouredMaterialDictionary.Clear();
+    }
+
+    // Keep checking random generated names against the list of already used names
+    public Tuple<string, string> GetUniqueNpcName() {
+        Tuple<string, string> name;
+        do {
+            string firstName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)];
+            string lastName = lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
+            name = new Tuple<string, string>(firstName, lastName);
+        } while(usedNames.Contains(name));
+        usedNames.Add(name);
+        return name;
     }
 }

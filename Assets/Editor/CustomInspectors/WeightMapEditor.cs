@@ -12,7 +12,7 @@ public class WeightMapEditor<T> : Editor {
         //Debug.Log(weightMap.WeightMap.Keys.Count + ", " + weightMap.WeightMap.Values.Count);
 
         setValues();
-        if (names == null) names = weightMap.Map.keys.Select(o => o.ToString()).ToArray();
+        if (names == null) names = weightMap.Map.Keys.Select(o => o.ToString()).ToArray();
     }
 
     protected virtual void setValues() {
@@ -21,7 +21,7 @@ public class WeightMapEditor<T> : Editor {
 
     protected void initValues(T[] list, string[] names) {
         if (list == null || names == null) return;
-        if (weightMap.Map == null || weightMap.Map.keys.Count != list.Length) {
+        if (weightMap.Map == null || weightMap.Map.Keys.Count != list.Length) {
             weightMap.Map.Clear();
             foreach (T t in list) {
                 weightMap.Map.Add(t, 1);
@@ -40,8 +40,8 @@ public class WeightMapEditor<T> : Editor {
             setValues();
         }
 
-        for (int i = 0; i < weightMap.Map.keys.Count; i++) {
-            T t = weightMap.Map.keys.ElementAt(i);
+        for (int i = 0; i < weightMap.Map.Keys.Count; i++) {
+            T t = weightMap.Map.Keys.ElementAt(i);
 
             GUILayout.BeginHorizontal();
 

@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401aaf5f20f3279498bd860614286813, type: 3}
+  m_Name: TextData
+  m_EditorClassIdentifier: 
+  _greetingsPositive:
+    _textList:
+    - Hi! What can I do for you?
+    - I always have time to stop and chat, what do you need?
+  _greetingsNeutral:
+    _textList:
+    - Who are you again?
+    - Pretty good weather we're having today, isn't it?
+  _greetingsNegative:
+    _textList:
+    - I hate politicians. Especially you.
+    - Do I really have to be talking to you?
+    - Alright but don't take long, I've got somewhere to be.
+  _listeningPositive:
+    _textList:
+    - I always love hearing what you have to say!
+  _listeningNeutral:
+    _textList:
+    - Yes?
+  _listeningNegative:
+    _textList:
+    - Ugh, If you must.
+  _flatteryOccupation:
+    keys: 000000000100000002000000030000000400000005000000
+    values:
+    - _textList:
+      - Your teachings have always inspired me.
+    - _textList:
+      - I saw you training at the sword the other day, very impressive!
+    - _textList:
+      - "I bought a table from you the other day, some of the finest work I\u2019ve
+        ever seen."
+    - _textList:
+      - I must say your begonias are flourishing, {name}!
+    - _textList:
+      - I bought one of your pears at the market yesterday, delicious and crisp!
+    - _textList:
+      - "You\u2019ve been looking great in the polls lately, I\u2019m so jealous."
+  _flatteryAge:
+    keys: 000000000100000002000000
+    values:
+    - _textList:
+      - You look so young and strong!
+    - _textList: []
+    - _textList:
+      - You are clearly wise beyond your years.
+  _flatteryWealth:
+    keys: 000000000100000002000000
+    values:
+    - _textList:
+      - "I walked by your mansion the other day, it\u2019s looking just splendid."
+    - _textList: []
+    - _textList:
+      - You deserve to earn so much more with all the hard work you put in.
+  _flatteryResponsesSuccess:
+    _textList:
+    - How kind of you to say so!
+    - "That\u2019s wonderful to hear, thank you!"
+    - Oh stop it, you!
+  _flatteryResponsesFail:
+    _textList:
+    - What are you talking about? That makes no sense.
+    - Who do you think you're kidding? You don't really mean that, you just want
+      my vote.
+  _threatenOccupation:
+    keys: 000000000100000002000000030000000400000005000000
+    values:
+    - _textList:
+      - Monk threat
+    - _textList:
+      - Knight threat
+    - _textList:
+      - Craftsman threat
+    - _textList:
+      - Homemaker threat
+    - _textList:
+      - Farmer threat
+    - _textList:
+      - Potician treat
+  _threatenAge:
+    keys: 000000000100000002000000
+    values:
+    - _textList:
+      - Young threat
+    - _textList: []
+    - _textList:
+      - Old threat
+  _threatenWealth:
+    keys: 000000000100000002000000
+    values:
+    - _textList:
+      - Rick threat
+    - _textList: []
+    - _textList:
+      - Poor threat
+  _threatenResponsesSuccess:
+    _textList:
+    - Okay, okay! I'll do what you say!
+    - Alright, alright, I'll vote! Just leave me and my family alone!
+  _threatenResponsesFail:
+    _textList:
+    - Who are you trying to frighten with that tone? It ain't working, pal.
+  _bribeResponsesSuccess:
+    _textList:
+    - That's so generous, thank you so much!
+  _bribeResponsesFail:
+    _textList:
+    - Is this a joke?

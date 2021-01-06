@@ -80,14 +80,14 @@ public class PlayerController : Singleton<PlayerController> {
         // HUD.instance.screenFader.FadeOut(delegate {
         //     HUD.instance.screenFader.FadeIn();
             CameraController.instance.SetInDialogue(npcSpeaking, playerCharacter);    
-            DialogueSystem.instance.DisplayBeat(1);
+            DialogueSystem.instance.DisplayBeat(1, true);
         // });
     }
 
     public void ExitDialogue() {
         NPC speaking = npcSpeaking;
         npcSpeaking = null;
-        HUD.instance.dialogueMenu.HideAll();
+        DialogueSystem.instance.ExitDialogue();
         // HUD.instance.screenFader.FadeOut(delegate {
             // HUD.instance.screenFader.FadeIn();
             speaking.movement.SetSpeaking(null);

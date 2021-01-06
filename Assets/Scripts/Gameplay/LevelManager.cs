@@ -15,8 +15,6 @@ public class LevelManager : Singleton<LevelManager> {
     private GridPoint[] roadGridPoints; 
     private float timeElapsed;
 
-    private List<string> usedNpcNames = new List<string>();
-
     public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
 
     protected override void Awake() {

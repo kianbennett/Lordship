@@ -9,5 +9,5 @@ public class PaletteColourAttribute : PropertyAttribute {
         Palette = palette;
     }
 }
-public class UniqueIdentifierAttribute : PropertyAttribute { }
+public class AudioClipAttribute : PropertyAttribute { }
 public class SceneAttribute : PropertyAttribute { }

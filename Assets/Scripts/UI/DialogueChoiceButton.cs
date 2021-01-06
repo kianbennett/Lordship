@@ -10,12 +10,12 @@ public class DialogueChoiceButton : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image image;
 
-    private int id;
+    private int index;
 
-    public void SetValues(int id, ChoiceData choice) {
-        this.id = id;
-        text.text = (id + 1) + ") " + choice.DisplayText;
-        image.color = HUD.instance.dialogueMenu.GetDialogueChoiceColour(choice.Type);
+    public void SetValues(int index, string displayText, DialogueType type) {
+        this.index = index;
+        text.text = (index + 1) + ") " + displayText;
+        image.color = HUD.instance.dialogueMenu.GetDialogueChoiceColour(type);
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight + 20);
     }
 
@@ -24,6 +24,6 @@ public class DialogueChoiceButton : MonoBehaviour {
     }
 
     public void Choose() {
-        // Do something with the ID
+        DialogueSystem.instance.PickChoice(index);
     }
 }

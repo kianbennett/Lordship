@@ -102,34 +102,40 @@ public class StoryEditor : EditorWindow
         SerializedProperty id = arrayElement.FindPropertyRelative("_id");
         SerializedProperty name = arrayElement.FindPropertyRelative("_name");
         SerializedProperty type = arrayElement.FindPropertyRelative("_beatType");
+        SerializedProperty displayTextType = arrayElement.FindPropertyRelative("_displayTextType");
 
         EditorGUILayout.BeginVertical();
 
         EditorGUILayout.BeginHorizontal();
         // EditorGUIUtility.labelWidth = 90;
-        EditorGUILayout.LabelField("Beat ID: " + id.intValue.ToString(), GUILayout.Width(75));
+        EditorGUILayout.LabelField("Beat ID: " + id.intValue.ToString(), GUILayout.Width(110));
         EditorGUILayout.LabelField(name.stringValue);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Beat Type", GUILayout.Width(75));
-        EditorGUILayout.PropertyField(type, GUIContent.none, GUILayout.Width(80));
+        EditorGUILayout.LabelField("Beat Type", GUILayout.Width(110));
+        EditorGUILayout.PropertyField(type, GUIContent.none, GUILayout.Width(100));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-        if((DialogueType) type.enumValueIndex != DialogueType.Rumours) {
-            SerializedProperty textListPositive = arrayElement.FindPropertyRelative("_textListPositive");
-            SerializedProperty textListNeutral = arrayElement.FindPropertyRelative("_textListNeutral");
-            SerializedProperty textListNegative = arrayElement.FindPropertyRelative("_textListNegative");
-
-            EditorGUIUtility.labelWidth = 102;
-            EditorGUILayout.PropertyField(textListPositive, new GUIContent("Speech Positive"), GUILayout.Width(260));
-            GUILayout.Space(20);
-            EditorGUILayout.PropertyField(textListNeutral, new GUIContent("Speech Neutral"), GUILayout.Width(260));
-            GUILayout.Space(20);
-            EditorGUILayout.PropertyField(textListNegative, new GUIContent("Speech Negative"), GUILayout.Width(260));
-        }
+        EditorGUILayout.LabelField("Display Text Type", GUILayout.Width(110));
+        EditorGUILayout.PropertyField(displayTextType, GUIContent.none, GUILayout.Width(100));
         EditorGUILayout.EndHorizontal();
+
+        // EditorGUILayout.BeginHorizontal();
+        // if((DialogueType) type.enumValueIndex != DialogueType.Rumours) {
+        //     SerializedProperty textListPositive = arrayElement.FindPropertyRelative("_textListPositive");
+        //     SerializedProperty textListNeutral = arrayElement.FindPropertyRelative("_textListNeutral");
+        //     SerializedProperty textListNegative = arrayElement.FindPropertyRelative("_textListNegative");
+
+        //     EditorGUIUtility.labelWidth = 102;
+        //     EditorGUILayout.PropertyField(textListPositive, new GUIContent("Speech Positive"), GUILayout.Width(260));
+        //     GUILayout.Space(20);
+        //     EditorGUILayout.PropertyField(textListNeutral, new GUIContent("Speech Neutral"), GUILayout.Width(260));
+        //     GUILayout.Space(20);
+        //     EditorGUILayout.PropertyField(textListNegative, new GUIContent("Speech Negative"), GUILayout.Width(260));
+        // }
+        // EditorGUILayout.EndHorizontal();
 
         // text.stringValue = EditorGUILayout.TextArea(text.stringValue, GUILayout.Height(200));
 
@@ -197,11 +203,10 @@ public class StoryEditor : EditorWindow
         if((ChoiceTextType) textType.enumValueIndex == ChoiceTextType.Predefined) {
             SerializedProperty text = arrayElement.FindPropertyRelative("_text");
             text.stringValue = EditorGUILayout.TextArea(text.stringValue, GUILayout.Height(50));
-        } else {
-            SerializedProperty textList = arrayElement.FindPropertyRelative("_textList");
-            EditorGUILayout.PropertyField(textList);
         }
         // EditorGUILayout.LabelField("Leads to Beat ID: " + beatId.intValue.ToString());
+
+        GUILayout.FlexibleSpace();
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel("Leads to Beat: ");
@@ -214,8 +219,6 @@ public class StoryEditor : EditorWindow
 
         // beatId.intValue = EditorGUILayout.IntField(beatId.intValue);
         EditorGUILayout.EndHorizontal();
-
-        GUILayout.FlexibleSpace();
 
         if (GUILayout.Button("Go to Beat"))
         {

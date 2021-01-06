@@ -12,13 +12,17 @@ public enum CharacterWealth {
 }
 
 public enum CharacterOccupation {
-    Monk, Knight, Craftsman, Homemaker, Farmer, Politician, Unemployed
+    Monk, Knight, Craftsman, Homemaker, Farmer, Politician
+}
+
+public enum DispositionType {
+    Positive, Neutral, Negative
 }
 
 public class NPC : Character {
 
     [Header("Attributes")]
-    public string charName;
+    public System.Tuple<string, string> charName;
     public CharacterAge age;
     public CharacterOccupation occupation;
     public CharacterWealth wealth;
@@ -27,6 +31,17 @@ public class NPC : Character {
     [Header("Movement")]
     public bool wander;
     private float pauseTimer;
+
+    public string DisplayName { get { 
+        if(charName != null) return charName.Item1 + " " + charName.Item2; 
+            else return "";
+    } }
+
+    public DispositionType DispositionType { get { 
+        if(disposition < 35) return DispositionType.Negative;
+            else if(disposition > 70) return DispositionType.Positive;
+            else return DispositionType.Neutral;
+    } }
 
     protected override void Awake() {
         base.Awake();
@@ -53,9 +68,7 @@ public class NPC : Character {
         appearance.Randomise();
         movement.SetLookDir(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)));
 
-        string firstName = AssetManager.instance.firstNames[Random.Range(0, AssetManager.instance.firstNames.Length)];
-        string lastName = AssetManager.instance.lastNames[Random.Range(0, AssetManager.instance.lastNames.Length)];
-        charName = firstName + " " + lastName;
+        charName = AssetManager.instance.GetUniqueNpcName();
         age = (CharacterAge) Random.Range(0, System.Enum.GetNames(typeof(CharacterAge)).Length);
         occupation = (CharacterOccupation) Random.Range(0, System.Enum.GetNames(typeof(CharacterOccupation)).Length);
         wealth = (CharacterWealth) Random.Range(0, System.Enum.GetNames(typeof(CharacterWealth)).Length);
@@ -66,7 +79,7 @@ public class NPC : Character {
     public override void SetHovered(bool hovered) {
         base.SetHovered(hovered);
         if(hovered) {
-            HUD.instance.tooltip.Show(charName);
+            HUD.instance.tooltip.Show(DisplayName);
         } else {
             HUD.instance.tooltip.Hide();
         }
@@ -74,6 +87,54 @@ public class NPC : Character {
 
     public override void OnRightClick() {
         PlayerController.instance.TalkToNpc(this);
+    }
+
+    public void ChangeDisposition(int change) {
+        // Clamp disposition to 0-100
+        disposition = Mathf.Clamp(disposition + change, 0, 100);
+        HUD.instance.dialogueMenu.UpdateDispositionBar(disposition);
+    }
+
+    public void RespondToFlattery(bool success) {
+        if(success) ChangeDisposition(Random.Range(14, 20));
+            else ChangeDisposition(-Random.Range(14, 20));
+    }
+
+    public void RespondToThreaten(bool success) {
+        if(success) ChangeDisposition(Random.Range(14, 20));
+            else ChangeDisposition(-Random.Range(14, 20));
+    }
+
+    // bribeAmount = 0 (low), 1 (mid), 2 (height), returns success
+    public bool ReceiveBribe(int bribeAmount) {
+        // Monks and Politicians hate being bribed (by a rival polition at least)
+        if(occupation == CharacterOccupation.Monk || occupation == CharacterOccupation.Politician) {
+            ChangeDisposition(-40);
+            return false;
+        }
+        // Wealthy citizens need high bribes
+        if(wealth == CharacterWealth.Rich) {
+            if(bribeAmount == 2) {
+                ChangeDisposition(20);
+                return true;
+            } else {
+                ChangeDisposition(-30);
+                return false;
+            }
+        }
+        // Young and poor people will always respond well to bribes
+        if(age == CharacterAge.Youthful || wealth == CharacterWealth.Poor) {
+            ChangeDisposition(10 + bribeAmount * 10);
+            return true;
+        }
+
+        if(bribeAmount > 0) {
+            ChangeDisposition(bribeAmount * 10);
+            return true;
+        } else {
+            ChangeDisposition(-8);
+            return false;
+        }
     }
 
     // Most enums can be represented by a string from a direct cast, but some need changes (spaces, hyphons etc)

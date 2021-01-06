@@ -17,187 +17,254 @@ MonoBehaviour:
     _id: 1
     _copyChoicesFromBeat: 0
     _beatIdToCopyFrom: 1
-    _choicesType: 0
     _choices:
     - _text: Flatter...
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 2
       _type: 1
+      _correctChoice: 1
     - _text: Threaten...
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 3
       _type: 2
+      _correctChoice: 0
     - _text: Bribe...
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 4
       _type: 3
+      _correctChoice: 0
     - _text: Rumours
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 8
       _type: 4
+      _correctChoice: 0
     - _text: Goodbye
-      _textList: {fileID: 0}
       _textType: 0
-      _beatId: 1
+      _beatId: 10
       _type: 5
+      _correctChoice: 0
     _beatType: 0
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 11400000, guid: 36680b6beaa073241b5860a528087989, type: 2}
-    _textListNeutral: {fileID: 11400000, guid: a5e13a7d75e089c42adad985976c7c63, type: 2}
-    _textListNegative: {fileID: 11400000, guid: 2f3de3451000ba54db06aa899c029a8a, type: 2}
+    _displayTextType: 0
   - _name: FlatteryListen
     _id: 2
     _copyChoicesFromBeat: 0
     _beatIdToCopyFrom: 1
-    _choicesType: 0
     _choices:
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+    - _text: You deserve to earn so much more with all the hard work you put in.
       _textType: 1
       _beatId: 5
       _type: 1
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+      _correctChoice: 0
+    - _text: I must say your begonias are flourishing, {name}! *
       _textType: 1
       _beatId: 5
       _type: 1
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+      _correctChoice: 1
+    - _text: I must say your begonias are flourishing, {name}!
       _textType: 1
       _beatId: 5
       _type: 1
+      _correctChoice: 0
     - _text: Nevermind
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 1
       _type: 5
+      _correctChoice: 0
     _beatType: 1
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
-    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
-    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+    _displayTextType: 1
   - _name: ThreatenListen
     _id: 3
     _copyChoicesFromBeat: 0
     _beatIdToCopyFrom: 1
-    _choicesType: 0
     _choices:
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+    - _text: Poor threat
       _textType: 2
       _beatId: 6
       _type: 1
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+      _correctChoice: 0
+    - _text: Homemaker threat *
       _textType: 2
       _beatId: 6
       _type: 1
-    - _text: New Beat Choice
-      _textList: {fileID: 0}
+      _correctChoice: 1
+    - _text: Homemaker threat
       _textType: 2
       _beatId: 6
       _type: 1
-    - _text: Nevermind
-      _textList: {fileID: 0}
+      _correctChoice: 0
+    - _text: Nevermind.
       _textType: 0
       _beatId: 1
-      _type: 4
+      _type: 5
+      _correctChoice: 0
     _beatType: 2
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
-    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
-    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+    _displayTextType: 1
   - _name: BribeListen
     _id: 4
     _copyChoicesFromBeat: 0
     _beatIdToCopyFrom: 0
-    _choicesType: 0
     _choices:
     - _text: 20 gold
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 7
-      _type: 2
+      _type: 3
+      _correctChoice: 0
     - _text: 200 gold
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 7
-      _type: 2
+      _type: 3
+      _correctChoice: 0
     - _text: 500 gold
-      _textList: {fileID: 0}
       _textType: 0
       _beatId: 7
-      _type: 2
+      _type: 3
+      _correctChoice: 1
+    - _text: Nevermind.
+      _textType: 0
+      _beatId: 1
+      _type: 5
+      _correctChoice: 0
     _beatType: 2
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 11400000, guid: 70be225ed65d100409a6c98e58744e57, type: 2}
-    _textListNeutral: {fileID: 11400000, guid: bc7e5a0dab1af9c4c9cb85695c6f41e0, type: 2}
-    _textListNegative: {fileID: 11400000, guid: ae31552ee5c1637419533b2c6294df50, type: 2}
+    _displayTextType: 1
   - _name: FlatteryResponse
     _id: 5
     _copyChoicesFromBeat: 1
     _beatIdToCopyFrom: 1
-    _choicesType: 0
-    _choices: []
+    _choices:
+    - _text: Flatter... *
+      _textType: 0
+      _beatId: 2
+      _type: 1
+      _correctChoice: 1
+    - _text: Threaten... * *
+      _textType: 0
+      _beatId: 3
+      _type: 2
+      _correctChoice: 0
+    - _text: Bribe...
+      _textType: 0
+      _beatId: 4
+      _type: 3
+      _correctChoice: 0
+    - _text: Rumours *
+      _textType: 0
+      _beatId: 8
+      _type: 4
+      _correctChoice: 0
+    - _text: Goodbye
+      _textType: 0
+      _beatId: 10
+      _type: 5
+      _correctChoice: 0
     _beatType: 1
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 0}
-    _textListNeutral: {fileID: 0}
-    _textListNegative: {fileID: 0}
+    _displayTextType: 2
   - _name: ThreatenResponse
     _id: 6
     _copyChoicesFromBeat: 1
     _beatIdToCopyFrom: 1
-    _choicesType: 0
-    _choices: []
-    _beatType: 1
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 0}
-    _textListNeutral: {fileID: 0}
-    _textListNegative: {fileID: 0}
+    _choices:
+    - _text: Flatter...
+      _textType: 0
+      _beatId: 2
+      _type: 1
+      _correctChoice: 0
+    - _text: Threaten...
+      _textType: 0
+      _beatId: 3
+      _type: 2
+      _correctChoice: 0
+    - _text: Bribe...
+      _textType: 0
+      _beatId: 4
+      _type: 3
+      _correctChoice: 0
+    - _text: Rumours
+      _textType: 0
+      _beatId: 8
+      _type: 4
+      _correctChoice: 1
+    - _text: Goodbye
+      _textType: 0
+      _beatId: 10
+      _type: 5
+      _correctChoice: 0
+    _beatType: 2
+    _displayTextType: 3
   - _name: BribeResponse
     _id: 7
     _copyChoicesFromBeat: 1
     _beatIdToCopyFrom: 1
-    _choicesType: 0
-    _choices: []
+    _choices:
+    - _text: Flatter...
+      _textType: 0
+      _beatId: 2
+      _type: 1
+      _correctChoice: 0
+    - _text: Threaten...
+      _textType: 0
+      _beatId: 3
+      _type: 2
+      _correctChoice: 0
+    - _text: Bribe...
+      _textType: 0
+      _beatId: 4
+      _type: 3
+      _correctChoice: 1
+    - _text: Rumours
+      _textType: 0
+      _beatId: 8
+      _type: 4
+      _correctChoice: 0
+    - _text: Goodbye
+      _textType: 0
+      _beatId: 1
+      _type: 5
+      _correctChoice: 0
     _beatType: 3
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 0}
-    _textListNeutral: {fileID: 0}
-    _textListNegative: {fileID: 0}
+    _displayTextType: 4
   - _name: RumourStart
     _id: 8
     _copyChoicesFromBeat: 1
     _beatIdToCopyFrom: 1
-    _choicesType: 0
-    _choices: []
+    _choices:
+    - _text: Flatter...
+      _textType: 0
+      _beatId: 2
+      _type: 1
+      _correctChoice: 1
+    - _text: Threaten...
+      _textType: 0
+      _beatId: 3
+      _type: 2
+      _correctChoice: 0
+    - _text: Bribe...
+      _textType: 0
+      _beatId: 4
+      _type: 3
+      _correctChoice: 0
+    - _text: Rumours
+      _textType: 0
+      _beatId: 8
+      _type: 4
+      _correctChoice: 0
+    - _text: Goodbye
+      _textType: 0
+      _beatId: 10
+      _type: 5
+      _correctChoice: 0
     _beatType: 4
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 0}
-    _textListNeutral: {fileID: 0}
-    _textListNegative: {fileID: 0}
+    _displayTextType: 5
   - _name: RumourEnd
     _id: 9
     _copyChoicesFromBeat: 1
     _beatIdToCopyFrom: 1
-    _choicesType: 0
     _choices: []
     _beatType: 4
-    _textType: 0
-    _text: 
-    _textListPositive: {fileID: 0}
-    _textListNeutral: {fileID: 0}
-    _textListNegative: {fileID: 0}
+    _displayTextType: 5
+  - _name: ExitDialogue
+    _id: 10
+    _copyChoicesFromBeat: 0
+    _beatIdToCopyFrom: 1
+    _choices: []
+    _beatType: 5
+    _displayTextType: 0

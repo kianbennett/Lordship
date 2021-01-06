@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class DialogueMenu : MonoBehaviour {
@@ -10,11 +11,12 @@ public class DialogueMenu : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI textNpcAge;
     [SerializeField] private TextMeshProUGUI textNpcOccupation;
     [SerializeField] private TextMeshProUGUI textNpcWealth;
-    [SerializeField] private Transform dispositionBar;
+    [SerializeField] private Image dispositionBar;
     [SerializeField] private RectTransform choicesPanel;
     [SerializeField] private Animator npcSpeechAnim, npcInfoAnim;
 
     [SerializeField] private Color flatterColour, threatenColour, bribeColour, rumoursColour, goodbyeColour;
+    [SerializeField] private Color dispositionColourPositive, dispositionColourNeutral, dispositionColourNegative;
 
     [SerializeField] private DialogueChoiceButton choiceButtonPrefab;
 
@@ -25,6 +27,7 @@ public class DialogueMenu : MonoBehaviour {
     private bool isActive;
     private bool isChoicesActive;
     private float choicePanelHeight;
+    private int npcDisposition;
 
     void Awake() {
     }
@@ -32,18 +35,24 @@ public class DialogueMenu : MonoBehaviour {
     void Update() {
         // Update dialogue option panel position
         float velocity = 0;
-        float y = Mathf.SmoothDamp(choicesPanel.anchoredPosition.y, isActive && isChoicesActive ? choicePanelHeight : -15, ref velocity, 0.05f, 3000f);
+        float targetY = isActive && isChoicesActive ? choicePanelHeight : -15;
+        float y = Mathf.SmoothDamp(choicesPanel.anchoredPosition.y, targetY, ref velocity, 0.05f, 5000f);
         choicesPanel.anchoredPosition = new Vector2(choicesPanel.anchoredPosition.x, y);
 
-        // if(Input.GetKeyDown(KeyCode.Escape)) {
-        //     SetActive(!isActive);
-        // }
+        float scaleX = Mathf.Lerp(dispositionBar.transform.localScale.x, npcDisposition / 100f, Time.deltaTime * 10);
+        dispositionBar.transform.localScale = new Vector3(scaleX, 1, 1);
+        if(scaleX < 0.5f) {
+            dispositionBar.color = Color.Lerp(dispositionColourNegative, dispositionColourNeutral, scaleX / 0.5f);
+        } else {
+            dispositionBar.color = Color.Lerp(dispositionColourNeutral, dispositionColourPositive, (scaleX - 0.5f) / 0.5f);
+        }
     }
 
     public void SetActive(bool active) {
         isActive = active;
         if(active) gameObject.SetActive(true);
         HideAllImmediate();
+        dispositionBar.transform.localScale = new Vector3(0, 1, 1);
         // npcSpeechAnim.SetTrigger(active ? "Appear" : "Hide");
         // npcInfoAnim.SetTrigger(active ? "Appear" : "Hide");
     }
@@ -59,7 +68,7 @@ public class DialogueMenu : MonoBehaviour {
         for(int i = 0; i < choices.Length; i++) {
             DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity);
             button.transform.SetParent(choicesPanel, false);
-            button.SetValues(i, choices[i]);
+            button.SetValues(i, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
             button.transform.localPosition = Vector3.up * buttonY;
             // button.GetComponent<RectTransform>().localPosition = Vector2.zero;
             // Debug.Log(choicesPanel.anchoredPosition);
@@ -78,7 +87,7 @@ public class DialogueMenu : MonoBehaviour {
         isChoicesActive = false;
     }
 
-    public void ShowNpcSpeech(string text) {
+    public void ShowNpcSpeech(string text, bool showAnimation = true) {
         npcSpeechAnim.gameObject.SetActive(true);
         npcSpeechAnim.SetTrigger("Appear");
         npcSpeechText.Display(text);
@@ -91,11 +100,11 @@ public class DialogueMenu : MonoBehaviour {
     public void ShowNpcInfo(NPC npc) {
         npcInfoAnim.gameObject.SetActive(true);
         npcInfoAnim.SetTrigger("Appear");
-        textNpcName.text = npc.charName;
+        textNpcName.text = npc.DisplayName;
         textNpcAge.text = npc.GetAgeString();
         textNpcOccupation.text = npc.GetOccupationString();
         textNpcWealth.text = npc.GetWealthString();
-        dispositionBar.localScale = new Vector3(npc.disposition / 100f, 1, 1);
+        UpdateDispositionBar(npc.disposition);
     }
 
     public void HideNpcInfo() {
@@ -128,5 +137,9 @@ public class DialogueMenu : MonoBehaviour {
                 return goodbyeColour;
         }
         return Color.white;
+    }
+
+    public void UpdateDispositionBar(int disposition) {
+        npcDisposition = disposition;
     }
 }

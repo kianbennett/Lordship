@@ -15,14 +15,14 @@ public class WeightMap<T> : ScriptableObject {
 
     public int GetRandomIndex() {
         float totalWeight = 0;
-        foreach(float weight in Map.values) totalWeight += weight;
+        foreach(float weight in Map.Values) totalWeight += weight;
 
         float r = UnityEngine.Random.value;
         float rWeight = totalWeight * r;
         float weightCumul = 0;
 
-        for(int i = 0; i < Map.keys.Count; i++) {
-            float weight = Map.GetValue(Map.keys[i]);
+        for(int i = 0; i < Map.Keys.Count; i++) {
+            float weight = Map.GetValue(Map.Keys[i]);
             if (weight > 0) {
                 weightCumul += weight;
                 if (weightCumul > rWeight) return i;
@@ -32,6 +32,6 @@ public class WeightMap<T> : ScriptableObject {
     }
 
     public T GetRandom() {
-        return Map.keys[GetRandomIndex()];
+        return Map.Keys[GetRandomIndex()];
     }
 }

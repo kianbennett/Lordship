@@ -11,8 +11,6 @@ public class StoryData : ScriptableObject
 {
     [SerializeField] private List<BeatData> _beats;
 
-    // public List<BeatData> Beats { get { return _beats; } }
- 
     public BeatData GetBeatById(int id)
     {
         return _beats.Find(b => b.ID == id);
