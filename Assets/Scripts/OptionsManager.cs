@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using UnityEngine.Rendering.PostProcessing;
 
 public class OptionsManager : Singleton<OptionsManager> {
 
@@ -10,11 +11,11 @@ public class OptionsManager : Singleton<OptionsManager> {
         private string key;
         private int value;
         private int defaultValue;
-        private bool boolValue { get { return value > 0; } }
 
         private Action<int> onValueChange;
 
         public int Value { get { return value; } }
+        public bool BoolValue { get { return value > 0; } }
 
         public Option(string key, int defaultValue, Action<int> onValueChange) {
             this.key = key;
@@ -58,7 +59,7 @@ public class OptionsManager : Singleton<OptionsManager> {
     }
 
     private void onChangeVolumeMusic(int value) {
-        AudioManager.instance.sourceMusic.volume = value / 10f * AudioManager.instance.musicBackground.Volume;
+        AudioManager.instance.sourceMusic.volume = value / 10f * AudioManager.instance.MusicPlayingVolume;
     }
 
     private void onChangeVolumeSFX(int value) {
@@ -67,6 +68,9 @@ public class OptionsManager : Singleton<OptionsManager> {
 
     private void onChangeHighQuality(int value) {
         // Toggle depth of field, AA and SSAO
+        CameraController.instance.SetPostProcessingEffectEnabled<AmbientOcclusion>(value == 1);
+        CameraController.instance.SetPostProcessingEffectEnabled<Bloom>(value == 1);
+        CameraController.instance.SetAntialiasingEnabled(value == 1);
     }
 
     private void onChangeFullscreen(int value) {

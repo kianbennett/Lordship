@@ -55,23 +55,23 @@ public class DialogueSystem : Singleton<DialogueSystem> {
 
     private void UpdateInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if(_currentBeat != null)
-            {
-                if (_currentBeat.ID == 1)
-                {
-                    // Application.Quit();
-                    PlayerController.instance.ExitDialogue();
-                }
-                else
-                {
-                    DisplayBeat(1, false);
-                }
-            }
-        }
-        else
-        {
+        // if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     if(_currentBeat != null)
+        //     {
+        //         if (_currentBeat.ID == 1)
+        //         {
+        //             // Application.Quit();
+        //             PlayerController.instance.ExitDialogue();
+        //         }
+        //         else
+        //         {
+        //             DisplayBeat(1, false);
+        //         }
+        //     }
+        // }
+        // else
+        // {
             KeyCode alpha = KeyCode.Alpha1;
             KeyCode keypad = KeyCode.Keypad1;
             
@@ -91,7 +91,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                 ++alpha;
                 ++keypad;
             }
-        }
+        // }
     }
 
     public void PickChoice(int i) {
@@ -116,7 +116,8 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                     npcSpeaking.RespondToFlattery(choice.IsCorrectChoice);
                     break;
                 case SpeechType.BribeResponse:
-                    choice.IsCorrectChoice = npcSpeaking.ReceiveBribe(i);    
+                    choice.IsCorrectChoice = npcSpeaking.ReceiveBribe(i);
+                    LevelManager.instance.SpendBribe(i);
                     break;
                 case SpeechType.RumourStart:
                     choice.IsCorrectChoice = npcSpeaking.CanGiveRumour() && HasRumourAvailable(npcSpeaking);
@@ -169,7 +170,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         if(data.DisplayTextType == SpeechType.FlatterResponse || data.DisplayTextType == SpeechType.ThreatenResponse ||
                 data.DisplayTextType == SpeechType.BribeResponse) 
         {
-            HUD.instance.dialogueMenu.ShowNpcSpeech(data.GetDisplayText(success), showAnimations);
+            HUD.instance.dialogueMenu.ShowNpcSpeech(data.GetDisplayText(_textData, success), showAnimations);
         } 
         else if(data.DisplayTextType == SpeechType.RumourStart) 
         {
@@ -193,7 +194,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         }
         else 
         {
-            HUD.instance.dialogueMenu.ShowNpcSpeech(data.GetDisplayText(npcSpeaking.DispositionType), showAnimations);
+            HUD.instance.dialogueMenu.ShowNpcSpeech(data.GetDisplayText(_textData, npcSpeaking.DispositionType), showAnimations);
         }
         // npcSpeech.Display(data.GetDisplayText(npcSpeaking.disposition));
 
@@ -245,6 +246,9 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                     usedTextLines.Add(text);
                     data.Decision[i].DisplayText = text;
                     if(i == correctChoice) data.Decision[i].DisplayText += " *";
+                    break;
+                case ChoiceTextType.BribeAmount:
+                    data.Decision[i].DisplayText = LevelManager.instance.BribeGoldAmount(i) + " gold";
                     break;
                 case ChoiceTextType.RumourMid:
                     Rumour rumour = GetRumourForTargetNpc(npcSpeaking);

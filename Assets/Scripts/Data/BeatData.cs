@@ -49,26 +49,24 @@ public class BeatData
     public bool CopyChoicesFromBeat { get { return _copyChoicesFromBeat; } }
     public int BeatIdToCopyFrom { get { return _beatIdToCopyFrom; } }
 
-    public string GetDisplayText(DispositionType disposition) {
-        DialogueTextData data = DialogueTextData.LoadData();
-
+    public string GetDisplayText(DialogueTextData textData, DispositionType disposition) {
         switch(_displayTextType) {
             case SpeechType.Greeting:
-                return data.GetRandomGreeting(disposition);
+                return textData.GetRandomGreeting(disposition);
             case SpeechType.Listening:
-                return data.GetRandomListening(disposition);
+                return textData.GetRandomListening(disposition);
             case SpeechType.FlatterResponse:
-                return data.GetRandomFlatteryResponse(disposition == DispositionType.Positive);
+                return textData.GetRandomFlatteryResponse(disposition == DispositionType.Positive);
             case SpeechType.ThreatenResponse:
-                return data.GetRandomThreatenResponse(disposition == DispositionType.Positive);
+                return textData.GetRandomThreatenResponse(disposition == DispositionType.Positive);
             case SpeechType.BribeResponse:
-                return data.GetRandomBribeResponse(disposition == DispositionType.Positive);
+                return textData.GetRandomBribeResponse(disposition == DispositionType.Positive);
         }
         return "";
     }
 
     // Success is used for responses to certain 
-    public string GetDisplayText(bool success) {
-        return GetDisplayText(success ? DispositionType.Positive : DispositionType.Negative);
+    public string GetDisplayText(DialogueTextData textData, bool success) {
+        return GetDisplayText(textData, success ? DispositionType.Positive : DispositionType.Negative);
     }
 }

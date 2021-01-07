@@ -47,12 +47,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceMusic: {fileID: 2877329521199750070}
   sourceSFX: {fileID: 2877329520234261767}
-  musicBackground:
-    clip: {fileID: 0}
-    volume: 1
+  musicTown:
+    clip: {fileID: 8300000, guid: 13339f93d462ece489f7cd5f841a5a14, type: 3}
+    volume: 0.04
   sfxButtonClick:
-    clip: {fileID: 0}
-    volume: 1
+    clip: {fileID: 8300000, guid: 9cbfa5ab93653144fa9ee09380deface, type: 3}
+    volume: 0.3
+  sfxBlip:
+    clip: {fileID: 8300000, guid: c1285e62d861e0a47b545e6a0cd828a9, type: 3}
+    volume: 0.1
 --- !u!1 &2877329520234261761
 GameObject:
   m_ObjectHideFlags: 0

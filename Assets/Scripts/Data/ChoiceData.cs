@@ -7,7 +7,7 @@ public enum DialogueType {
 }
 
 public enum ChoiceTextType {
-    Predefined, RandomFlatter, RandomThreaten, RumourMid
+    Predefined, RandomFlatter, RandomThreaten, BribeAmount, RumourMid
 }
 
 [Serializable]

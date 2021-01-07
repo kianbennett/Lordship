@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.PostProcessing;
 
 public class CameraController : Singleton<CameraController> {
 
@@ -11,6 +12,8 @@ public class CameraController : Singleton<CameraController> {
     public new Camera camera;
     [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform dialogueCameraPos;
+    [SerializeField] private PostProcessVolume postProcessVolume;
+    [SerializeField] private PostProcessLayer postProcessLayer;
 
     [Header("Parameters")]
     [SerializeField] private float panSpeed;
@@ -192,5 +195,17 @@ public class CameraController : Singleton<CameraController> {
             gameObject.SetActive(true);
         }
         objectsHiddenInDialogue.Clear();
+    }
+
+    public void SetPostProcessingEffectEnabled<T>(bool enabled) where T : PostProcessEffectSettings {
+        postProcessVolume.profile.TryGetSettings(out T settings);
+        if(settings != null) {
+            settings.enabled.value = enabled;
+            settings.active = enabled;
+        }
+    }
+
+    public void SetAntialiasingEnabled(bool enabled) {
+        postProcessLayer.antialiasingMode = enabled ? PostProcessLayer.Antialiasing.FastApproximateAntialiasing : PostProcessLayer.Antialiasing.None;
     }
 }

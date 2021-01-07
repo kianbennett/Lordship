@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class LevelManager : Singleton<LevelManager> {
 
@@ -14,18 +15,24 @@ public class LevelManager : Singleton<LevelManager> {
     // Need a reference to all grid points of type Path or Pavement to spawn NPCs on and to set where they walk to
     private GridPoint[] roadGridPoints; 
     private float timeElapsed;
+    private int goldAmount;
+    private bool isPaused;
 
     public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
     public List<NPC> NpcList { get { return npcs; } }
+    public int GoldRemaining { get { return goldAmount; } }
+    public bool IsPaused { get { return isPaused; } }
 
     protected override void Awake() {
         base.Awake();
+        AudioManager.instance.musicTown.PlayAsMusic();
     }
 
     // Spawn NPCs in Start after grid points get set in TownGenerator's Awake
     void Start() {
         spawnNpcs();
         DialogueSystem.instance.InitialiseRumours();
+        goldAmount = 1000;
     }
 
     void Update() {
@@ -33,6 +40,17 @@ public class LevelManager : Singleton<LevelManager> {
         // For now wrap over to 0, this wouldn't happen in an actual level as the day would end
         if(timeElapsed > dayDuration) timeElapsed = 0;
         dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
+    }
+
+    public void SetPaused(bool paused) {
+        isPaused = paused;
+        Time.timeScale = paused ? 0 : 1;
+        CameraController.instance.SetPostProcessingEffectEnabled<ColorGrading>(paused);
+        HUD.instance.pauseMenu.SetActive(paused);
+    }
+
+    public void TogglePaused() {
+        SetPaused(!isPaused);
     }
 
     // Should probably move this to TownGenerator
@@ -80,5 +98,26 @@ public class LevelManager : Singleton<LevelManager> {
             if(dist == 0 || d < dist) dist = d;
         }
         return dist;
+    }
+
+    public void RemoveGold(int amount) {
+        goldAmount -= amount;
+        if(goldAmount < 0) goldAmount = 0;
+    }
+
+    // bribeAmount = 0 (low), 1 (mid), 2 (height), returns
+    public int BribeGoldAmount(int bribeAmount) {
+        int goldAmount = 50;
+        if(bribeAmount == 1) goldAmount = 200;
+        if(bribeAmount == 2) goldAmount = 500;
+        return goldAmount;
+    }
+
+    public void SpendBribe(int bribeAmount) {
+        LevelManager.instance.RemoveGold(BribeGoldAmount(bribeAmount));
+    }
+
+    public bool CanAffordBribe(int bribeAmount) {
+        return GoldRemaining >= BribeGoldAmount(bribeAmount);
     }
 }

@@ -35,16 +35,16 @@ MonoBehaviour:
       _textType: 0
       _beatId: 4
       _type: 3
-      _correctChoice: 0
+      _correctChoice: 1
     - _index: 3
       _text: Rumours
       _textType: 0
       _beatId: 8
       _type: 4
-      _correctChoice: 1
+      _correctChoice: 0
     - _index: 4
       _text: "If I get elected I\u2019ll be sure to import lots more winter berries.\r"
-      _textType: 3
+      _textType: 4
       _beatId: 9
       _type: 4
       _correctChoice: 0
@@ -62,23 +62,24 @@ MonoBehaviour:
     _beatIdToCopyFrom: 1
     _choices:
     - _index: 0
-      _text: I must say your begonias are flourishing, {name}! *
+      _text: I must say your begonias are flourishing, {name}!
       _textType: 1
       _beatId: 5
       _type: 1
-      _correctChoice: 1
+      _correctChoice: 0
     - _index: 1
-      _text: "You\u2019ve been looking great in the polls lately, I\u2019m so jealous."
+      _text: You've been looking great in the polls lately, I'm so jealous!
       _textType: 1
       _beatId: 5
       _type: 1
       _correctChoice: 0
     - _index: 2
-      _text: You deserve to earn so much more with all the hard work you put in.
+      _text: You deserve to earn so much more with all the hard work you're putting
+        in! *
       _textType: 1
       _beatId: 5
       _type: 1
-      _correctChoice: 0
+      _correctChoice: 1
     - _index: 3
       _text: Nevermind
       _textType: 0
@@ -93,19 +94,19 @@ MonoBehaviour:
     _beatIdToCopyFrom: 1
     _choices:
     - _index: 0
-      _text: Potician treat *
-      _textType: 2
-      _beatId: 6
-      _type: 1
-      _correctChoice: 1
-    - _index: 1
-      _text: Farmer threat
+      _text: Potician treat
       _textType: 2
       _beatId: 6
       _type: 1
       _correctChoice: 0
+    - _index: 1
+      _text: Homemaker threat *
+      _textType: 2
+      _beatId: 6
+      _type: 1
+      _correctChoice: 1
     - _index: 2
-      _text: Craftsman threat
+      _text: Poor threat
       _textType: 2
       _beatId: 6
       _type: 1
@@ -124,20 +125,20 @@ MonoBehaviour:
     _beatIdToCopyFrom: 0
     _choices:
     - _index: 0
-      _text: 20 gold
-      _textType: 0
-      _beatId: 7
-      _type: 3
-      _correctChoice: 1
-    - _index: 1
-      _text: 200 gold
-      _textType: 0
+      _text: 50 gold
+      _textType: 3
       _beatId: 7
       _type: 3
       _correctChoice: 0
+    - _index: 1
+      _text: 200 gold
+      _textType: 3
+      _beatId: 7
+      _type: 3
+      _correctChoice: 1
     - _index: 2
       _text: 500 gold
-      _textType: 0
+      _textType: 3
       _beatId: 7
       _type: 3
       _correctChoice: 0
@@ -159,7 +160,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 2
       _type: 1
-      _correctChoice: 0
+      _correctChoice: 1
     - _index: 1
       _text: Threaten...
       _textType: 0
@@ -171,7 +172,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 4
       _type: 3
-      _correctChoice: 1
+      _correctChoice: 0
     - _index: 3
       _text: Rumours
       _textType: 0
@@ -246,28 +247,34 @@ MonoBehaviour:
       _beatId: 2
       _type: 1
       _correctChoice: 0
-    - _index: 0
+    - _index: 1
       _text: Threaten...
       _textType: 0
       _beatId: 3
       _type: 2
       _correctChoice: 0
-    - _index: 0
+    - _index: 2
       _text: Bribe...
       _textType: 0
       _beatId: 4
       _type: 3
       _correctChoice: 1
-    - _index: 0
+    - _index: 3
       _text: Rumours
       _textType: 0
       _beatId: 8
       _type: 4
       _correctChoice: 0
-    - _index: 0
-      _text: Goodbye
+    - _index: 4
+      _text: "If I get elected I\u2019ll be sure to import lots more winter berries.\r"
+      _textType: 4
+      _beatId: 9
+      _type: 4
+      _correctChoice: 0
+    - _index: 5
+      _text: Goobye.
       _textType: 0
-      _beatId: 1
+      _beatId: 10
       _type: 5
       _correctChoice: 0
     _beatType: 3
@@ -282,7 +289,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 2
       _type: 1
-      _correctChoice: 0
+      _correctChoice: 1
     - _index: 1
       _text: Threaten...
       _textType: 0
@@ -294,7 +301,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 4
       _type: 3
-      _correctChoice: 1
+      _correctChoice: 0
     - _index: 3
       _text: Rumours
       _textType: 0

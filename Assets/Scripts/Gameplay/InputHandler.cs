@@ -72,11 +72,14 @@ public class InputHandler : Singleton<InputHandler> {
             }
         }
 
-        // if(Input.GetKeyDown(KeyCode.Escape)) {
-        //     if(PlayerController.instance.IsInDialogue) {
-        //         PlayerController.instance.ExitDialogue();
-        //     }
-        // }
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            if(HUD.instance.optionsMenu.gameObject.activeSelf) {
+                HUD.instance.optionsMenu.SetActive(false);
+                AudioManager.instance.PlayButtonClick();
+            } else {
+                LevelManager.instance.TogglePaused();
+            }
+        }
     }
 
     private void onLeftClickDown() {

@@ -14,6 +14,7 @@ public class DialogueMenu : MonoBehaviour {
     [SerializeField] private Image dispositionBar;
     [SerializeField] private RectTransform choicesPanel;
     [SerializeField] private Animator npcSpeechAnim, npcInfoAnim;
+    [SerializeField] private TextMeshProUGUI textGold;
 
     [SerializeField] private Color flatterColour, threatenColour, bribeColour, rumoursColour, goodbyeColour;
     [SerializeField] private Color dispositionColourPositive, dispositionColourNeutral, dispositionColourNegative;
@@ -46,6 +47,8 @@ public class DialogueMenu : MonoBehaviour {
         } else {
             dispositionBar.color = Color.Lerp(dispositionColourNeutral, dispositionColourPositive, (scaleX - 0.5f) / 0.5f);
         }
+
+        textGold.text = LevelManager.instance.GoldRemaining + "g";
     }
 
     public void SetActive(bool active) {
@@ -77,6 +80,9 @@ public class DialogueMenu : MonoBehaviour {
             // Give a special golden border to unlocked rumours
             if(choices[i].TextType == ChoiceTextType.RumourMid) {
                 button.SetSpecial();
+            }
+            if(choices[i].TextType == ChoiceTextType.BribeAmount) {
+                button.SetInteractible(LevelManager.instance.CanAffordBribe(i));
             }
 
             choiceButtons.Add(button);

@@ -7,6 +7,7 @@ using TMPro;
 public class DialogueChoiceButton : MonoBehaviour {
 
     [SerializeField] private RectTransform rectTransform;
+    [SerializeField] private Button button;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image image;
     [SerializeField] private Outline outline;
@@ -31,5 +32,10 @@ public class DialogueChoiceButton : MonoBehaviour {
 
     public void SetSpecial() {
         outline.effectColor = outlineColourSpecial;
+    }
+
+    public void SetInteractible(bool interactable) {
+        button.interactable = interactable;
+        text.color = interactable ? Color.white : new Color(1, 1, 1, 0.5f);
     }
 }

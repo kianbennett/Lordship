@@ -16,6 +16,7 @@ public class AudioManager : Singleton<AudioManager> {
             instance.sourceMusic.clip = clip;
             instance.sourceMusic.Play();
             instance.sourceMusic.volume = (OptionsManager.instance.volumeMusic.Value / 10f) * volume;
+            instance.musicPlaying = this;
         }
 
         public void PlayAsSFX(bool randomPitch = false) {
@@ -30,18 +31,23 @@ public class AudioManager : Singleton<AudioManager> {
     public AudioSource sourceSFX;
 
     [Header("Music")]
-    [AudioClip] public CustomAudio musicBackground;
+    [AudioClip] public CustomAudio musicTown;
 
     [Header("SFX")]
     [AudioClip] public CustomAudio sfxButtonClick;
+    [AudioClip] public CustomAudio sfxBlip;
 
     private bool musicMuted;
+    private CustomAudio musicPlaying;
+
+    public float MusicPlayingVolume { get { return musicPlaying != null ? musicPlaying.Volume : 0; } }
 
     void Update() {
-        float musicVolume = musicMuted ? 0 : (OptionsManager.instance.volumeMusic.Value / 10f) * musicBackground.Volume;
+        float musicVolume = musicMuted ? 0 : (OptionsManager.instance.volumeMusic.Value / 10f) * MusicPlayingVolume;
         sourceMusic.volume = Mathf.MoveTowards(sourceMusic.volume, musicVolume, Time.deltaTime * 1f);
     }
 
+    // Put this in its own function so it can be called by buttons
     public void PlayButtonClick() {
         sfxButtonClick.PlayAsSFX();
     }
