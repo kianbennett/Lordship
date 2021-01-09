@@ -98,7 +98,7 @@ public class Pathfinder : Singleton<Pathfinder> {
             // If taking too long skip to the next frame to avoid freezing
             timer += stopwatch.ElapsedTicks - time;
             // Debug.Log(timer);
-            if(timer > 300000) {
+            if(timer > 50000) {
                 timer = 0;
                 yield return null;
             }

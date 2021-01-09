@@ -14,7 +14,7 @@ public class Tooltip : MonoBehaviour {
             Hide();
         }
 
-        rectTransform.position = Input.mousePosition + Vector3.up * rectTransform.sizeDelta.y / 2;
+        rectTransform.position = Input.mousePosition/* + Vector3.up * rectTransform.sizeDelta.y / 2*/;
         float width = Mathf.Lerp(rectTransform.sizeDelta.x, textComponent.preferredWidth + 16, Time.deltaTime * 10);
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
     }

@@ -33,11 +33,7 @@ public class InputHandler : Singleton<InputHandler> {
         }
 
         if (leftClickHeld) {
-            float d = leftClickMoveDelta.magnitude;
             leftClickMoveDelta = (Vector2) Input.mousePosition - leftClickInit;
-
-            // The first frame the mouse is dragged
-            if (d == 0 && leftClickMoveDelta.magnitude != 0) onLeftClickDragStart();
             onLeftClickHold();
         }
 
@@ -63,12 +59,16 @@ public class InputHandler : Singleton<InputHandler> {
         if (Input.GetKey(KeyCode.UpArrow)) CameraController.instance.PanForward();
         if (Input.GetKey(KeyCode.DownArrow)) CameraController.instance.PanBackward();
 
+        if(Input.GetKeyDown(KeyCode.S)) {
+            PlayerController.instance.playerCharacter.movement.StopMoving();
+        }
+
         // Cycle between selected characters
         if (Input.GetKeyDown(KeyCode.Space)) {
-            if(CameraController.instance.objectToFollow == PlayerController.instance.selectedCharacter.cameraTarget) {
+            if(CameraController.instance.objectToFollow == PlayerController.instance.playerCharacter.cameraTarget) {
                 CameraController.instance.objectToFollow = null;
             } else {
-                CameraController.instance.objectToFollow = PlayerController.instance.selectedCharacter.cameraTarget;
+                CameraController.instance.objectToFollow = PlayerController.instance.playerCharacter.cameraTarget;
             }
         }
 
@@ -83,43 +83,35 @@ public class InputHandler : Singleton<InputHandler> {
     }
 
     private void onLeftClickDown() {
-        // Delect the selected character unless the player is still hovering it
-        if(PlayerController.instance.selectableHovered != PlayerController.instance.selectedCharacter) {
-            PlayerController.instance.DeselectSelectedCharacter();
-        }
-    }
-
-    private void onLeftClickDragStart() {
+        CameraController.instance.Grab();
     }
 
     private void onLeftClickHold() {
+        if (leftClickMoveDelta.magnitude >= minDistForDrag && mouseDelta.magnitude > 0) {
+            CameraController.instance.Pan();
+        }
     }
 
     private void onLeftClickRelease() {
+        CameraController.instance.Release();
         if (leftClickMoveDelta.magnitude == 0) {
             // PlayerController.instance.DeselectSelectedCharacter();
-            if (PlayerController.instance.selectableHovered && !PlayerController.instance.IsInDialogue) {
-                PlayerController.instance.selectableHovered.OnLeftClick();
+            if (PlayerController.instance.characterHovered && !PlayerController.instance.IsInDialogue) {
+                PlayerController.instance.characterHovered.OnLeftClick();
             }
         }
     }
 
     private void onRightClickDown() {
-        CameraController.instance.Grab();
     }
 
     private void onRightClickHold() {
-        if (rightClickMoveDelta.magnitude >= minDistForDrag && mouseDelta.magnitude > 0) {
-            CameraController.instance.Pan();
-        }
     }
 
     private void onRightClickRelease() {
-        CameraController.instance.Release();
-
         if (rightClickMoveDelta.magnitude < minDistForDrag && !PlayerController.instance.IsInDialogue) {
-            if (PlayerController.instance.selectableHovered) {
-                PlayerController.instance.selectableHovered.OnRightClick();
+            if (PlayerController.instance.characterHovered) {
+                PlayerController.instance.characterHovered.OnRightClick();
             } else {
                 if(CameraController.instance.GetMousePointOnGround(out Vector3 point)) {
                     PlayerController.instance.MoveCharacter(point, true);

@@ -22,9 +22,15 @@ public class WeightMapEditor<T> : Editor {
     protected void initValues(T[] list, string[] names) {
         if (list == null || names == null) return;
         if (weightMap.Map == null || weightMap.Map.Keys.Count != list.Length) {
+            // If the map size has changed then create a copy of the map and if the new map contains the same keys, use the old map's values
+            SerializableDictionary<T, float> oldMap = new SerializableDictionary<T, float>(weightMap.Map);
             weightMap.Map.Clear();
             foreach (T t in list) {
-                weightMap.Map.Add(t, 1);
+                if(oldMap.ContainsKey(t)) {
+                    weightMap.Map.Add(t, oldMap.GetValue(t));
+                } else {
+                    weightMap.Map.Add(t, 1);
+                }
             }
         }
         this.names = names;

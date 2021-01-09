@@ -54,7 +54,7 @@ public class NPC : Character {
         base.Update();
 
         if(wander && !movement.HasTarget() && !movement.IsSpeaking() && pauseTimer <= 0) {
-            GridPoint[] roadGridPoints = LevelManager.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
+            GridPoint[] roadGridPoints = TownGenerator.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
             GridPoint target = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
             movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target));
             bool pause = Random.value > 0.75f; // 75% chance to pause after reaching target
@@ -70,7 +70,7 @@ public class NPC : Character {
 
         charName = AssetManager.instance.GetUniqueNpcName();
         age = (CharacterAge) Random.Range(0, System.Enum.GetNames(typeof(CharacterAge)).Length);
-        occupation = (CharacterOccupation) Random.Range(0, System.Enum.GetNames(typeof(CharacterOccupation)).Length);
+        occupation = (CharacterOccupation) Random.Range(0, System.Enum.GetNames(typeof(CharacterOccupation)).Length - 1); // -1 to not include politician
         wealth = (CharacterWealth) Random.Range(0, System.Enum.GetNames(typeof(CharacterWealth)).Length);
 
         disposition = Random.Range(40, 60);
@@ -83,6 +83,7 @@ public class NPC : Character {
         } else {
             HUD.instance.tooltip.Hide();
         }
+        appearance.SetHighlighted(hovered);
     }
 
     public override void OnRightClick() {
@@ -95,14 +96,26 @@ public class NPC : Character {
         HUD.instance.dialogueMenu.UpdateDispositionBar(disposition);
     }
 
-    public void RespondToFlattery(bool success) {
-        if(success) ChangeDisposition(Random.Range(14, 20));
-            else ChangeDisposition(-Random.Range(14, 20));
+    public bool RespondToFlattery(bool success) {
+        if(success) {
+            int disposition = Random.Range(14, 20);
+            if(occupation == CharacterOccupation.Knight) disposition += 10; // Knights particularly enjoy flattery
+            ChangeDisposition(disposition);
+        } else {
+            ChangeDisposition(-Random.Range(14, 20));
+        }
+        return success;
     }
 
-    public void RespondToThreaten(bool success) {
-        if(success) ChangeDisposition(Random.Range(14, 20));
-            else ChangeDisposition(-Random.Range(14, 20));
+    public bool RespondToThreaten(bool success) {
+        if(occupation == CharacterOccupation.Knight) success = false; // Knights can't be threatened
+
+        if(success) {
+            ChangeDisposition(Random.Range(14, 20));
+        } else {
+            ChangeDisposition(-Random.Range(14, 20));
+        }
+        return success;
     }
 
     // bribeAmount = 0 (low), 1 (mid), 2 (height), returns success

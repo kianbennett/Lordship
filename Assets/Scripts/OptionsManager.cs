@@ -68,9 +68,11 @@ public class OptionsManager : Singleton<OptionsManager> {
 
     private void onChangeHighQuality(int value) {
         // Toggle depth of field, AA and SSAO
-        CameraController.instance.SetPostProcessingEffectEnabled<AmbientOcclusion>(value == 1);
-        CameraController.instance.SetPostProcessingEffectEnabled<Bloom>(value == 1);
-        CameraController.instance.SetAntialiasingEnabled(value == 1);
+        if(CameraController.instance) {
+            CameraController.instance.SetPostProcessingEffectEnabled<AmbientOcclusion>(value == 1);
+            CameraController.instance.SetPostProcessingEffectEnabled<Bloom>(value == 1);
+            CameraController.instance.SetAntialiasingEnabled(value == 1);
+        }
     }
 
     private void onChangeFullscreen(int value) {

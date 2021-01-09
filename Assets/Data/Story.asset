@@ -23,7 +23,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 2
       _type: 1
-      _correctChoice: 0
+      _correctChoice: 1
     - _index: 1
       _text: Threaten...
       _textType: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
       _textType: 0
       _beatId: 4
       _type: 3
-      _correctChoice: 1
+      _correctChoice: 0
     - _index: 3
       _text: Rumours
       _textType: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
       _type: 4
       _correctChoice: 0
     - _index: 5
-      _text: Goobye.
+      _text: Goodbye.
       _textType: 0
       _beatId: 10
       _type: 5

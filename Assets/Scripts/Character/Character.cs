@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
  *  Central component to refer to other character components
  */
 
-public class Character : SelectableObject {
+public class Character : MonoBehaviour {
 
     public CharacterMovement movement;
     public CharacterAppearance appearance;
@@ -15,33 +15,43 @@ public class Character : SelectableObject {
 
     [SerializeField] private GameObject selectMarker;
 
-    protected override void Awake() {
-        base.Awake();
+    private bool isHovered;
+    private float doubleLeftClickTimer;
+    private const float doubleLeftClickThreshold = 0.5f;
+
+    protected virtual void Awake() {
         movement = GetComponent<CharacterMovement>();
         appearance = GetComponent<CharacterAppearance>();
     }
 
-    public override void SetHovered(bool hovered) {
-        base.SetHovered(hovered);
-    }
-
-    public override void SetSelected(bool selected) {
-        base.SetSelected(selected);
-        selectMarker.SetActive(selected);
-    }
-
-    public override void OnLeftClick() {
-        base.OnLeftClick();
-        PlayerController.instance.SelectCharacter(this);
-    }
-
-    public void Destroy() {
-        Destroy(gameObject);
-        if (PlayerController.instance.selectedCharacter == this) {
-            PlayerController.instance.selectedCharacter = null;
+    protected virtual void Update() {
+        if(doubleLeftClickTimer < doubleLeftClickThreshold) {
+            doubleLeftClickTimer += Time.deltaTime;
         }
-        if (PlayerController.instance.selectableHovered == this) {
-            PlayerController.instance.selectableHovered = null;
-        }
+    }
+
+    public virtual void SetHovered(bool hovered) {
+        isHovered = hovered;
+        PlayerController.instance.characterHovered = hovered ? this : null;
+    }
+
+    public virtual void OnLeftClick() {
+        if (doubleLeftClickTimer < doubleLeftClickThreshold) OnDoubleLeftClick();
+        doubleLeftClickTimer = 0;
+    }
+
+    public virtual void OnDoubleLeftClick() {
+        CameraController.instance.objectToFollow = cameraTarget;
+    }
+
+    public virtual void OnRightClick() {
+    }
+
+    void OnMouseEnter() {
+        SetHovered(true);
+    }
+
+    void OnMouseExit() {
+        SetHovered(false);
     }
 }

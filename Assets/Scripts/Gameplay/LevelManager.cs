@@ -3,36 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
+public enum Season { Spring, Summer, Autumn, Winter }
+
 public class LevelManager : Singleton<LevelManager> {
 
-    [SerializeField] private int npcsMin, npcsMax;
-    [SerializeField] private NPC npcPrefab;
-    [SerializeField] private Transform npcContainer;
     [SerializeField] private DayNightCycle dayNightCycle;
     [SerializeField] private float dayDuration;
 
-    private List<NPC> npcs;
-    // Need a reference to all grid points of type Path or Pavement to spawn NPCs on and to set where they walk to
-    private GridPoint[] roadGridPoints; 
     private float timeElapsed;
     private int goldAmount;
     private bool isPaused;
+    private int currentYear, electionYear;
+    private Season currentSeason, electionSeason;
 
-    public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
-    public List<NPC> NpcList { get { return npcs; } }
+    private NPC[] opponents;
+
     public int GoldRemaining { get { return goldAmount; } }
     public bool IsPaused { get { return isPaused; } }
 
     protected override void Awake() {
         base.Awake();
         AudioManager.instance.musicTown.PlayAsMusic();
+        HUD.instance.screenFader.SetAlpha(1);
     }
 
-    // Spawn NPCs in Start after grid points get set in TownGenerator's Awake
     void Start() {
-        spawnNpcs();
+        TownGenerator.instance.Generate();
+        // Spawn 3 opponent politicians
+        opponents = new NPC[3];
+        for(int i = 0; i < opponents.Length; i++) {
+            opponents[i] = TownGenerator.instance.npcSpawner.SpawnNewNpc();
+            opponents[i].occupation = CharacterOccupation.Politician;
+            opponents[i].wealth = CharacterWealth.Rich;
+        }
+        // Only fade in once town has been spawned to avoid stuttering while fading
+        HUD.instance.screenFader.FadeIn();
+
+        Random.InitState((int) System.DateTime.UtcNow.Ticks);
         DialogueSystem.instance.InitialiseRumours();
         goldAmount = 1000;
+        currentYear = Random.Range(1500, 1700);
+        electionYear = currentYear + 1;
+        currentSeason = Season.Autumn;
+        electionSeason = Season.Summer;
     }
 
     void Update() {
@@ -40,6 +53,20 @@ public class LevelManager : Singleton<LevelManager> {
         // For now wrap over to 0, this wouldn't happen in an actual level as the day would end
         if(timeElapsed > dayDuration) timeElapsed = 0;
         dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
+
+        if(Input.GetKeyDown(KeyCode.P)) {
+            List<CharacterAppearance> characters = new List<CharacterAppearance>();
+            List<string> names = new List<string>();
+            characters.Add(PlayerController.instance.playerCharacter.appearance);
+            names.Add("You");
+            foreach(NPC npc in opponents) {
+                names.Add(npc.DisplayName);
+                characters.Add(npc.appearance);
+            }
+            int totalVotes = TownGenerator.instance.npcSpawner.NpcList.Count - 3; // -3 for the 3 opponents
+            HUD.instance.resultsMenu.ShowResults(currentSeason, currentYear, electionSeason, electionYear, characters.ToArray(), 
+                names.ToArray(), calculateVotes(), totalVotes);
+        }
     }
 
     public void SetPaused(bool paused) {
@@ -51,53 +78,6 @@ public class LevelManager : Singleton<LevelManager> {
 
     public void TogglePaused() {
         SetPaused(!isPaused);
-    }
-
-    // Should probably move this to TownGenerator
-    private void spawnNpcs() {
-        int npcNumber = Random.Range(npcsMax, npcsMax);
-        MathHelper.stopwatch.Restart();
-
-        // Destroy any existing NPCs
-        if(npcs != null) {
-            foreach(NPC character in npcs) Destroy(character.gameObject);
-        }
-        npcs = new List<NPC>();
-
-        roadGridPoints = TownGenerator.instance.GetGridPoints(GridPoint.Type.Path, GridPoint.Type.Pavement);
-
-        // For each NPC use Mitchell's Best Candidate to find a grid point further away from all others
-        for(int i = 0; i < npcNumber; i++) {
-            GridPoint bestCandidate = null;
-            float bestDistance = 0;
-            int sampleCount = 10; // High count yields better distrubition but lower performance
-            for(int s = 0; s < sampleCount; s++) {
-                GridPoint candidate = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
-                float distance = distToClosestNpc(candidate, npcs);
-                if(distance > bestDistance || bestDistance == 0) {
-                    bestCandidate = candidate;
-                    bestDistance = distance;
-                }
-            }
-
-            NPC npc = Instantiate(npcPrefab, TownGenerator.instance.GridPointToWorldPos(bestCandidate) + new Vector3(0.5f, 0, 0.5f), Quaternion.identity, npcContainer);
-            npc.Randomise();
-            npc.name = "NPC (" + npc.DisplayName + ")";
-            npcs.Add(npc);
-        }
-
-        MathHelper.stopwatch.Stop();
-        Debug.LogFormat("{0} NPCs spawned in {1}ms", npcNumber, (float) MathHelper.stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond);
-    }
-
-    // Get distance from grid point to the closes NPC
-    private float distToClosestNpc(GridPoint gridPoint, List<NPC> characters) {
-        float dist = 0;
-        foreach(NPC c in characters) {
-            float d = Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(gridPoint), c.transform.position);
-            if(dist == 0 || d < dist) dist = d;
-        }
-        return dist;
     }
 
     public void RemoveGold(int amount) {
@@ -119,5 +99,40 @@ public class LevelManager : Singleton<LevelManager> {
 
     public bool CanAffordBribe(int bribeAmount) {
         return GoldRemaining >= BribeGoldAmount(bribeAmount);
+    }
+
+    private int[] calculateVotes() {
+        int[] votes = new int[opponents.Length + 1];
+
+        float[] opponentPopularities = new float[opponents.Length];
+        float totalPopularity = 0;
+        for(int i = 0; i < opponentPopularities.Length; i++) {
+            // Each opponent has a random popularity value between 0.4 and 0.6 which influences which one each npc will vote for
+            opponentPopularities[i] = 0.4f + 0.2f * Random.value;
+            totalPopularity += opponentPopularities[i];
+        }
+
+        foreach(NPC npc in TownGenerator.instance.npcSpawner.NpcList) {
+            if(npc.occupation != CharacterOccupation.Politician) {
+                int dispositionForVote = Random.Range(50, 70);
+                // For for player
+                if(npc.disposition >= dispositionForVote) {
+                    votes[0]++;
+                } else {
+                    // Otherwise vote for random opponent based on their popularity
+                    float r = Random.Range(0f, totalPopularity);
+                    float p = 0;
+                    for(int i = 0; i < opponentPopularities.Length; i++) {
+                        p += opponentPopularities[i];
+                        if(r < p) {
+                            votes[i + 1]++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return votes;
     }
 }

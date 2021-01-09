@@ -32,6 +32,7 @@ public class AudioManager : Singleton<AudioManager> {
 
     [Header("Music")]
     [AudioClip] public CustomAudio musicTown;
+    [AudioClip] public CustomAudio musicMainMenu;
 
     [Header("SFX")]
     [AudioClip] public CustomAudio sfxButtonClick;

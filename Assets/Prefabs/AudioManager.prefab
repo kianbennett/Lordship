@@ -50,6 +50,9 @@ MonoBehaviour:
   musicTown:
     clip: {fileID: 8300000, guid: 13339f93d462ece489f7cd5f841a5a14, type: 3}
     volume: 0.04
+  musicMainMenu:
+    clip: {fileID: 8300000, guid: 48a44e4db0e270f42ba9dc694623294f, type: 3}
+    volume: 0.04
   sfxButtonClick:
     clip: {fileID: 8300000, guid: 9cbfa5ab93653144fa9ee09380deface, type: 3}
     volume: 0.3

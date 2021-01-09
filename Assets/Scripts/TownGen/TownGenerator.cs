@@ -31,6 +31,8 @@ public class GridPoint {
 [ExecuteInEditMode]
 public class TownGenerator : Singleton<TownGenerator> {
 
+    public NpcSpawner npcSpawner;
+
     [Header("Debug")]
     public bool debugGrid;
     public bool debugRoadPath;
@@ -71,14 +73,16 @@ public class TownGenerator : Singleton<TownGenerator> {
 
     private List<BSPNode> nodes;
     private GridPoint[,] gridPoints;
+    private GridPoint[] roadGridPoints; // Grid points of type Path or Pavement to spawn NPCs on and to set where they walk to
 
     private List<Light> lampLights;
 
     public GridPoint[,] GridPoints { get { return gridPoints; }}
+    public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
 
     protected override void Awake() {
         base.Awake();
-        Generate();
+        // Generate();
     }
 
     void Update() {
@@ -181,6 +185,10 @@ public class TownGenerator : Singleton<TownGenerator> {
             }
         }
 
+        roadGridPoints = GetGridPoints(GridPoint.Type.Path, GridPoint.Type.Pavement);
+
+        npcSpawner.SpawnNpcs();
+
         // foreach(BSPNode node in nodes) {
         //     // Add footpaths
         //     int perimeter = (int) node.GetPerimeter(2);
@@ -211,7 +219,7 @@ public class TownGenerator : Singleton<TownGenerator> {
         // }
 
         MathHelper.stopwatch.Stop();
-        Debug.LogFormat("Generated town with {0} BSP nodes and {1} objects in {2}ms", nodes.Count, objectContainer.childCount, (float) MathHelper.stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond);
+        Debug.LogFormat("Generated town (seed={0}) with {1} BSP nodes and {2} objects in {3}ms", seed, nodes.Count, objectContainer.childCount, (float) MathHelper.stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond);
     }
 
     // Place objects from the generated BSP

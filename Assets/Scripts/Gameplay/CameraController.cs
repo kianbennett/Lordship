@@ -165,18 +165,20 @@ public class CameraController : Singleton<CameraController> {
         inDialogue = true;
 
         // Cast rays to each character's feet and head to check if anything is blocking them from view of the camera
-        Ray[] rays = new Ray[] {
-            new Ray(camera.transform.position, characterFocus.transform.position - camera.transform.position),
-            new Ray(camera.transform.position, characterSpeaking.transform.position - camera.transform.position),
-            new Ray(camera.transform.position, characterFocus.transform.position + Vector3.up * 2f - camera.transform.position),
-            new Ray(camera.transform.position, characterSpeaking.transform.position + Vector3.up * 2f - camera.transform.position)
+        // Keep ray directions separate to rays as once you create a ray it normalises the direction
+        Vector3[] rayDirections = new Vector3[] {
+            characterFocus.transform.position - camera.transform.position,
+            characterSpeaking.transform.position - camera.transform.position,
+            characterFocus.transform.position + Vector3.up * 2f - camera.transform.position,
+            characterSpeaking.transform.position + Vector3.up * 2f - camera.transform.position
         };
 
-        for(int i = 0; i < rays.Length; i++) {
+        for(int i = 0; i < rayDirections.Length; i++) {
             // Move each ray back incase it's inside a collider
-            rays[i].origin -= rays[i].direction * 100; 
+            Ray ray = new Ray(camera.transform.position, rayDirections[i]);
+            ray.origin -= rayDirections[i] * 5; 
 
-            RaycastHit[] hits = Physics.RaycastAll(rays[i], Mathf.Infinity, LayerMask.GetMask("Scenery"));
+            RaycastHit[] hits = Physics.RaycastAll(ray, rayDirections[i].magnitude * 6, LayerMask.GetMask("Scenery"));
             foreach(RaycastHit hit in hits) {
                 hit.collider.gameObject.SetActive(false);
                 objectsHiddenInDialogue.Add(hit.collider.gameObject);

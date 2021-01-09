@@ -11,8 +11,7 @@ public class PlayerController : Singleton<PlayerController> {
 
     [SerializeField] private GameObject moveMarkerPrefab;
 
-    [ReadOnly] public Character selectedCharacter;
-    [ReadOnly] public SelectableObject selectableHovered;
+    [ReadOnly] public Character characterHovered;
     [ReadOnly] public NPC npcFollowing, npcSpeaking;
     public Character playerCharacter;
 
@@ -29,42 +28,19 @@ public class PlayerController : Singleton<PlayerController> {
         }
     }
 
-    public void SelectCharacter(Character character) {
-        if(character != playerCharacter) return;
-        character.SetSelected(true);
-        if(selectedCharacter != null) DeselectSelectedCharacter();
-        selectedCharacter = character;
-    }
-
-    public void DeselectCharacter(Character character) {
-        character.SetSelected(false);
-    }
-
-    public void DeselectSelectedCharacter() {
-        if(selectedCharacter != null) {
-            DeselectCharacter(selectedCharacter);
-            selectedCharacter = null;
-        }
-    }
-
     // Move a group of characters around a target position so they don't all end up at the same point
     public void MoveCharacter(Vector3 target, bool showMarker) {
-        if (selectedCharacter != playerCharacter) return;
-
-        selectedCharacter.movement.MoveToPoint(target, true);
+        playerCharacter.movement.MoveToPoint(target, true);
 
         // Spawn marker
         if (showMarker) Instantiate(moveMarkerPrefab, target, Quaternion.identity);
 
-        if(selectedCharacter == playerCharacter) {
-            CancelFollowing();
-        }
+        CancelFollowing();
     }
 
     public void TalkToNpc(NPC npc) {
-        if (selectedCharacter != playerCharacter) return;
         npcFollowing = npc;
-        selectedCharacter.movement.FollowCharacter(npc, true);
+        playerCharacter.movement.FollowCharacter(npc, true);
     }
 
     public void CancelFollowing() {

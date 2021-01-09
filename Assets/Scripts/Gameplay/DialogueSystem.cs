@@ -113,7 +113,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                     npcSpeaking.RespondToFlattery(choice.IsCorrectChoice);
                     break;
                 case SpeechType.ThreatenResponse:
-                    npcSpeaking.RespondToFlattery(choice.IsCorrectChoice);
+                    npcSpeaking.RespondToThreaten(choice.IsCorrectChoice);
                     break;
                 case SpeechType.BribeResponse:
                     choice.IsCorrectChoice = npcSpeaking.ReceiveBribe(i);
@@ -296,7 +296,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     public void InitialiseRumours() {
         availableRumours = new List<Rumour>();
         unlockedRumours = new Dictionary<NPC, Rumour>();
-        List<NPC> availableNpcs = new List<NPC>(LevelManager.instance.NpcList);
+        List<NPC> availableNpcs = new List<NPC>(TownGenerator.instance.npcSpawner.NpcList);
         for(int i = 0; i < _rumourData.RumourCount; i++) 
         {
             NPC npc = availableNpcs[Random.Range(0, availableNpcs.Count)];
