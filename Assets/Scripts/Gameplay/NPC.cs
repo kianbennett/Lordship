@@ -65,15 +65,34 @@ public class NPC : Character {
 
     // Assign random attributes
     public void Randomise() {
-        appearance.Randomise();
+        appearance.Randomise(false, false);
         movement.SetLookDir(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)));
 
         charName = AssetManager.instance.GetUniqueNpcName();
         age = (CharacterAge) Random.Range(0, System.Enum.GetNames(typeof(CharacterAge)).Length);
         occupation = (CharacterOccupation) Random.Range(0, System.Enum.GetNames(typeof(CharacterOccupation)).Length - 1); // -1 to not include politician
         wealth = (CharacterWealth) Random.Range(0, System.Enum.GetNames(typeof(CharacterWealth)).Length);
-
         disposition = Random.Range(40, 60);
+
+        // If poor then high chance of wearing rags and fingerless gloves
+        if(wealth == CharacterWealth.Poor && Random.value > 0.2f) {
+            appearance.hands = 2;
+            appearance.body = 3;
+        }
+        if(occupation == CharacterOccupation.Monk) {
+            // Monk hairstyle
+            appearance.hair = 2;
+        }
+        if(occupation == CharacterOccupation.Knight) {
+            // Helmet and armour
+            appearance.hat = 5;
+            appearance.body = 2;
+            appearance.hair = 0; // Bald head so hair doesn't clip through helmet
+        }
+
+        // Randomise colours AFTER setting body parts so it picks colours from the new palettes
+        appearance.RandomiseColours();
+        appearance.ApplyAll();
     }
 
     public override void SetHovered(bool hovered) {

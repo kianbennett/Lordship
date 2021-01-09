@@ -44,5 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveMarkerPrefab: {fileID: 9169958776656652624, guid: 393c948fd0b1cd5428da9c3df94dfdbe, type: 3}
-  selectedCharacters: []
-  selectableHovered: {fileID: 0}
+  playerPrefab: {fileID: 5930163917432958471, guid: dcef77c71b5616d44a4da2d1a8b8d4ff, type: 3}
+  characterHovered: {fileID: 0}
+  npcFollowing: {fileID: 0}
+  npcSpeaking: {fileID: 0}
+  playerCharacter: {fileID: 0}

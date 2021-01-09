@@ -14,7 +14,7 @@ public class TownGeneratorEditor : Editor {
 
         TownGenerator generator = (TownGenerator) target;
         if (GUILayout.Button("Generate")) {
-            generator.Generate();
+            generator.Generate(false);
             EditorUtility.SetDirty(target);
         }
     }

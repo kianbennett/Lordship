@@ -23,6 +23,10 @@ public class ResultsMenu : MonoBehaviour {
     private float[] headXRotations;
     private float[] barScales;
 
+    // Store these as variables so they can be used by the continue button
+    private bool isElection, victory;
+    private int playerVotes;
+
     void Awake() {
         headsLookingUp = new bool[headContainers.Length];
         headXRotations = new float[headContainers.Length];
@@ -31,10 +35,11 @@ public class ResultsMenu : MonoBehaviour {
 
     void Update() {
         for(int i = 0; i < headContainers.Length; i++) {
-            headXRotations[i] = Mathf.Lerp(headXRotations[i], headsLookingUp[i] ? -25f : 0, Time.deltaTime * 5);
+            // This menu will be shown while the game is paused so use unscaledDeltaTime
+            headXRotations[i] = Mathf.Lerp(headXRotations[i], headsLookingUp[i] ? -25f : 0, Time.unscaledDeltaTime * 5);
             headContainers[i].localRotation = Quaternion.Euler(headXRotations[i], headContainers[i].localEulerAngles.y, 0);
 
-            float scaleY = Mathf.Lerp(bars[i].localScale.y, barScales[i], Time.deltaTime * 10);
+            float scaleY = Mathf.Lerp(bars[i].localScale.y, barScales[i], Time.unscaledDeltaTime * 10);
             bars[i].localScale = new Vector3(1, scaleY, 1);
         }
     }
@@ -43,9 +48,11 @@ public class ResultsMenu : MonoBehaviour {
         gameObject.SetActive(true);
         headsParent.SetActive(true);
 
+        victory = getPosition(votes) == 0;
+        playerVotes = votes[0];
         textTitle.text = season + " " + year;
-        bool actualElection = season == electionSeason && year == electionYear;
-        if(actualElection) {
+        isElection = season == electionSeason && year == electionYear;
+        if(isElection) {
             textTitle.text += " Election";
             textButtonNext.text = "Continue >";
             textElectionInfo.text = "";
@@ -71,7 +78,6 @@ public class ResultsMenu : MonoBehaviour {
     }
 
     public void Hide() {
-        StopAllCoroutines();
         gameObject.SetActive(false);
         headsParent.SetActive(false);
     }
@@ -80,7 +86,6 @@ public class ResultsMenu : MonoBehaviour {
         int[] currentVotes = new int[votes.Length];
 
         bool hasFinished = false;
-        WaitForSeconds delayBefore = new WaitForSeconds(0.1f);
 
         headsParent.SetActive(true);
 
@@ -95,11 +100,15 @@ public class ResultsMenu : MonoBehaviour {
         buttonNext.interactable = false;
         textButtonNext.color = new Color(1, 1, 1, 0.5f);
 
-        yield return new WaitForSeconds(1.0f);
+        // Same effect as WaitForSeconds but doesn't need to worry about Time.timeScale
+        float start = Time.realtimeSinceStartup;
+        while(Time.realtimeSinceStartup < start + 1.5f) yield return null;
 
         for(int i = 0; i < headsLookingUp.Length; i++) {
             headsLookingUp[i] = true;
         }
+
+        float pitch = 1;
 
         while(!hasFinished) {
             hasFinished = true;
@@ -114,28 +123,32 @@ public class ResultsMenu : MonoBehaviour {
                 }
             }
 
-            yield return delayBefore;
+            AudioManager.instance.sfxBlip.PlayAsSFX(pitch);
+            pitch += 0.03f;
+
+            start = Time.realtimeSinceStartup;
+            float delay = isElection ? 0.25f : 0.15f; // Actual election is slower and more tense
+            while(Time.realtimeSinceStartup < start + delay) yield return null;
         }
 
-        yield return new WaitForSeconds(0.2f);
-        
+        start = Time.realtimeSinceStartup;
+        while(Time.realtimeSinceStartup < start + 0.6f) yield return null;
+
         int position = getPosition(votes);
         switch(position) {
             case 1:
-                textResult.text = "You are in the lead!";
+                textResult.text = isElection ? "You gained the most votes!" : "You are ahead in the polls!";
                 break;
             case 2:
-                textResult.text = "You are in 2nd place.";
+                textResult.text = isElection ? "You gained the second most votes." : "You are second in the polls.";
                 break;
             case 3:
-                textResult.text = "You are in 3nd place.";
+                textResult.text = isElection ? "You gained the third most votes." : "You are third in the polls.";
                 break;
             case 4:
-                textResult.text = "You are in last place!";
+                textResult.text = isElection ? "You gained the fewest votes." : "You are last in the polls.";
                 break;
         }
-
-        yield return new WaitForSeconds(0.8f);
 
         buttonNext.interactable = true;
         textButtonNext.color = Color.white;
@@ -154,6 +167,12 @@ public class ResultsMenu : MonoBehaviour {
     }
 
     public void Continue() {
-
+        AudioManager.instance.PlayButtonClick();
+        Hide();
+        if(isElection) {
+            HUD.instance.endingMenu.Show(victory, playerVotes);
+        } else {
+            LevelManager.instance.NextLevel();
+        }
     }
 }

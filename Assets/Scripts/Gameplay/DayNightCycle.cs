@@ -19,6 +19,7 @@ public class DayNightCycle : MonoBehaviour {
     }
 
     public void UpdateDayTime(float timeElapsed, float dayDuration) {
+        HUD.instance.clock.UpdateClock(timeElapsed, dayDuration);
         progress = timeElapsed / dayDuration;
 
         if(progress < 0.5f) {

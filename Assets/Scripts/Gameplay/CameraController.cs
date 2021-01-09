@@ -109,11 +109,15 @@ public class CameraController : Singleton<CameraController> {
         move(-transform.forward * panSpeed * Time.deltaTime);
     }
 
-    private void setAbsolutePosition(Vector3 pos) {
+    public void SetPositionImmediate(Vector3 pos) {
         targetPosition = pos;
         transform.position = pos;
         worldSpaceGrab = Vector3.zero;
         worldSpaceGrabLast = Vector3.zero;
+    }
+
+    public void ResetCameraDist() {
+        camera.transform.localPosition = Vector3.forward * cameraDist;
     }
 
     // Gets the ground position where the mouse right clicks
@@ -163,6 +167,7 @@ public class CameraController : Singleton<CameraController> {
         camera.transform.localPosition = dialogueCameraPos.localPosition;
         camera.transform.localRotation = dialogueCameraPos.localRotation;
         inDialogue = true;
+        SetPostProcessingEffectEnabled<DepthOfField>(true);
 
         // Cast rays to each character's feet and head to check if anything is blocking them from view of the camera
         // Keep ray directions separate to rays as once you create a ray it normalises the direction
@@ -192,6 +197,7 @@ public class CameraController : Singleton<CameraController> {
         camera.transform.localPosition = Vector3.forward * cameraDist;
         camera.transform.localRotation = Quaternion.identity;
         inDialogue = false;
+        SetPostProcessingEffectEnabled<DepthOfField>(false);
 
         foreach(GameObject gameObject in objectsHiddenInDialogue) {
             gameObject.SetActive(true);

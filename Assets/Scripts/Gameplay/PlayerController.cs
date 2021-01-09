@@ -10,15 +10,19 @@ using System.Linq;
 public class PlayerController : Singleton<PlayerController> {
 
     [SerializeField] private GameObject moveMarkerPrefab;
+    [SerializeField] private Character playerPrefab;
 
     [ReadOnly] public Character characterHovered;
     [ReadOnly] public NPC npcFollowing, npcSpeaking;
-    public Character playerCharacter;
+    [ReadOnly] public Character playerCharacter;
 
     public bool IsInDialogue { get { return npcSpeaking; } }
 
     protected override void Awake() {
         base.Awake();
+
+        playerCharacter = Instantiate(playerPrefab, transform.position, Quaternion.identity);
+        playerCharacter.appearance.Randomise(true, true);
     }
 
     void Update() {
@@ -26,6 +30,22 @@ public class PlayerController : Singleton<PlayerController> {
         if(npcFollowing != null && playerCharacter.movement.FollowedCharacterDistance() < 3) {
             startDialogue();
         }
+    }
+
+    // Set player position to a random road grid point
+    public void ResetPlayerPosition() {
+        Vector2 townSize = new Vector2(TownGenerator.instance.width, TownGenerator.instance.height);
+        // Make sure the player doesn't start at a point too close to the edge of town
+        GridPoint[] possibleStartingPoints = TownGenerator.instance.RoadGridPoints.Where(
+            o => o.x > townSize.x * 0.25f && o.x < townSize.x * 0.75f && o.y > townSize.y * 0.25f && o.y < townSize.y * 0.75f).ToArray();
+        GridPoint startingPoint = possibleStartingPoints[Random.Range(0, possibleStartingPoints.Length)];
+
+        playerCharacter.transform.position = TownGenerator.instance.GridPointToWorldPos(startingPoint);
+        playerCharacter.transform.rotation = Quaternion.Euler(0, 225, 0);
+        playerCharacter.movement.SetLookDir(playerCharacter.transform.forward);
+        CameraController.instance.SetPositionImmediate(playerCharacter.transform.position);
+        CameraController.instance.transform.rotation = Quaternion.Euler(0, 15, 0);
+        CameraController.instance.ResetCameraDist();
     }
 
     // Move a group of characters around a target position so they don't all end up at the same point

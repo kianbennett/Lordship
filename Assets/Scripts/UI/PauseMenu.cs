@@ -7,13 +7,11 @@ public class PauseMenu : MonoBehaviour {
 
     public void SetActive(bool active) {
         gameObject.SetActive(active);
-        HUD.instance.darkOverlay.SetActive(active);
-        AudioManager.instance.PlayButtonClick();
     }
 
     public void Resume() {
         AudioManager.instance.PlayButtonClick();
-        LevelManager.instance.SetPaused(false);
+        LevelManager.instance.SetPaused(false, true);
     }
 
     public void Options() {
@@ -28,9 +26,7 @@ public class PauseMenu : MonoBehaviour {
 
     public void Quit() {
         AudioManager.instance.PlayButtonClick();
-        HUD.instance.screenFader.FadeOut(delegate {
-            Time.timeScale = 1; // Otherwise will enter main menu while paused
-            SceneManager.LoadScene("MainMenu");
-        }, true);
+        Time.timeScale = 1; // Otherwise will enter main menu while paused
+        SceneManager.LoadScene("MainMenu");
     }
 }

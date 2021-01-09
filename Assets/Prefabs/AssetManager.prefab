@@ -129,6 +129,25 @@ MonoBehaviour:
       - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
       colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
       colourPalette2: {fileID: 0}
+  - name: Armour
+    mesh: {fileID: 916704281931235425, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+    materials:
+      hasColour1: 1
+      hasColour2: 1
+      hasSkin: 0
+      additionalMaterials: []
+      colourPalette1: {fileID: 11400000, guid: d9ebb51b38359a348a8b25339ab5e822, type: 2}
+      colourPalette2: {fileID: 11400000, guid: 3773b3afc9374544fb035637b74da0ff, type: 2}
+  - name: Ragged Robe
+    mesh: {fileID: 1820668192888114050, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+    materials:
+      hasColour1: 1
+      hasColour2: 0
+      hasSkin: 0
+      additionalMaterials:
+      - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+      colourPalette1: {fileID: 11400000, guid: 3773b3afc9374544fb035637b74da0ff, type: 2}
+      colourPalette2: {fileID: 0}
   handMeshes:
   - name: Bare
     mesh: {fileID: 0}
@@ -152,6 +171,17 @@ MonoBehaviour:
       colourPalette2: {fileID: 0}
     left: {fileID: 175019196795398689, guid: cff5e82a06c8f3e408c64ff368ded738, type: 3}
     right: {fileID: -5377645784488412732, guid: cff5e82a06c8f3e408c64ff368ded738, type: 3}
+  - name: Fingerless Gloves
+    mesh: {fileID: 0}
+    materials:
+      hasColour1: 1
+      hasColour2: 0
+      hasSkin: 1
+      additionalMaterials: []
+      colourPalette1: {fileID: 11400000, guid: 3773b3afc9374544fb035637b74da0ff, type: 2}
+      colourPalette2: {fileID: 0}
+    left: {fileID: -1369339918822124170, guid: cff5e82a06c8f3e408c64ff368ded738, type: 3}
+    right: {fileID: 6026225694501845610, guid: cff5e82a06c8f3e408c64ff368ded738, type: 3}
   hatMeshes:
   - name: None
     mesh: {fileID: 0}
@@ -200,6 +230,15 @@ MonoBehaviour:
       additionalMaterials: []
       colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
       colourPalette2: {fileID: 0}
+  - name: Helmet
+    mesh: {fileID: -8613595838217572024, guid: 13477d81c07fce74d94663f0416cd552, type: 3}
+    materials:
+      hasColour1: 1
+      hasColour2: 1
+      hasSkin: 0
+      additionalMaterials: []
+      colourPalette1: {fileID: 11400000, guid: d9ebb51b38359a348a8b25339ab5e822, type: 2}
+      colourPalette2: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
   hairWeightMap: {fileID: 11400000, guid: 075a1db2fc22acb4bb56f018ccac36c7, type: 2}
   bodyWeightMap: {fileID: 11400000, guid: 424b0eba8e84ee24c9ae224dd5a2994a, type: 2}
   handsWeightMap: {fileID: 11400000, guid: 1dff99817dc06f14a88f7a84fe94afda, type: 2}
@@ -226,6 +265,7 @@ MonoBehaviour:
   - Ivy
   - Mary
   - Sandra
+  - Garrett
   lastNames:
   - Hodges
   - Hanson
@@ -247,3 +287,4 @@ MonoBehaviour:
   - Cantrell
   - Fudge
   - Cooper
+  - Higgles

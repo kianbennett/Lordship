@@ -51,9 +51,9 @@ public class DialogueMenu : MonoBehaviour {
         textGold.text = LevelManager.instance.GoldRemaining + "g";
     }
 
-    public void SetActive(bool active) {
-        isActive = active;
-        if(active) gameObject.SetActive(true);
+    public void SetActive() {
+        isActive = true;
+        gameObject.SetActive(true);
         HideAllImmediate();
         dispositionBar.transform.localScale = new Vector3(0, 1, 1);
         // npcSpeechAnim.SetTrigger(active ? "Appear" : "Hide");
@@ -124,6 +124,8 @@ public class DialogueMenu : MonoBehaviour {
     }
 
     public void HideAll() {
+        if(!gameObject.activeSelf || !isActive) return;
+        isActive = false;
         HideNpcSpeech();
         HideNpcInfo();
         HideChoicesPanel();

@@ -152,7 +152,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     private IEnumerator DoDisplay(BeatData data, bool showAnimations, bool success = false)
     {
         if(showAnimations) {
-            HUD.instance.dialogueMenu.SetActive(true);
+            HUD.instance.dialogueMenu.SetActive();
             yield return _waitInitial;
         } else {
             HUD.instance.dialogueMenu.HideChoicesPanel();
@@ -234,7 +234,6 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                     
                     usedTextLines.Add(text);
                     data.Decision[i].DisplayText = text;
-                    if(i == correctChoice) data.Decision[i].DisplayText += " *";
                     break;
                 case ChoiceTextType.RandomThreaten:
                     do 
@@ -245,7 +244,6 @@ public class DialogueSystem : Singleton<DialogueSystem> {
                     
                     usedTextLines.Add(text);
                     data.Decision[i].DisplayText = text;
-                    if(i == correctChoice) data.Decision[i].DisplayText += " *";
                     break;
                 case ChoiceTextType.BribeAmount:
                     data.Decision[i].DisplayText = LevelManager.instance.BribeGoldAmount(i) + " gold";

@@ -16,11 +16,12 @@ public class MainMenu : MonoBehaviour {
     [SerializeField] private OptionsMenu optionsMenu;
 
     void Awake() {
-        AudioManager.instance.musicMainMenu.PlayAsMusic();
+        TownGenerator.instance.Generate(true);
+        TownGenerator.instance.npcSpawner.SpawnNpcs();
+    }
 
-        // Set seed for town based on system time
-        TownGenerator.instance.seed = (int) System.DateTime.Now.Ticks;
-        TownGenerator.instance.Generate();
+    void Start() {
+        AudioManager.instance.musicMainMenu.PlayAsMusic();
     }
 
     void Update() {
@@ -32,6 +33,7 @@ public class MainMenu : MonoBehaviour {
         // Set all buttons to non-interactable so they can't be clicked during fade
         foreach(Button button in buttons) button.interactable = false;
         AudioManager.instance.PlayButtonClick();
+        AudioManager.instance.FadeOutMusic();
 
         screenFader.FadeOut(delegate {
             SceneManager.LoadScene("TownScene");

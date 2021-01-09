@@ -19,8 +19,7 @@ public class AudioManager : Singleton<AudioManager> {
             instance.musicPlaying = this;
         }
 
-        public void PlayAsSFX(bool randomPitch = false) {
-            float pitch = randomPitch ? Random.Range(0.95f, 1.05f) : 1;
+        public void PlayAsSFX(float pitch = 1) {
             instance.sourceSFX.pitch = pitch;
 
             instance.sourceSFX.PlayOneShot(clip, volume);
@@ -44,8 +43,10 @@ public class AudioManager : Singleton<AudioManager> {
     public float MusicPlayingVolume { get { return musicPlaying != null ? musicPlaying.Volume : 0; } }
 
     void Update() {
-        float musicVolume = musicMuted ? 0 : (OptionsManager.instance.volumeMusic.Value / 10f) * MusicPlayingVolume;
-        sourceMusic.volume = Mathf.MoveTowards(sourceMusic.volume, musicVolume, Time.deltaTime * 1f);
+        if(sourceMusic.isPlaying) {
+            float musicVolume = musicMuted ? 0 : (OptionsManager.instance.volumeMusic.Value / 10f) * MusicPlayingVolume;
+            sourceMusic.volume = Mathf.MoveTowards(sourceMusic.volume, musicVolume, Time.deltaTime * 2f);
+        }
     }
 
     // Put this in its own function so it can be called by buttons
@@ -57,8 +58,16 @@ public class AudioManager : Singleton<AudioManager> {
         musicMuted = true;
     }
 
-    public void ResumeMusic() {
+    public void FadeInMusic() {
         musicMuted = false;
+        sourceMusic.volume = 0;
+    }
+
+    public void PauseMusic() {
+        sourceMusic.Pause();
+    }
+
+    public void ResumeMusic() {
         sourceMusic.Play();
     }
 }

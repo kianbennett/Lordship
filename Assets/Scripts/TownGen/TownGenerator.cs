@@ -52,6 +52,9 @@ public class TownGenerator : Singleton<TownGenerator> {
     public float treeNoiseScale;
     [Range(0f, 1f)]
     public float treeNoiseThreshold;
+    public float bushNoiseScale;
+    [Range(0f, 1f)]
+    public float bushNoiseThreshold;
     public float grassNoiseScale;
     [Range(0f, 1f)]
     public float grassNoiseThresholdSmall, grassNoiseThresholdBig;
@@ -60,16 +63,17 @@ public class TownGenerator : Singleton<TownGenerator> {
     public float buildingNoiseThreshold;
 
     [Header("Objects")]
-    public Transform basePlane;
-    public Transform objectContainer;
-    public GameObject roadPrefab, pavementPrefab;
-    public GameObject wallPrefab, wallCornerPrefab, gatePrefab;
-    public GameObject lamppostPrefab;
-    public GameObject benchPrefab;
-    public GameObject grassPrefab;
-    public GameObject footpathPrefab;
-    public GameObject[] treePrefabs;
-    public Building[] buildingPrefabs;
+    [SerializeField] private Transform basePlane;
+    [SerializeField] private Transform objectContainer;
+    [SerializeField] private GameObject roadPrefab, pavementPrefab;
+    [SerializeField] private GameObject wallPrefab, wallCornerPrefab, gatePrefab;
+    [SerializeField] private GameObject lamppostPrefab;
+    [SerializeField] private GameObject benchPrefab;
+    [SerializeField] private GameObject grassPrefab;
+    [SerializeField] private GameObject footpathPrefab;
+    [SerializeField] private GameObject[] treePrefabs;
+    [SerializeField] private GameObject[] bushPrefabs;
+    [SerializeField] private Building[] buildingPrefabs;
 
     private List<BSPNode> nodes;
     private GridPoint[,] gridPoints;
@@ -121,21 +125,6 @@ public class TownGenerator : Singleton<TownGenerator> {
                     }
                 }
             }
-
-            // if(testPath != null) {
-            //     foreach(GridPoint point in testPath) {
-            //         Debug.DrawLine(new Vector3(originX + point.x + 0.5f, 0, originZ + point.y + 0.25f), new Vector3(originX + point.x + 0.5f, 0, originZ + point.y + 0.75f), Color.white);
-            //         Debug.DrawLine(new Vector3(originX + point.x + 0.25f, 0, originZ + point.y + 0.5f), new Vector3(originX + point.x + 0.75f, 0, originZ + point.y + 0.5f), Color.white);
-            //     }
-            // }
-
-            // foreach(BSPNode node in nodes) {
-            //     GridPoint[,] gridPoints = getGridPointsFromRect(node.x + borderSize + 2, node.y + borderSize + 2, node.width - 4, node.height - 4);
-            //     foreach(GridPoint point in gridPoints) {
-            //         Debug.DrawLine(new Vector3(originX + point.x + 0.5f, 0, originZ + point.y + 0.25f), new Vector3(originX + point.x + 0.5f, 0, originZ + point.y + 0.75f), Color.white);
-            //         Debug.DrawLine(new Vector3(originX + point.x + 0.25f, 0, originZ + point.y + 0.5f), new Vector3(originX + point.x + 0.75f, 0, originZ + point.y + 0.5f), Color.white);
-            //     }
-            // }
         }
 
         if(debugBuildingBounds) {
@@ -158,10 +147,11 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
     }
 
-    public void Generate() {
+    public void Generate(bool randomSeed) {
+        if(randomSeed) seed = (int) System.DateTime.UtcNow.Ticks; // Get unique seed based on system time
         Random.InitState(seed);
 
-        MathHelper.stopwatch.Restart();
+        MathHelper.stopwatch.Reset();
         nodes = new List<BSPNode>();
         BSPNode rootNode = new BSPNode(0, 0, width - borderSize * 2, height - borderSize * 2, minNodeSize);
         splitBSPNode(rootNode);
@@ -186,8 +176,6 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         roadGridPoints = GetGridPoints(GridPoint.Type.Path, GridPoint.Type.Pavement);
-
-        npcSpawner.SpawnNpcs();
 
         // foreach(BSPNode node in nodes) {
         //     // Add footpaths
@@ -294,28 +282,6 @@ public class TownGenerator : Singleton<TownGenerator> {
             GameObject lamppost = Instantiate(lamppostPrefab, pos, Quaternion.Euler(0, -135 + 90 * corner, 0), objectContainer);
             setGridPointFromWorldPos(pos, GridPoint.Type.Obstacle);
             lampLights.Add(lamppost.GetComponentInChildren<Light>(true));
-
-            // Add benches
-            // int benchCount = Random.Range(0, 3);
-            // for(int b = 0; b < benchCount; b++) {
-            //     bool canPlace = false;
-            //     Vector2 point = Vector2.zero;
-
-            //     // Try 5 times to find a space it can fit in
-            //     for(int c = 0; c < 10; c++) {
-            //         point = Vector2.one * borderSize + node.GetPointAtPercentageAlongPerimeter(3f, Random.value);
-            //         if(checkGridPointsAreType((int) (point.x - 0.75f), (int) (point.y - 0.3f), 2, 1, GridPoint.Type.Grass)) {
-            //             canPlace = true;
-            //         }
-            //     }
-
-            //     if(canPlace) {
-            //         pos = gridPointToWorldPos((int) point.x, (int) point.y);
-            //         GameObject bench = Instantiate(benchPrefab, pos, Quaternion.identity, objectContainer);
-
-            //         setGridPointsFromRectWorldPos(pos.x - 0.75f, pos.z - 0.3f, 1.5f, 0.6f, GridPoint.Type.Obstacle);
-            //     }
-            // }
         }
 
         int roadAreaWidth = width - borderSize * 2;
@@ -421,6 +387,25 @@ public class TownGenerator : Singleton<TownGenerator> {
                     Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
                     GameObject treeObject = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)], pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
                     treeObject.transform.localScale = Vector3.one * Random.Range(1f, 3f);
+                    // treeObject.transform.localScale = Vector3.one * 3f * noiseValue;
+                    gridPoints[i, j].type = GridPoint.Type.Obstacle;
+                }
+            }
+        }
+
+        // Add bushes
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                if(gridPoints[i, j].type != GridPoint.Type.Grass) continue;
+
+                float noiseValue = Mathf.PerlinNoise(i * bushNoiseScale, j * bushNoiseScale);
+
+                if(noiseValue > bushNoiseThreshold) {
+                    Vector3 offset = MathHelper.RandomVector2(0.2f, 0.8f);
+                    Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
+                    GameObject bushObject = Instantiate(bushPrefabs[Random.Range(0, bushPrefabs.Length)], pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
+                    bushObject.transform.Translate(new Vector3(Random.Range(-.25f, .25f), 0, Random.Range(-.25f, .25f)));
+                    bushObject.transform.localScale = Vector3.one * Random.Range(0.7f, 1.3f);
                     // treeObject.transform.localScale = Vector3.one * 3f * noiseValue;
                     gridPoints[i, j].type = GridPoint.Type.Obstacle;
                 }

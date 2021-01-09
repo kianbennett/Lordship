@@ -63,6 +63,8 @@ MonoBehaviour:
   seed: 1
   treeNoiseScale: 0.15
   treeNoiseThreshold: 0.6
+  bushNoiseScale: 0.9
+  bushNoiseThreshold: 0.82
   grassNoiseScale: 3.54
   grassNoiseThresholdSmall: 0.65
   grassNoiseThresholdBig: 0.8
@@ -83,6 +85,9 @@ MonoBehaviour:
   - {fileID: 7546679016463779897, guid: e33d3d45c40407f41885c2e21764b251, type: 3}
   - {fileID: 8660503331553804129, guid: e070a42da53c69b48adb7a49a5a91913, type: 3}
   - {fileID: 429935132995130728, guid: 96794877011c70f43be197bf5407c4c4, type: 3}
+  bushPrefabs:
+  - {fileID: 919132149155446097, guid: d2c6c50e4e891ee4f85679d75c8cb784, type: 3}
+  - {fileID: 919132149155446097, guid: a121dff339d3f2e4a9e2054aa7cf178d, type: 3}
   buildingPrefabs:
   - {fileID: 3738409599159214439, guid: 72830c38c814a3543842ee9eea815277, type: 3}
   - {fileID: 643693176984762238, guid: addfada260358f949ba46d8ee4a71fa9, type: 3}

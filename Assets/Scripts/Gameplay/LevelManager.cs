@@ -9,75 +9,160 @@ public class LevelManager : Singleton<LevelManager> {
 
     [SerializeField] private DayNightCycle dayNightCycle;
     [SerializeField] private float dayDuration;
+    [SerializeField] private bool showIntro;
 
     private float timeElapsed;
     private int goldAmount;
     private bool isPaused;
     private int currentYear, electionYear;
     private Season currentSeason, electionSeason;
+    private int day; // 0 for first day, 1 for second day etc
+    private bool isInDayTransition;
+    private bool hasShownTutorial;
 
     private NPC[] opponents;
+    private List<CharacterAppearance> candidateAppearances;
+    private List<string> candidateNames;
 
     public int GoldRemaining { get { return goldAmount; } }
     public bool IsPaused { get { return isPaused; } }
 
     protected override void Awake() {
         base.Awake();
-        AudioManager.instance.musicTown.PlayAsMusic();
-        HUD.instance.screenFader.SetAlpha(1);
     }
 
     void Start() {
-        TownGenerator.instance.Generate();
+        TownGenerator.instance.Generate(true);
+        TownGenerator.instance.npcSpawner.SpawnNpcs();
         // Spawn 3 opponent politicians
         opponents = new NPC[3];
+        candidateAppearances = new List<CharacterAppearance>();
+        candidateNames = new List<string>();
+        candidateAppearances.Add(PlayerController.instance.playerCharacter.appearance);
+        candidateNames.Add("You");
+
         for(int i = 0; i < opponents.Length; i++) {
             opponents[i] = TownGenerator.instance.npcSpawner.SpawnNewNpc();
             opponents[i].occupation = CharacterOccupation.Politician;
             opponents[i].wealth = CharacterWealth.Rich;
+            opponents[i].disposition = Random.Range(10, 30); // Politicians automatically dislike like you for running against then
+            opponents[i].Randomise(); // Need to randomise again to account for changes in attributes
+            candidateAppearances.Add(opponents[i].appearance);
+            candidateNames.Add(opponents[i].DisplayName);
         }
-        // Only fade in once town has been spawned to avoid stuttering while fading
-        HUD.instance.screenFader.FadeIn();
 
         Random.InitState((int) System.DateTime.UtcNow.Ticks);
         DialogueSystem.instance.InitialiseRumours();
-        goldAmount = 1000;
+        goldAmount = 3000;
         currentYear = Random.Range(1500, 1700);
         electionYear = currentYear + 1;
         currentSeason = Season.Autumn;
         electionSeason = Season.Summer;
-    }
 
-    void Update() {
-        timeElapsed += Time.deltaTime; 
-        // For now wrap over to 0, this wouldn't happen in an actual level as the day would end
-        if(timeElapsed > dayDuration) timeElapsed = 0;
-        dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
-
-        if(Input.GetKeyDown(KeyCode.P)) {
-            List<CharacterAppearance> characters = new List<CharacterAppearance>();
-            List<string> names = new List<string>();
-            characters.Add(PlayerController.instance.playerCharacter.appearance);
-            names.Add("You");
-            foreach(NPC npc in opponents) {
-                names.Add(npc.DisplayName);
-                characters.Add(npc.appearance);
-            }
-            int totalVotes = TownGenerator.instance.npcSpawner.NpcList.Count - 3; // -3 for the 3 opponents
-            HUD.instance.resultsMenu.ShowResults(currentSeason, currentYear, electionSeason, electionYear, characters.ToArray(), 
-                names.ToArray(), calculateVotes(), totalVotes);
+        if(showIntro) {
+            HUD.instance.screenFader.SetAlpha(1);
+            StartCoroutine(startLevelIEnum(0.8f));
+        } else {
+            // If not showing inro then don't show the tutorial next level start
+            hasShownTutorial = true;
         }
     }
 
-    public void SetPaused(bool paused) {
+    void Update() {
+        if(!isInDayTransition) {
+            timeElapsed += Time.deltaTime; 
+            if(timeElapsed > dayDuration) {
+                StartCoroutine(endLevelIEnum());
+            }
+        }
+        dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
+    }
+
+    private IEnumerator startLevelIEnum(float delay = 0f) {
+        SetPaused(true, false);
+        PlayerController.instance.ResetPlayerPosition();
+        isInDayTransition = true;
+        timeElapsed = 0;
+
+        HUD.instance.textDate.gameObject.SetActive(true);
+        HUD.instance.textDate.text = currentSeason + " " + currentYear;
+        HUD.instance.textDateCanvasGroup.alpha = 0;
+
+        // Same effect as WaitForSeconds but doesn't need to worry about Time.timeScale
+        float start = Time.realtimeSinceStartup;
+        while(Time.realtimeSinceStartup < start + delay) yield return null;
+
+        // Fade in text showing season and year
+        while(HUD.instance.textDateCanvasGroup.alpha < 1) {
+            HUD.instance.textDateCanvasGroup.alpha += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        start = Time.realtimeSinceStartup;
+        while(Time.realtimeSinceStartup < start + 2.0f) yield return null;
+
+        while(HUD.instance.textDateCanvasGroup.alpha > 0) {
+            HUD.instance.textDateCanvasGroup.alpha -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        start = Time.realtimeSinceStartup;
+        while(Time.realtimeSinceStartup < start + 0.5f) yield return null;
+
+        HUD.instance.textDate.gameObject.SetActive(false);
+        
+        SetPaused(false, false);
+        HUD.instance.screenFader.FadeIn();
+        AudioManager.instance.musicTown.PlayAsMusic();
+        AudioManager.instance.FadeInMusic();
+
+        isInDayTransition = false;
+
+        if(!hasShownTutorial) {
+            yield return new WaitForSeconds(1.0f);
+
+            LevelManager.instance.SetPaused(true, true);
+            HUD.instance.tutorialMenu.ShowTutorial(currentSeason, currentYear);
+            hasShownTutorial = true;
+        }
+    }
+
+    public IEnumerator endLevelIEnum() {
+        isInDayTransition = true;
+        HUD.instance.dialogueMenu.HideAll();
+        HUD.instance.screenFader.FadeOut(null, true, 1.2f);
+        AudioManager.instance.FadeOutMusic();
+
+        yield return new WaitForSeconds(1.8f);
+
+        SetPaused(true, false);
+        // Faded colour gets enabled when pausing, so disable this here so it doesn't affect the heads
+        CameraController.instance.SetPostProcessingEffectEnabled<ColorGrading>(false);
+
+        int totalVotes = TownGenerator.instance.npcSpawner.NpcList.Count - 3; // -3 for the 3 opponents
+        HUD.instance.resultsMenu.ShowResults(currentSeason, currentYear, electionSeason, electionYear, candidateAppearances.ToArray(), 
+            candidateNames.ToArray(), calculateVotes(), totalVotes);
+    }
+
+    public void NextLevel() {
+        // Increment season and year if necessary
+        currentSeason = (Season) (((int) currentSeason + 1) % 4);
+        if(currentSeason == Season.Spring) currentYear++;
+        StartCoroutine(startLevelIEnum(1.0f));
+    }
+
+    public void SetPaused(bool paused, bool showMenu) {
         isPaused = paused;
         Time.timeScale = paused ? 0 : 1;
         CameraController.instance.SetPostProcessingEffectEnabled<ColorGrading>(paused);
-        HUD.instance.pauseMenu.SetActive(paused);
+        HUD.instance.pauseMenu.SetActive(paused && showMenu);
+        HUD.instance.darkOverlay.SetActive(paused && showMenu);
     }
 
     public void TogglePaused() {
-        SetPaused(!isPaused);
+        // If is in transition then disable pausing with escape
+        if(isInDayTransition && !isPaused) return;
+        SetPaused(!isPaused, true);
     }
 
     public void RemoveGold(int amount) {

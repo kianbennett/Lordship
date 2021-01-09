@@ -17,6 +17,7 @@ public class MeshMaterialSet {
     public MaterialSet materials;
 }
 
+// Use for pairs of identical meshes (i.e. hands)
 [Serializable]
 public class MeshPairMaterialSet : MeshMaterialSet {
     public Mesh left, right;
@@ -64,6 +65,7 @@ public class AssetManager : Singleton<AssetManager> {
         } else {
             Material material = new Material(instance.vertexColorMaterial);
             material.SetColor("_Color", colour);
+            material.EnableKeyword ("_EMISSION"); // Needs this to be able to set emission colour
             instance.colouredMaterialDictionary.Add(colour, material);
             return material;
         }

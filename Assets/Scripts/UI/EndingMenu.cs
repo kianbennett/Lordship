@@ -12,6 +12,7 @@ public class EndingMenu : MonoBehaviour {
     [SerializeField] private Button buttonContinue;
 
     public void Show(bool victory, int votes) {
+        gameObject.SetActive(true);
         textTitle.text = victory ? "Victory!" : "Defeat!";
         textInfoVictory.gameObject.SetActive(victory);
         textInfoDefeat.gameObject.SetActive(!victory);
@@ -21,8 +22,8 @@ public class EndingMenu : MonoBehaviour {
     }
 
     public void Continue() {
-        HUD.instance.screenFader.FadeOut(delegate {
-            SceneManager.LoadScene("MainMenu");
-        });
+        AudioManager.instance.PlayButtonClick();
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -25,6 +25,7 @@ public class TutorialMenu : MonoBehaviour {
     public void ShowTutorial(Season season, int year) {
         show(false);
         textTutorialInfo.text = textTutorialInfo.text.Replace("{season}", season.ToString()).Replace("{year}", year.ToString());
+        fromPauseMenu = false;
     }
 
     public void ShowControls(bool fromPauseMenu) {
@@ -33,14 +34,16 @@ public class TutorialMenu : MonoBehaviour {
     }
 
     public void Play() {
+        AudioManager.instance.PlayButtonClick();
         gameObject.SetActive(false);
 
         if(!fromPauseMenu) {
-            LevelManager.instance.SetPaused(false);
+            LevelManager.instance.SetPaused(false, false);
         }
     }
 
     public void Controls() {
+        AudioManager.instance.PlayButtonClick();
         ShowControls(false);
     }
 }

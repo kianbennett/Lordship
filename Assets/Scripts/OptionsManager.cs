@@ -40,7 +40,11 @@ public class OptionsManager : Singleton<OptionsManager> {
         }
 
         public void LoadFromPlayerPrefs() {
-            if(PlayerPrefs.HasKey(key)) SetValue(PlayerPrefs.GetInt(key), false);
+            if(PlayerPrefs.HasKey(key)) {
+                SetValue(PlayerPrefs.GetInt(key), false);
+            } else {
+                SetValue(defaultValue, false);
+            }
         }
     }
 
@@ -49,6 +53,8 @@ public class OptionsManager : Singleton<OptionsManager> {
     private int screenInitX, screenInitY;
 
     protected override void Awake() {
+        base.Awake();
+
         screenInitX = Screen.width;
         screenInitY = Screen.height;
 
@@ -78,7 +84,9 @@ public class OptionsManager : Singleton<OptionsManager> {
     private void onChangeFullscreen(int value) {
         bool fullscreen = value > 0;
         if(fullscreen) {
-            Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+            // Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
+            // Just for nice screenshots force this to 1080p (my monitor is 1920x1200)
+            Screen.SetResolution(1920, 1080, true);
         } else {
             Screen.SetResolution(screenInitX, screenInitY, false);
         }

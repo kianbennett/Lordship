@@ -28,27 +28,27 @@ public class CharacterAppearanceEditor : Editor {
         DrawDefaultInspector();
         CharacterAppearance appearance = (CharacterAppearance) target;
 
-        /* Hair */
+        // Hair 
         EditorGUILayout.Space();
         appearance.hair = EditorGUILayout.Popup("Hair", appearance.hair, hairNames, EditorStyles.popup);
         drawColourPair("Hair Colours", "hairColour1", "hairColour2", AssetManager.instance.hairMeshes[appearance.hair].materials);
 
-        /* Body */
+        // Body
         EditorGUILayout.Space();
         appearance.body = EditorGUILayout.Popup("Body", appearance.body, bodyNames, EditorStyles.popup);
         drawColourPair("Body Colours", "bodyColour1", "bodyColour2", AssetManager.instance.bodyMeshes[appearance.body].materials);
 
-        /* Hands */
+        // Hands
         EditorGUILayout.Space();
         appearance.hands = EditorGUILayout.Popup("Hands", appearance.hands, handsNames, EditorStyles.popup);
         drawColourPair("Hands Colours", "handsColour1", "handsColour2", AssetManager.instance.handMeshes[appearance.hands].materials);
 
-        /* Hat */
+        // Hat
         EditorGUILayout.Space();
         appearance.hat = EditorGUILayout.Popup("Hat", appearance.hat, hatNames, EditorStyles.popup);
         drawColourPair("Hat Colours", "hatColour1", "hatColour2", AssetManager.instance.hatMeshes[appearance.hat].materials);
 
-        /* Skin */
+        // Skin
         EditorGUILayout.Space();
         GUILayout.BeginHorizontal();
         appearance.skinColour = EditorGUILayout.IntSlider("Skin", appearance.skinColour, 0, skinColors.colours.Length - 1);
@@ -57,11 +57,11 @@ public class CharacterAppearanceEditor : Editor {
         GUI.enabled = true;
         GUILayout.EndHorizontal();
 
-        /* Apply / Randomise */
+        // Apply / Randomise
         EditorGUILayout.Space();
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Apply")) appearance.ApplyAll();
-        if (GUILayout.Button("Randomise")) appearance.Randomise();
+        if (GUILayout.Button("Randomise")) appearance.Randomise(true, true);
         GUILayout.EndHorizontal();
 
         serializedObject.ApplyModifiedProperties();

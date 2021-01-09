@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class NpcSpawner : MonoBehaviour {
 
@@ -13,7 +14,7 @@ public class NpcSpawner : MonoBehaviour {
     public List<NPC> NpcList { get { return npcs; } }
 
     public void SpawnNpcs() {
-        MathHelper.stopwatch.Restart();
+        MathHelper.stopwatch.Reset();
 
         // Destroy any existing NPCs
         if(npcs != null) {
@@ -40,6 +41,11 @@ public class NpcSpawner : MonoBehaviour {
         foreach(NPC c in characters) {
             float d = Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(gridPoint), c.transform.position);
             if(dist == 0 || d < dist) dist = d;
+        }
+        // Check distance to player as well since we don't want NPCs spawning near the palyer
+        if(PlayerController.instance && PlayerController.instance.playerCharacter) {
+            float playerDist = Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(gridPoint), PlayerController.instance.playerCharacter.transform.position);
+            if(dist == 0 || playerDist < dist) dist = playerDist;
         }
         return dist;
     }

@@ -18,7 +18,7 @@ MonoBehaviour:
     - name: Robe
       mesh: {fileID: -6424493679509123494, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
       materials:
-        hasColour1: 0
+        hasColour1: 1
         hasColour2: 0
         hasSkin: 0
         additionalMaterials:
@@ -28,13 +28,34 @@ MonoBehaviour:
     - name: Short Robe
       mesh: {fileID: 1820668192888114050, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
       materials:
-        hasColour1: 0
+        hasColour1: 1
         hasColour2: 0
         hasSkin: 0
         additionalMaterials:
         - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
         colourPalette1: {fileID: 11400000, guid: 16860fdf0e8eda74e843d66d83e861ca, type: 2}
         colourPalette2: {fileID: 0}
+    - name: Armour
+      mesh: {fileID: 916704281931235425, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+      materials:
+        hasColour1: 1
+        hasColour2: 1
+        hasSkin: 0
+        additionalMaterials: []
+        colourPalette1: {fileID: 11400000, guid: d9ebb51b38359a348a8b25339ab5e822, type: 2}
+        colourPalette2: {fileID: 11400000, guid: 3773b3afc9374544fb035637b74da0ff, type: 2}
+    - name: Ragged Robe
+      mesh: {fileID: 1820668192888114050, guid: 272bbe490e8a8aa40ab731f4dfc66e22, type: 3}
+      materials:
+        hasColour1: 1
+        hasColour2: 0
+        hasSkin: 0
+        additionalMaterials:
+        - {fileID: 2100000, guid: 7e3b1314eb763474eb349cf1f621b55d, type: 2}
+        colourPalette1: {fileID: 11400000, guid: 3773b3afc9374544fb035637b74da0ff, type: 2}
+        colourPalette2: {fileID: 0}
     values:
     - 1
     - 1
+    - 0
+    - 0.25

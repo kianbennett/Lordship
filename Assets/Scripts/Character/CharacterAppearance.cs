@@ -30,7 +30,7 @@ public class CharacterAppearance : MonoBehaviour {
     private Renderer[] renderers;
 
     void Awake() {
-        if (randomiseOnAwake) Randomise();
+        if (randomiseOnAwake) Randomise(true, true);
             else ApplyAll();
 
         headBoneHeightInit = headBone.transform.position.y;
@@ -100,12 +100,25 @@ public class CharacterAppearance : MonoBehaviour {
         applyHat();
     }
 
-    public void Randomise() {
+    public void Randomise(bool includeColours, bool apply) {
+        // Random seed from system time
+        Random.InitState((int) System.DateTime.UtcNow.Ticks);
+
         hair = AssetManager.instance.hairWeightMap.GetRandomIndex();
         body = AssetManager.instance.bodyWeightMap.GetRandomIndex();
         hands = AssetManager.instance.handsWeightMap.GetRandomIndex();
         hat = AssetManager.instance.hatWeightMap.GetRandomIndex();
 
+        if(includeColours) {
+            RandomiseColours();
+        }
+
+        if(apply) {
+            ApplyAll();
+        }
+    }
+
+    public void RandomiseColours() {
         ColourPalette palette;
         if (palette = AssetManager.instance.hairMeshes[hair].materials.colourPalette1) hairColour1 = palette.RandomColourIndex();
         if (palette = AssetManager.instance.hairMeshes[hair].materials.colourPalette2) hairColour2 = palette.RandomColourIndex();
@@ -116,8 +129,6 @@ public class CharacterAppearance : MonoBehaviour {
         if (palette = AssetManager.instance.hatMeshes[hat].materials.colourPalette1) hatColour1 = palette.RandomColourIndex();
         if (palette = AssetManager.instance.hatMeshes[hat].materials.colourPalette2) hatColour2 = palette.RandomColourIndex();
         skinColour = AssetManager.instance.skinColours.weightMap.GetRandomIndex();
-
-        ApplyAll();
     }
 
     private Color getSkinColor() {
@@ -183,9 +194,9 @@ public class CharacterAppearance : MonoBehaviour {
         foreach(Renderer renderer in renderers) {
             if(highlighted) {
                 Material mat = renderer.material;
-                mat.SetColor("_EmissionColor", Color.white);
-                mat.SetInt("_EmissionEnabled", 1);
+                mat.SetColor("_EmissionColor", new Color(0.15f, 0.15f, 0.15f));
                 renderer.material = mat;
+                
             } else {
                 // Set back to original material, since it won't have an emission it should be stored in AssetManager
                 Color materialColour = renderer.sharedMaterial.color;

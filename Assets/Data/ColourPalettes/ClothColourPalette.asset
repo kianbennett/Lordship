@@ -22,3 +22,11 @@ MonoBehaviour:
     colour: {r: 0.58431375, g: 0.39607844, b: 0.39607844, a: 1}
   - name: Brown
     colour: {r: 0.39607844, g: 0.28627452, b: 0.2, a: 1}
+  - name: Plum
+    colour: {r: 0.31093484, g: 0.22227661, b: 0.4245283, a: 1}
+  - name: Sea Green
+    colour: {r: 0.3183962, g: 0.4245283, b: 0.38047346, a: 1}
+  - name: Dark Red
+    colour: {r: 0.4245283, g: 0.22139885, b: 0.20225169, a: 1}
+  - name: Charcoal
+    colour: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}

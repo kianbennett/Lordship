@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edfd012c95d43024996212b5d554e980, type: 3}
+  m_Name: RagsColourPalette
+  m_EditorClassIdentifier: 
+  weightMap: {fileID: 11400000, guid: 2eda62cd46c63ab40a19dd4a3152cbf1, type: 2}
+  colours:
+  - name: Faded Blue
+    colour: {r: 0.43734422, g: 0.4582528, b: 0.49056602, a: 1}
+  - name: Grey
+    colour: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  - name: Dark Grey
+    colour: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  - name: Faded Red
+    colour: {r: 0.41509432, g: 0.37397647, b: 0.37397647, a: 1}
+  - name: Faded Light Brown
+    colour: {r: 0.6132076, g: 0.50690144, b: 0.4309808, a: 1}
+  - name: Faded Brown
+    colour: {r: 0.3679245, g: 0.2963263, b: 0.25511748, a: 1}
