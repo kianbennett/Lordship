@@ -18,6 +18,9 @@ public class EndingMenu : MonoBehaviour {
         textInfoDefeat.gameObject.SetActive(!victory);
         if(victory) {
             textInfoVictory.text = textInfoVictory.text.Replace("{votes}", votes.ToString());
+            AudioManager.instance.sfxVictory.PlayAsSFX();
+        } else {
+            AudioManager.instance.sfxDefeat.PlayAsSFX();
         }
     }
 

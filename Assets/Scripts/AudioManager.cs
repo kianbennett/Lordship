@@ -36,6 +36,10 @@ public class AudioManager : Singleton<AudioManager> {
     [Header("SFX")]
     [AudioClip] public CustomAudio sfxButtonClick;
     [AudioClip] public CustomAudio sfxBlip;
+    [AudioClip] public CustomAudio sfxVictory, sfxDefeat;
+    [AudioClip] public CustomAudio sfxLeading, sfxLosing;
+    [AudioClip] public CustomAudio sfxDispositionRaise, sfxDispositionLower;
+    [AudioClip] public CustomAudio sfxBell;
 
     private bool musicMuted;
     private CustomAudio musicPlaying;

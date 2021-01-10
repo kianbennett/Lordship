@@ -192,6 +192,7 @@ public class CameraController : Singleton<CameraController> {
     }
 
     public void CancelDialogue() {
+        if(!inDialogue) return;
         // Restore the camera Y rotation
         transform.rotation = Quaternion.Euler(Vector3.up * rotBeforeDialogue);
         camera.transform.localPosition = Vector3.forward * cameraDist;

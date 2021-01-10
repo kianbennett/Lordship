@@ -14,7 +14,7 @@ public class NpcSpawner : MonoBehaviour {
     public List<NPC> NpcList { get { return npcs; } }
 
     public void SpawnNpcs() {
-        MathHelper.stopwatch.Reset();
+        MathHelper.stopwatch.Restart();
 
         // Destroy any existing NPCs
         if(npcs != null) {

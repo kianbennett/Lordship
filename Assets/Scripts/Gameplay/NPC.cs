@@ -82,6 +82,7 @@ public class NPC : Character {
         if(occupation == CharacterOccupation.Monk) {
             // Monk hairstyle
             appearance.hair = 2;
+            appearance.hat = 0;
         }
         if(occupation == CharacterOccupation.Knight) {
             // Helmet and armour
@@ -113,6 +114,11 @@ public class NPC : Character {
         // Clamp disposition to 0-100
         disposition = Mathf.Clamp(disposition + change, 0, 100);
         HUD.instance.dialogueMenu.UpdateDispositionBar(disposition);
+        if(change > 0) {
+            AudioManager.instance.sfxDispositionRaise.PlayAsSFX();
+        } else if(change < 0) {
+            AudioManager.instance.sfxDispositionLower.PlayAsSFX();
+        }
     }
 
     public bool RespondToFlattery(bool success) {

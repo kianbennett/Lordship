@@ -81,14 +81,12 @@ public class PlayerController : Singleton<PlayerController> {
     }
 
     public void ExitDialogue() {
+        if(npcSpeaking == null) return;
         NPC speaking = npcSpeaking;
         npcSpeaking = null;
         DialogueSystem.instance.ExitDialogue();
-        // HUD.instance.screenFader.FadeOut(delegate {
-            // HUD.instance.screenFader.FadeIn();
-            speaking.movement.SetSpeaking(null);
-            playerCharacter.movement.SetSpeaking(null);
-            CameraController.instance.CancelDialogue();
-        // });
+        speaking.movement.SetSpeaking(null);
+        playerCharacter.movement.SetSpeaking(null);
+        CameraController.instance.CancelDialogue();
     }
 }

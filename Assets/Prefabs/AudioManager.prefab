@@ -58,6 +58,27 @@ MonoBehaviour:
     volume: 0.3
   sfxBlip:
     clip: {fileID: 8300000, guid: c1285e62d861e0a47b545e6a0cd828a9, type: 3}
+    volume: 0.15
+  sfxVictory:
+    clip: {fileID: 8300000, guid: fd6904045c8e41949ab272ce8c3b9f08, type: 3}
+    volume: 0.1
+  sfxDefeat:
+    clip: {fileID: 8300000, guid: 10eac0b6a54af9f4d95a5abcb012f476, type: 3}
+    volume: 0.06
+  sfxLeading:
+    clip: {fileID: 8300000, guid: aaa9345fc5b00ea40b9cb0abb4bfa928, type: 3}
+    volume: 0.2
+  sfxLosing:
+    clip: {fileID: 8300000, guid: f69cee133fe2a4a40ae067ad459d7d3a, type: 3}
+    volume: 0.15
+  sfxDispositionRaise:
+    clip: {fileID: 8300000, guid: 0ba3784f4c1d5df4689af04bc722b31a, type: 3}
+    volume: 0.1
+  sfxDispositionLower:
+    clip: {fileID: 8300000, guid: caf0032d3f871a84497f98d3b91bc770, type: 3}
+    volume: 0.5
+  sfxBell:
+    clip: {fileID: 8300000, guid: 96f7285ced7957342a8c22aca9252ac5, type: 3}
     volume: 0.1
 --- !u!1 &2877329520234261761
 GameObject:

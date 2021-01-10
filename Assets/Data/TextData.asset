@@ -16,10 +16,12 @@ MonoBehaviour:
     _textList:
     - Hi! What can I do for you?
     - I always have time to stop and chat, what do you need?
+    - Hey, how are you doing?
   _greetingsNeutral:
     _textList:
     - Who are you again?
     - Pretty good weather we're having today, isn't it?
+    - What's up?
   _greetingsNegative:
     _textList:
     - I hate politicians. Especially you.
@@ -28,6 +30,8 @@ MonoBehaviour:
   _listeningPositive:
     _textList:
     - I always love hearing what you have to say.
+    - Please, go on.
+    - Oh, yes?
   _listeningNeutral:
     _textList:
     - Yes?
@@ -37,95 +41,130 @@ MonoBehaviour:
     _textList:
     - Ugh, if you must.
     - Hurry up please.
+    - Make it quick.
+    - I hope this isn't a waste of time...
   _flatteryOccupation:
     keys: 000000000100000002000000030000000400000005000000
     values:
     - _textList:
       - Your teachings have always inspired me.
+      - I loved your sermon the other day, {name}!
     - _textList:
-      - I saw you training at the sword the other day, very impressive!
+      - I saw you training at the sword the other day {name}, very impressive!
+      - The plume on your helmet is very impressive.
     - _textList:
       - I bought a table from you the other day, some of the finest work I've ever
         seen.
+      - You made the mantlepiece in the tavern, right? Very impressive work.
     - _textList:
       - I must say your begonias are flourishing, {name}!
+      - Your children are so well mannered, {name}.
     - _textList:
-      - I bought one of your pears at the market yesterday, delicious and crisp!
+      - I bought one of your pears at the market yesterday {name}, delicious and
+        crisp!
+      - Such strong arms, all that work in the fields has clearly done you some good!
     - _textList:
       - You've been looking great in the polls lately, I'm so jealous!
+      - I heard your speech the other day and I hardly threw up at all.
   _flatteryAge:
     keys: 000000000100000002000000
     values:
     - _textList:
-      - You are clearly wise beyond your years.
+      - You are clearly wise beyond your years, {name}.
+      - The best ideas in this town have always come from young people like you.
     - _textList: []
     - _textList:
-      - I'm sure you have many wise stories to tell.
+      - I'm sure you have many wise stories to tell, {name}.
+      - I always looked up to you when I was young, {name}.
   _flatteryWealth:
     keys: 000000000100000002000000
     values:
     - _textList:
       - I walked by your mansion the other day, it's looking quite splendid.
+      - I know you've given a huge amount of your wealth to charity {name}, I really
+        admire that.
     - _textList: []
     - _textList:
       - You deserve to earn so much more with all the hard work you're putting in!
+      - I know life has treated you poorly, but you're always so cheerful!
   _flatteryResponsesSuccess:
     _textList:
     - How kind of you to say so!
     - That's wonderful to hear, thank you!
     - Oh stop it, you!
+    - Do you really think so? Thank you!
   _flatteryResponsesFail:
     _textList:
     - What are you talking about? That makes no sense.
     - Who do you think you're kidding? You don't really mean that, you just want
       my vote.
+    - Eh? Stop talking nonsense.
+    - What's gotten into you?
   _threatenOccupation:
     keys: 000000000100000002000000030000000400000005000000
     values:
     - _textList:
-      - Monk threat
+      - Vote for me or you might find you collection plate completely empty next
+        week.
     - _textList:
-      - Knight threat
+      - I challenge you to a duel! Swords at dawn!
+      - You'd better hope all that armour is enough to protect you.
     - _textList:
-      - Craftsman threat
+      - It would be such a disaster if someone came and smashed up your workshop
+        tonight...
     - _textList:
-      - Homemaker threat
+      - I hope your children are safe and sound in their home.
     - _textList:
-      - Farmer threat
+      - I really hope no one burns down your crops if I lose the election.
+      - I heard after the last election your entire stock of potatoes went missing.
+        I sure hope that doesn't happen again.
     - _textList:
-      - Potician treat
+      - I can make sure you're not fit to stand in the next election, if you know
+        what I mean.
   _threatenAge:
     keys: 000000000100000002000000
     values:
     - _textList:
-      - Young threat
+      - Death at a young age is always such a tragedy.
     - _textList: []
     - _textList:
-      - Old threat
+      - Is it true that old bones break more easily?
   _threatenWealth:
     keys: 000000000100000002000000
     values:
     - _textList:
-      - Rick threat
+      - The windows of your mansion look surprisingly thin and easy to smash...
     - _textList: []
     - _textList:
-      - Poor threat
+      - It would be a shame if someone were to take away the little gold you still
+        have...
   _threatenResponsesSuccess:
     _textList:
     - Okay, okay, I'll do what you want!
     - Alright, alright, I'll vote! Just leave me alone!
+    - Alright I'll vote, I promise!
   _threatenResponsesFail:
     _textList:
     - Who are you trying to frighten with that tone? It ain't working, pal.
+    - Pathetic, was that supposed to frighten me?
+    - Do you really think I care?
   _bribeResponsesSuccess:
     _textList:
     - That's so generous, thank you so much!
+    - Wow, that's a lot of gold! Thank you!
   _bribeResponsesFail:
     _textList:
     - Is this a joke?
+    - You really think I'll take that?
+    - Seriously? You think that little of me?
+    - How dare you even suggest such a thing!
   _rumourFail:
     _textList:
     - Well I'm not likely to tell you, am I?
+    - Why on earth would I tell you?
+    - Do you really think I'm going to tell you?
   _rumourUnknown:
     _textList:
     - None that I know of, sorry.
+    - I don't know any I'm afraid.
+    - People don't really tell me much I'm afraid.

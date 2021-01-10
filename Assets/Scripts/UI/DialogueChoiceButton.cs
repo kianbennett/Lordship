@@ -27,6 +27,7 @@ public class DialogueChoiceButton : MonoBehaviour {
     }
 
     public void Choose() {
+        AudioManager.instance.PlayButtonClick();
         DialogueSystem.instance.PickChoice(index);
     }
 

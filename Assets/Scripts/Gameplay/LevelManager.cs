@@ -92,6 +92,8 @@ public class LevelManager : Singleton<LevelManager> {
         float start = Time.realtimeSinceStartup;
         while(Time.realtimeSinceStartup < start + delay) yield return null;
 
+        AudioManager.instance.sfxBell.PlayAsSFX();
+
         // Fade in text showing season and year
         while(HUD.instance.textDateCanvasGroup.alpha < 1) {
             HUD.instance.textDateCanvasGroup.alpha += Time.unscaledDeltaTime;
@@ -130,6 +132,7 @@ public class LevelManager : Singleton<LevelManager> {
     public IEnumerator endLevelIEnum() {
         isInDayTransition = true;
         HUD.instance.dialogueMenu.HideAll();
+        PlayerController.instance.ExitDialogue();
         HUD.instance.screenFader.FadeOut(null, true, 1.2f);
         AudioManager.instance.FadeOutMusic();
 
@@ -199,7 +202,7 @@ public class LevelManager : Singleton<LevelManager> {
 
         foreach(NPC npc in TownGenerator.instance.npcSpawner.NpcList) {
             if(npc.occupation != CharacterOccupation.Politician) {
-                int dispositionForVote = Random.Range(50, 70);
+                int dispositionForVote = Random.Range(55, 65);
                 // For for player
                 if(npc.disposition >= dispositionForVote) {
                     votes[0]++;

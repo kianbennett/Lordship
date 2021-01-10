@@ -150,6 +150,12 @@ public class ResultsMenu : MonoBehaviour {
                 break;
         }
 
+        if(position == 0) {
+            AudioManager.instance.sfxLeading.PlayAsSFX();
+        } else {
+            AudioManager.instance.sfxLosing.PlayAsSFX();
+        }
+
         buttonNext.interactable = true;
         textButtonNext.color = Color.white;
     }

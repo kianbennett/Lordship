@@ -151,7 +151,7 @@ public class TownGenerator : Singleton<TownGenerator> {
         if(randomSeed) seed = (int) System.DateTime.UtcNow.Ticks; // Get unique seed based on system time
         Random.InitState(seed);
 
-        MathHelper.stopwatch.Reset();
+        MathHelper.stopwatch.Restart();
         nodes = new List<BSPNode>();
         BSPNode rootNode = new BSPNode(0, 0, width - borderSize * 2, height - borderSize * 2, minNodeSize);
         splitBSPNode(rootNode);
@@ -176,35 +176,6 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         roadGridPoints = GetGridPoints(GridPoint.Type.Path, GridPoint.Type.Pavement);
-
-        // foreach(BSPNode node in nodes) {
-        //     // Add footpaths
-        //     int perimeter = (int) node.GetPerimeter(2);
-        //     int startDist = (int) (Random.value * perimeter); // Pick random point along the perimeter
-
-        //     GridPoint[,] nodeGridPoints = getGridPointsFromRect(node.x + borderSize + 2, node.y + borderSize + 2, node.width - 4, node.height - 4);
-
-        //     GridPoint startGridPoint, endGridPoint;
-        //     int inc = 0;
-        //     int tries = 0;
-        //     while(inc < node.GetPerimeter(0) * 0.75f && tries < 5) {
-        //         Vector2 startPoint = node.GetPointAlongPerimeter(2, startDist + inc);
-        //         Vector2 endPoint = node.GetPointAlongPerimeter(2, startDist + inc + perimeter * 0.25f);
-        //         startGridPoint = nodeGridPoints[(int) startPoint.x, (int) startPoint.y];
-        //         endGridPoint = nodeGridPoints[(int) endPoint.x, (int) endPoint.y];
-
-        //         if(startGridPoint.type != GridPoint.Type.Obstacle && endGridPoint.type != GridPoint.Type.Obstacle) {
-        //             List<GridPoint> path = Pathfinder.instance.GetPath(nodeGridPoints, startGridPoint, endGridPoint);
-        //             tries++;
-        //             if(path != null) {
-        //                 buildFootpathFromPath(path);
-        //                 break;
-        //             }
-        //         }
-
-        //         inc++;
-        //     }
-        // }
 
         MathHelper.stopwatch.Stop();
         Debug.LogFormat("Generated town (seed={0}) with {1} BSP nodes and {2} objects in {3}ms", seed, nodes.Count, objectContainer.childCount, (float) MathHelper.stopwatch.ElapsedTicks / System.TimeSpan.TicksPerMillisecond);
@@ -427,7 +398,7 @@ public class TownGenerator : Singleton<TownGenerator> {
                     Vector3 offset = MathHelper.RandomVector2(0.2f, 0.8f);
                     Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
                     GameObject grassObject = Instantiate(grassPrefab, pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
-                    grassObject.transform.localScale = MathHelper.RandomVector3(1f, 2.5f);
+                    grassObject.transform.localScale = Vector3.one * Random.Range(0.8f, 2.0f);
                 }
             }
         }
