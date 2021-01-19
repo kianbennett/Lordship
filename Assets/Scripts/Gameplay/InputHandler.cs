@@ -13,6 +13,8 @@ public class InputHandler : Singleton<InputHandler> {
     private const int minDistForDrag = 5;
 
     void Update() {
+        if(LevelManager.instance.IsPaused) return;
+
         handleKeys();
 
         // Update distance mouse has moved since last frame
@@ -79,6 +81,14 @@ public class InputHandler : Singleton<InputHandler> {
             } else {
                 LevelManager.instance.TogglePaused();
             }
+        }
+
+        // Use f8 to speed the game up
+        if(Input.GetKeyDown(KeyCode.F8) && !LevelManager.instance.IsPaused) {
+            Time.timeScale = 4;
+        }
+        if(Input.GetKeyUp(KeyCode.F8)) {
+            Time.timeScale = LevelManager.instance.IsPaused ? 0 : 1;
         }
     }
 

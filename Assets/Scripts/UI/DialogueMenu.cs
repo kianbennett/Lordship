@@ -60,7 +60,7 @@ public class DialogueMenu : MonoBehaviour {
         // npcInfoAnim.SetTrigger(active ? "Appear" : "Hide");
     }
 
-    public void ShowChoicesPanel(params ChoiceData[] choices) {
+    public void ShowChoicesPanel(NPC npc, params ChoiceData[] choices) {
         // Delete existing option buttons
         if(choiceButtons != null) {
             foreach(DialogueChoiceButton button in choiceButtons) Destroy(button.gameObject);
@@ -71,7 +71,7 @@ public class DialogueMenu : MonoBehaviour {
         for(int i = 0; i < choices.Length; i++) {
             DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity);
             button.transform.SetParent(choicesPanel, false);
-            button.SetValues(choices[i].Index, i, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
+            button.SetValues(i, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
             button.transform.localPosition = Vector3.up * buttonY;
             // button.GetComponent<RectTransform>().localPosition = Vector2.zero;
             // Debug.Log(choicesPanel.anchoredPosition);
@@ -84,6 +84,7 @@ public class DialogueMenu : MonoBehaviour {
             if(choices[i].TextType == ChoiceTextType.BribeAmount) {
                 button.SetInteractible(LevelManager.instance.CanAffordBribe(i));
             }
+            button.SetInteractible(!npc.HasUsedDialogueType(choices[i].Type));
 
             choiceButtons.Add(button);
         }

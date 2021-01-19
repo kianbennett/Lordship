@@ -326,8 +326,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         GameObject roadGate2 = Instantiate(roadPrefab, new Vector3(gate2Pos, 0.01f + Random.value * 0.001f, (height / 2f - borderSize / 2f) * (gate2Bottom ? -1 : 1)), Quaternion.Euler(90, 0, 0), objectContainer);
         roadGate1.transform.localScale = new Vector3(borderSize, 4, 1);
         roadGate2.transform.localScale = new Vector3(4, borderSize, 1);
-        setGridPointsFromRect(gate1Left ? 0 : width - borderSize, gate1Pos + height / 2 - 2, borderSize + 1, 4, GridPoint.Type.Path);
-        setGridPointsFromRect(gate2Pos + width / 2 - 2, gate2Bottom ? 0 : height - borderSize, 4, borderSize + 1, GridPoint.Type.Path);
+        setGridPointsFromRect(gate1Left ? 1 : width - borderSize, gate1Pos + height / 2 - 2, borderSize, 4, GridPoint.Type.Path);
+        setGridPointsFromRect(gate2Pos + width / 2 - 2, gate2Bottom ? 1 : height - borderSize, 4, borderSize, GridPoint.Type.Path);
 
         // Add wall corners
         GameObject wallCorner1 = Instantiate(wallCornerPrefab, new Vector3(-width / 2f, 0, -height / 2f), Quaternion.Euler(0, 90, 0), objectContainer);
@@ -509,9 +509,9 @@ public class TownGenerator : Singleton<TownGenerator> {
     }
 
     public GridPoint GridPointFromWorldPos(Vector3 worldPos) {
-        if(gridPoints == null) return null;
         int x = Mathf.FloorToInt(worldPos.x + width / 2f);
         int y = Mathf.FloorToInt(worldPos.z + height / 2f);
+        if(x < 0 || x >= width || y < 0 || y >= height || gridPoints == null) 
         x = Mathf.Clamp(x, 0, width - 1);
         y = Mathf.Clamp(y, 0, height - 1);
         return gridPoints[x, y];

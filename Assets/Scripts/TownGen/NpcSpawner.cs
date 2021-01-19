@@ -70,4 +70,10 @@ public class NpcSpawner : MonoBehaviour {
 
         return npc;
     }
+
+    public void ResetNpcs() {
+        foreach(NPC npc in npcs) {
+            npc.ResetUsedDialogueTypes();
+        }
+    }
 }

@@ -15,9 +15,9 @@ public class DialogueChoiceButton : MonoBehaviour {
 
     private int index;
 
-    public void SetValues(int index, int displayIndex, string displayText, DialogueType type) {
+    public void SetValues(int index, string displayText, DialogueType type) {
         this.index = index;
-        text.text = (displayIndex + 1) + ") " + displayText;
+        text.text = (index + 1) + ") " + displayText;
         image.color = HUD.instance.dialogueMenu.GetDialogueChoiceColour(type);
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight + 20);
     }

@@ -246,6 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ad5f3e6bd8e4e48982e998dbad7dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveMarkerPrefab: {fileID: 9169958776656652624, guid: 393c948fd0b1cd5428da9c3df94dfdbe, type: 3}
   movementParams: {fileID: 11400000, guid: 772517790917d99409383d87a9cf3744, type: 2}
   drawDebugLines: 1
   debugLogMessages: 1

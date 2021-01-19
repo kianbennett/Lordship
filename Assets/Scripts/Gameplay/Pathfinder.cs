@@ -17,6 +17,8 @@ public class PointData {
 [ExecuteInEditMode]
 public class Pathfinder : Singleton<Pathfinder> {
 
+    [SerializeField] private bool logWarnings;
+
     public IEnumerator FindPath(GridPoint[,] gridPoints, GridPoint start, GridPoint destination, bool log, System.Action<List<GridPoint>> onComplete) {
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -25,7 +27,7 @@ public class Pathfinder : Singleton<Pathfinder> {
 
         // Make sure the start and end points are valid and can be travelled to
         if (start == null || destination == null || destination.type == GridPoint.Type.Obstacle) {
-            Debug.LogWarning("Cannot find path for invalid nodes");
+            if(logWarnings) Debug.LogWarning("Cannot find path for invalid nodes");
             // return null;
             onComplete(null);
             yield break;

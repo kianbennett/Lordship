@@ -48,7 +48,7 @@ public class ResultsMenu : MonoBehaviour {
         gameObject.SetActive(true);
         headsParent.SetActive(true);
 
-        victory = getPosition(votes) == 0;
+        victory = getPosition(votes) == 1;
         playerVotes = votes[0];
         textTitle.text = season + " " + year;
         isElection = season == electionSeason && year == electionYear;

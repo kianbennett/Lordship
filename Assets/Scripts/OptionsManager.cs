@@ -57,7 +57,9 @@ public class OptionsManager : Singleton<OptionsManager> {
 
         screenInitX = Screen.width;
         screenInitY = Screen.height;
+    }
 
+    void Start() {
         volumeMusic = new Option("volumeMusic", 8, onChangeVolumeMusic);
         volumeSFX = new Option("volumeSFX", 8, onChangeVolumeSFX);
         highQuality = new Option("highQuality", 1, onChangeHighQuality);
@@ -78,6 +80,7 @@ public class OptionsManager : Singleton<OptionsManager> {
             CameraController.instance.SetPostProcessingEffectEnabled<AmbientOcclusion>(value == 1);
             CameraController.instance.SetPostProcessingEffectEnabled<Bloom>(value == 1);
             CameraController.instance.SetAntialiasingEnabled(value == 1);
+            
         }
     }
 

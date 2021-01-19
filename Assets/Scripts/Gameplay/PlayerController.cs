@@ -9,7 +9,6 @@ using System.Linq;
 
 public class PlayerController : Singleton<PlayerController> {
 
-    [SerializeField] private GameObject moveMarkerPrefab;
     [SerializeField] private Character playerPrefab;
 
     [ReadOnly] public Character characterHovered;
@@ -42,19 +41,15 @@ public class PlayerController : Singleton<PlayerController> {
 
         playerCharacter.transform.position = TownGenerator.instance.GridPointToWorldPos(startingPoint);
         playerCharacter.transform.rotation = Quaternion.Euler(0, 225, 0);
-        playerCharacter.movement.SetLookDir(playerCharacter.transform.forward);
+        playerCharacter.movement.LookDir = playerCharacter.transform.forward;
         CameraController.instance.SetPositionImmediate(playerCharacter.transform.position);
         CameraController.instance.transform.rotation = Quaternion.Euler(0, 15, 0);
         CameraController.instance.ResetCameraDist();
     }
 
-    // Move a group of characters around a target position so they don't all end up at the same point
+    // Move a character to a target position
     public void MoveCharacter(Vector3 target, bool showMarker) {
-        playerCharacter.movement.MoveToPoint(target, true);
-
-        // Spawn marker
-        if (showMarker) Instantiate(moveMarkerPrefab, target, Quaternion.identity);
-
+        playerCharacter.movement.MoveToPoint(target, true, showMarker);
         CancelFollowing();
     }
 
@@ -73,11 +68,8 @@ public class PlayerController : Singleton<PlayerController> {
         CancelFollowing();
         playerCharacter.movement.SetSpeaking(npcSpeaking);
         npcSpeaking.movement.SetSpeaking(playerCharacter);
-        // HUD.instance.screenFader.FadeOut(delegate {
-        //     HUD.instance.screenFader.FadeIn();
-            CameraController.instance.SetInDialogue(npcSpeaking, playerCharacter);    
-            DialogueSystem.instance.DisplayBeat(1, true);
-        // });
+        CameraController.instance.SetInDialogue(npcSpeaking, playerCharacter);    
+        DialogueSystem.instance.DisplayBeat(1, true);
     }
 
     public void ExitDialogue() {

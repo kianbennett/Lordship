@@ -40,7 +40,7 @@ public class CharacterAppearance : MonoBehaviour {
     void Update() {
         // Lerp towards the desired animation speed
         if (modelAnim && character && character.movement) {
-            float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.movement.GetAnimSpeed(), Time.deltaTime * 10);
+            float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.movement.AnimSpeed, Time.deltaTime * 10);
             modelAnim.SetFloat("Speed", speed);
         }
 

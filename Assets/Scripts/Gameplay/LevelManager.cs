@@ -81,6 +81,7 @@ public class LevelManager : Singleton<LevelManager> {
     private IEnumerator startLevelIEnum(float delay = 0f) {
         SetPaused(true, false);
         PlayerController.instance.ResetPlayerPosition();
+        TownGenerator.instance.npcSpawner.ResetNpcs();
         isInDayTransition = true;
         timeElapsed = 0;
 

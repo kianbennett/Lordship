@@ -21,6 +21,8 @@ public enum DispositionType {
 
 public class NPC : Character {
 
+    [SerializeField] private GameObject rumourIndicator;
+
     [Header("Attributes")]
     public System.Tuple<string, string> charName;
     public CharacterAge age;
@@ -31,6 +33,9 @@ public class NPC : Character {
     [Header("Movement")]
     public bool wander;
     private float pauseTimer;
+
+    // When the player chooses to flatter, threaten or bribe that option gets locked off until the next day
+    private Dictionary<DialogueType, bool> usedDialogueOptions;
 
     public string DisplayName { get { 
         if(charName != null) return charName.Item1 + " " + charName.Item2; 
@@ -48,15 +53,20 @@ public class NPC : Character {
 
         // Give random initial delay so loads of paths don't get calculated all at once
         pauseTimer = Random.Range(0f, 3f);
+        usedDialogueOptions = new Dictionary<DialogueType, bool>() {
+            { DialogueType.Flatter, false},  
+            { DialogueType.Threaten, false}, 
+            { DialogueType.Bribe, false}
+        };
     }
 
     protected override void Update() {
         base.Update();
 
-        if(wander && !movement.HasTarget() && !movement.IsSpeaking() && pauseTimer <= 0) {
+        if(wander && !movement.HasTarget && !movement.IsSpeaking && pauseTimer <= 0) {
             GridPoint[] roadGridPoints = TownGenerator.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
             GridPoint target = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
-            movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target));
+            movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target), false, false);
             bool pause = Random.value > 0.75f; // 75% chance to pause after reaching target
             pauseTimer = pause ? Random.Range(1f, 5f) : 0;
         }
@@ -66,7 +76,7 @@ public class NPC : Character {
     // Assign random attributes
     public void Randomise() {
         appearance.Randomise(false, false);
-        movement.SetLookDir(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)));
+        movement.LookDir = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
 
         charName = AssetManager.instance.GetUniqueNpcName();
         age = (CharacterAge) Random.Range(0, System.Enum.GetNames(typeof(CharacterAge)).Length);
@@ -122,6 +132,8 @@ public class NPC : Character {
     }
 
     public bool RespondToFlattery(bool success) {
+        usedDialogueOptions[DialogueType.Flatter] = true;
+
         if(success) {
             int disposition = Random.Range(14, 20);
             if(occupation == CharacterOccupation.Knight) disposition += 10; // Knights particularly enjoy flattery
@@ -133,6 +145,8 @@ public class NPC : Character {
     }
 
     public bool RespondToThreaten(bool success) {
+        usedDialogueOptions[DialogueType.Threaten] = true;
+
         if(occupation == CharacterOccupation.Knight) success = false; // Knights can't be threatened
 
         if(success) {
@@ -145,6 +159,8 @@ public class NPC : Character {
 
     // bribeAmount = 0 (low), 1 (mid), 2 (height), returns success
     public bool ReceiveBribe(int bribeAmount) {
+        usedDialogueOptions[DialogueType.Bribe] = true;
+
         // Monks and Politicians hate being bribed (by a rival polition at least)
         if(occupation == CharacterOccupation.Monk || occupation == CharacterOccupation.Politician) {
             ChangeDisposition(-40);
@@ -175,12 +191,26 @@ public class NPC : Character {
         }
     }
 
+    public bool HasUsedDialogueType(DialogueType type) {
+        if(usedDialogueOptions.ContainsKey(type)) {
+            return usedDialogueOptions[type];
+        }
+        return false;
+    }
+
+    public void ResetUsedDialogueTypes() {
+        usedDialogueOptions[DialogueType.Flatter] = false;
+        usedDialogueOptions[DialogueType.Threaten] = false;
+        usedDialogueOptions[DialogueType.Bribe] = false;
+    }
+
     public bool CanGiveRumour() {
         return disposition > 60;
     }
 
     public void CompleteRumour() {
         ChangeDisposition(Random.Range(40, 50));
+        ShowRumourIndicator(false);
     }
 
     // Most enums can be represented by a string from a direct cast, but some need changes (spaces, hyphons etc)
@@ -202,5 +232,9 @@ public class NPC : Character {
 
     public string GetOccupationString() {
         return occupation.ToString();
+    }
+
+    public void ShowRumourIndicator(bool show) {
+        rumourIndicator.SetActive(show);
     }
 }

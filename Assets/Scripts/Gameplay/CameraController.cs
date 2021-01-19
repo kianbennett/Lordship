@@ -51,13 +51,13 @@ public class CameraController : Singleton<CameraController> {
     }
 
     void LateUpdate() {
-        if(!inDialogue) {
+        if(!inDialogue && !LevelManager.instance.IsPaused) {
             // TODO: Move this to InputHandler
             // Hold middle mouse to rotate
             isRotating = Input.GetMouseButton(2);
             bool pivot = Input.GetKey(KeyCode.LeftShift);
 
-            if (isRotating) {
+            if (isRotating && !isGrabbing) {
                 float rot = Input.GetAxis("Mouse X") * rotationSpeed;
                 // TODO: RotateAround not working properly
                 if (pivot) transform.RotateAround(camera.transform.position, Vector3.up, rot);
@@ -87,6 +87,10 @@ public class CameraController : Singleton<CameraController> {
         if(inDialogue) return; // Can't move the camera when in dialogue
         targetPosition += delta;
         objectToFollow = null;
+
+        // Limit camera position to bounds of town
+        targetPosition.x = Mathf.Clamp(targetPosition.x, -TownGenerator.instance.width / 2f, TownGenerator.instance.width / 2f);
+        targetPosition.z = Mathf.Clamp(targetPosition.z, -TownGenerator.instance.height / 2f, TownGenerator.instance.height / 2f);
     }
 
     public void PanLeft() {

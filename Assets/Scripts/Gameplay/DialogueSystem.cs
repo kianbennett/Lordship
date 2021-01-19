@@ -11,6 +11,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
 
     private BeatData _currentBeat;
     private WaitForSeconds _wait, _waitInitial;
+    private ChoiceData[] _currentChoices; // Store this here as choices to display to the player might be different to beat.Decision
 
     // Store reference to DoDisplay coroutine so we can stop it when exiting dialogue
     private Coroutine displayBeatCoroutine;
@@ -74,9 +75,11 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         // {
             KeyCode alpha = KeyCode.Alpha1;
             KeyCode keypad = KeyCode.Keypad1;
+
+            if(_currentChoices == null) return;
             
-            // Loops through each beat and check if the corresponding key is pressed
-            for (int count = 0; count < _currentBeat.Decision.Count; ++count)
+            // Loops through each choice and check if the corresponding key is pressed
+            for (int count = 0; count < _currentChoices.Length; ++count)
             {
                 if (alpha <= KeyCode.Alpha9 && keypad <= KeyCode.Keypad9)
                 {
@@ -102,9 +105,16 @@ public class DialogueSystem : Singleton<DialogueSystem> {
 
     private void handleChoice(int i) 
     {
-        ChoiceData choice = _currentBeat.Decision[i];
+        if(i < 0 || i > _currentChoices.Length) return;
+
+        ChoiceData choice = _currentChoices[i];
         BeatData nextBeat = _data.GetBeatById(choice.NextID);
         NPC npcSpeaking = PlayerController.instance.npcSpeaking;
+
+        // If the choice is unavailable (button inactive) then don't continue with the choice
+        if(npcSpeaking.HasUsedDialogueType(choice.Type)) return;
+        if(choice.TextType == ChoiceTextType.BribeAmount && !LevelManager.instance.CanAffordBribe(i)) return;
+
         if(nextBeat.Type != DialogueType.Goodbye) 
         {
             switch(nextBeat.DisplayTextType) 
@@ -265,7 +275,8 @@ public class DialogueSystem : Singleton<DialogueSystem> {
             }
         }
 
-        HUD.instance.dialogueMenu.ShowChoicesPanel(choices.ToArray());
+        _currentChoices = choices.ToArray();
+        HUD.instance.dialogueMenu.ShowChoicesPanel(npcSpeaking, _currentChoices);
 
         // for (int count = 0; count < data.Decision.Count; ++count)
         // {
@@ -329,6 +340,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     public void UnlockRumour(NPC npcGiving, Rumour rumour) {
         availableRumours.Remove(rumour);
         unlockedRumours.Add(npcGiving, rumour);
+        rumour.targetNpc.ShowRumourIndicator(true);
     }
 
     public void CompleteRumour(Rumour rumour) {
