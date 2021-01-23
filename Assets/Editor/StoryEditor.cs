@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEditor;
 
+// Custom editor window to edit dialogue beats and choices
+
 public class StoryEditor : EditorWindow
 {
     private enum View { List, Beat }
@@ -122,21 +124,6 @@ public class StoryEditor : EditorWindow
         EditorGUILayout.PropertyField(displayTextType, GUIContent.none, GUILayout.Width(100));
         EditorGUILayout.EndHorizontal();
 
-        // EditorGUILayout.BeginHorizontal();
-        // if((DialogueType) type.enumValueIndex != DialogueType.Rumours) {
-        //     SerializedProperty textListPositive = arrayElement.FindPropertyRelative("_textListPositive");
-        //     SerializedProperty textListNeutral = arrayElement.FindPropertyRelative("_textListNeutral");
-        //     SerializedProperty textListNegative = arrayElement.FindPropertyRelative("_textListNegative");
-
-        //     EditorGUIUtility.labelWidth = 102;
-        //     EditorGUILayout.PropertyField(textListPositive, new GUIContent("Speech Positive"), GUILayout.Width(260));
-        //     GUILayout.Space(20);
-        //     EditorGUILayout.PropertyField(textListNeutral, new GUIContent("Speech Neutral"), GUILayout.Width(260));
-        //     GUILayout.Space(20);
-        //     EditorGUILayout.PropertyField(textListNegative, new GUIContent("Speech Negative"), GUILayout.Width(260));
-        // }
-        // EditorGUILayout.EndHorizontal();
-
         // text.stringValue = EditorGUILayout.TextArea(text.stringValue, GUILayout.Height(200));
 
         GUILayout.Space(8);
@@ -146,7 +133,8 @@ public class StoryEditor : EditorWindow
         EditorGUIUtility.labelWidth = 150;
         SerializedProperty copyChoices = arrayElement.FindPropertyRelative("_copyChoicesFromBeat");
         copyChoices.boolValue = EditorGUILayout.Toggle("Copy Choices from Beat", copyChoices.boolValue, GUILayout.Width(200));
-        if(copyChoices.boolValue) {
+        if(copyChoices.boolValue) 
+        {
             SerializedProperty beatIdToCopyFrom = arrayElement.FindPropertyRelative("_beatIdToCopyFrom");
             int beatIndex = FindIndexOfBeatId(beatList, beatIdToCopyFrom.intValue);
             beatIndex = EditorGUILayout.Popup(beatIndex, GetBeatNames(beatList), GUILayout.Width(100));
@@ -154,7 +142,8 @@ public class StoryEditor : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
 
-        if(!copyChoices.boolValue) {
+        if(!copyChoices.boolValue) 
+        {
             OnGUI_BeatViewDecision(choiceList, beatList);
         }
 
@@ -203,7 +192,8 @@ public class StoryEditor : EditorWindow
         EditorGUILayout.PropertyField(choiceType);
         EditorGUILayout.PropertyField(textType);
 
-        if((ChoiceTextType) textType.enumValueIndex == ChoiceTextType.Predefined) {
+        if((ChoiceTextType) textType.enumValueIndex == ChoiceTextType.Predefined) 
+        {
             SerializedProperty text = arrayElement.FindPropertyRelative("_text");
             text.stringValue = EditorGUILayout.TextArea(text.stringValue, GUILayout.Height(50));
         }
@@ -229,7 +219,8 @@ public class StoryEditor : EditorWindow
             GUI.FocusControl(null);
             Repaint();
         }
-        if(GUILayout.Button("Delete Choice")) {
+        if(GUILayout.Button("Delete Choice")) 
+        {
             choiceList.DeleteArrayElementAtIndex(index);
         }
 
@@ -280,10 +271,12 @@ public class StoryEditor : EditorWindow
         return result;
     }
 
-    private string[] GetBeatNames(SerializedProperty beatList) {
+    private string[] GetBeatNames(SerializedProperty beatList) 
+    {
         // List<BeatData> allBeats = StoryData.LoadData().Beats;
         string[] beatNames = new string[beatList.arraySize];
-        for(int i = 0; i < beatNames.Length; i++) {
+        for(int i = 0; i < beatNames.Length; i++) 
+        {
             beatNames[i] = beatList.GetArrayElementAtIndex(i).FindPropertyRelative("_name").stringValue;
         }
         return beatNames;

@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEditor;
 
-// Custom editor window to edit TextList values for each dialogue line
+// Custom editor window to edit dialogue lines
+
 public class DialogueTextEditor : EditorWindow
 {
     private Vector2 _scroll = new Vector2();
@@ -28,58 +29,70 @@ public class DialogueTextEditor : EditorWindow
         SerializedProperty iterator = dataObj.GetIterator();
         if (iterator.Next(true)) 
         {
-            do {
+            do 
+            {
                 // If the type is a TextList or SerializableDictionary
                 if(iterator.type == "TextList" || iterator.type.StartsWith("SerializableDictionary")) 
                 {
                     // If it's the first property with a certain prefix then draw a label for that category
-                    if(!hasDrawnGreetingLabel && iterator.name.StartsWith("_greeting")) {
+                    if(!hasDrawnGreetingLabel && iterator.name.StartsWith("_greeting")) 
+                    {
                         hasDrawnGreetingLabel = true;
                         EditorGUILayout.LabelField("Greetings", EditorStyles.boldLabel);
                     }
-                    if(!hasDrawnListeningLabel && iterator.name.StartsWith("_listening")) {
+                    if(!hasDrawnListeningLabel && iterator.name.StartsWith("_listening")) 
+                    {
                         hasDrawnListeningLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Listening", EditorStyles.boldLabel);
                     }
-                    if(!hasDrawnFlatteryLabel && iterator.name.StartsWith("_flattery")) {
+                    if(!hasDrawnFlatteryLabel && iterator.name.StartsWith("_flattery")) 
+                    {
                         hasDrawnFlatteryLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Flattery", EditorStyles.boldLabel);
                     }
-                    if(!hasDrawnThreatenLabel && iterator.name.StartsWith("_threaten")) {
+                    if(!hasDrawnThreatenLabel && iterator.name.StartsWith("_threaten")) 
+                    {
                         hasDrawnThreatenLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Threaten", EditorStyles.boldLabel);
                     }
-                    if(!hasDrawnBribeLabel && iterator.name.StartsWith("_bribe")) {
+                    if(!hasDrawnBribeLabel && iterator.name.StartsWith("_bribe")) 
+                    {
                         hasDrawnBribeLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Bribery", EditorStyles.boldLabel);
                     }
-                    if(!hasDrawnRumourLabel && iterator.name.StartsWith("_rumour")) {
+                    if(!hasDrawnRumourLabel && iterator.name.StartsWith("_rumour")) 
+                    {
                         hasDrawnRumourLabel = true;
                         EditorGUILayout.Space();
                         EditorGUILayout.LabelField("Rumours", EditorStyles.boldLabel);
                     }
 
                     // If it's a TextList variable
-                    if(iterator.type == "TextList") {
+                    if(iterator.type == "TextList") 
+                    {
                         // Draw an int field setting the size of the string array
                         SerializedProperty textList = iterator.FindPropertyRelative("_textList");
                         textList.arraySize = EditorGUILayout.IntField(iterator.displayName, textList.arraySize);
 
                         // For each string in the array draw a text field setting the value
-                        for(int t = 0; t < textList.arraySize; t++) {
+                        for(int t = 0; t < textList.arraySize; t++) 
+                        {
                             SerializedProperty text = textList.GetArrayElementAtIndex(t);
                             // Setting the label as a space gives no label but still indents the text field
                             text.stringValue = EditorGUILayout.TextField(" ", text.stringValue);
                         }
                     // If isn't a TextList then it'll be a SerializableDictionary
-                    } else {
+                    } 
+                    else 
+                    {
                         bool foldout = EditorGUILayout.Foldout(true, iterator.displayName);
 
-                        if(foldout) {
+                        if(foldout) 
+                        {
                             // Get the keys and values variables from the dictinoary
                             SerializedProperty keys = iterator.FindPropertyRelative("keys");
                             SerializedProperty values = iterator.FindPropertyRelative("values");
@@ -91,20 +104,23 @@ public class DialogueTextEditor : EditorWindow
                             if(iterator.name.EndsWith("Age")) enumNames = System.Enum.GetNames(typeof(CharacterAge));
                             if(iterator.name.EndsWith("Wealth")) enumNames = System.Enum.GetNames(typeof(CharacterWealth));
 
-                            if(enumNames != null) {
+                            if(enumNames != null) 
+                            {
                                 EditorGUI.indentLevel++;
 
                                 keys.arraySize = enumNames.Length;
                                 values.arraySize = enumNames.Length;
 
                                 // Same as with TextList
-                                for(int i = 0; i < enumNames.Length; i++) {
+                                for(int i = 0; i < enumNames.Length; i++) 
+                                {
                                     // Set each key as the enum value, this means there is a TextList object for each enum value
                                     keys.GetArrayElementAtIndex(i).enumValueIndex = i;
                                     SerializedProperty textList = values.GetArrayElementAtIndex(i).FindPropertyRelative("_textList");
                                     textList.arraySize = EditorGUILayout.IntField(enumNames[i], textList.arraySize);
 
-                                    for(int t = 0; t < textList.arraySize; t++) {
+                                    for(int t = 0; t < textList.arraySize; t++) 
+                                    {
                                         SerializedProperty text = textList.GetArrayElementAtIndex(t);
                                         text.stringValue = EditorGUILayout.TextField(" ", text.stringValue);
                                     }

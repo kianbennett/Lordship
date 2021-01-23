@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+// Custom inspector for AssetManager that shows the size of the coloured material dictionary
+
 [CanEditMultipleObjects]
 [CustomEditor(typeof(AssetManager))]
-public class AssetManagerEditor : Editor {
-
-    public override void OnInspectorGUI() {
+public class AssetManagerEditor : Editor 
+{
+    public override void OnInspectorGUI()
+    {
         AssetManager assetManager = (AssetManager) target;
         int matCount = assetManager.GetColouredMaterialCount();
 

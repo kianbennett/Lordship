@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class OptionsMenu : MonoBehaviour {
+public class OptionsMenu : MonoBehaviour 
+{
 
     [SerializeField] private Slider musicVolumeSlider, sfxVolumeSlider;
     [SerializeField] private TextMeshProUGUI musicVolumeValue, sfxVolumeValue;
@@ -12,7 +13,8 @@ public class OptionsMenu : MonoBehaviour {
 
     private bool playSfx;
 
-    public void SetActive(bool active) {
+    public void SetActive(bool active) 
+    {
         gameObject.SetActive(active);
 
         if(active) {
@@ -28,31 +30,36 @@ public class OptionsMenu : MonoBehaviour {
         }
     }
 
-    public void Return() {
+    public void Return() 
+    {
         AudioManager.instance.PlayButtonClick();
         SetActive(false);
     }
 
     // UI Callbacks
 
-    public void SetMusicVolumeValue() {
+    public void SetMusicVolumeValue() 
+    {
         OptionsManager.instance.volumeMusic.SetValue((int) musicVolumeSlider.value, true);
         musicVolumeValue.text = OptionsManager.instance.volumeMusic.Value.ToString();
         if(playSfx) AudioManager.instance.sfxBlip.PlayAsSFX();
     }
 
-    public void SetSFXVolumeValue() {
+    public void SetSFXVolumeValue() 
+    {
         OptionsManager.instance.volumeSFX.SetValue((int) sfxVolumeSlider.value, true);
         sfxVolumeValue.text = OptionsManager.instance.volumeSFX.Value.ToString();
         if(playSfx) AudioManager.instance.sfxBlip.PlayAsSFX();
     }
 
-    public void SetHighQualityValue() {
+    public void SetHighQualityValue() 
+    {
         OptionsManager.instance.highQuality.SetValue(highQualityToggle.isOn ? 1 : 0, true);
         if(playSfx) AudioManager.instance.PlayButtonClick();
     }
 
-    public void SetFullscreenValue() {
+    public void SetFullscreenValue() 
+    {
         OptionsManager.instance.fullscreen.SetValue(fullscreenToggle.isOn ? 1 : 0, true);
         if(playSfx) AudioManager.instance.PlayButtonClick();
     }

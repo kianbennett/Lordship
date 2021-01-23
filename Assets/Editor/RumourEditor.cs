@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+// Custom editor window for creating and editing rumours
+
 public class RumourEditor : EditorWindow {
 
     private Vector2 _scroll = new Vector2();
 
     [MenuItem("SFAS/Show Rumour Editor")]
-    public static void ShowRumourEditor() {
+    public static void ShowRumourEditor() 
+    {
         GetWindow(typeof(RumourEditor));
     }
 
-    void OnGUI() {
+    void OnGUI() 
+    {
         RumourData data = RumourData.LoadData();
         SerializedObject dataObj = new SerializedObject(data);
 
@@ -23,14 +27,16 @@ public class RumourEditor : EditorWindow {
         EditorGUILayout.BeginVertical();
         _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-        for (int i = 0; i < startPoints.arraySize; i++) {
+        for (int i = 0; i < startPoints.arraySize; i++) 
+        {
             SerializedProperty start = startPoints.GetArrayElementAtIndex(i);
             SerializedProperty mid = midPoints.GetArrayElementAtIndex(i);
             SerializedProperty end = endPoints.GetArrayElementAtIndex(i);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Rumour " + i);
-            if(GUILayout.Button("Delete", GUILayout.Width(80))) {
+            if(GUILayout.Button("Delete", GUILayout.Width(80))) 
+            {
                 deleteRumour(startPoints, midPoints, endPoints, i);
                 break;
             }
@@ -60,7 +66,8 @@ public class RumourEditor : EditorWindow {
             GUILayout.Space(12);
         }
         
-        if (GUILayout.Button("Add Rumour")) {
+        if (GUILayout.Button("Add Rumour")) 
+        {
             addRumour(startPoints, midPoints, endPoints);
         }
 
@@ -70,7 +77,8 @@ public class RumourEditor : EditorWindow {
         dataObj.ApplyModifiedProperties();
     }
 
-    private void addRumour(SerializedProperty startPoints, SerializedProperty midPoints, SerializedProperty endPoints) {
+    private void addRumour(SerializedProperty startPoints, SerializedProperty midPoints, SerializedProperty endPoints) 
+    {
         int index = startPoints.arraySize;
         startPoints.arraySize++;
         midPoints.arraySize++;
@@ -81,7 +89,8 @@ public class RumourEditor : EditorWindow {
         endPoints.GetArrayElementAtIndex(index).stringValue = "";
     }
 
-    private void deleteRumour(SerializedProperty startPoints, SerializedProperty midPoints, SerializedProperty endPoints, int index) {
+    private void deleteRumour(SerializedProperty startPoints, SerializedProperty midPoints, SerializedProperty endPoints, int index) 
+    {
         startPoints.DeleteArrayElementAtIndex(index);
         midPoints.DeleteArrayElementAtIndex(index);
         endPoints.DeleteArrayElementAtIndex(index);

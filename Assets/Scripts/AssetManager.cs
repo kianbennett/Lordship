@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 [Serializable]
-public class MaterialSet {
+public class MaterialSet 
+{
     public bool hasColour1, hasColour2, hasSkin;
     public Material[] additionalMaterials;
     public ColourPalette colourPalette1, colourPalette2;
 }
 
 [Serializable]
-public class MeshMaterialSet {
+public class MeshMaterialSet 
+{
     public string name;
     public Mesh mesh;
     public MaterialSet materials;
@@ -19,18 +21,20 @@ public class MeshMaterialSet {
 
 // Use for pairs of identical meshes (i.e. hands)
 [Serializable]
-public class MeshPairMaterialSet : MeshMaterialSet {
+public class MeshPairMaterialSet : MeshMaterialSet 
+{
     public Mesh left, right;
 }
 
 [Serializable]
-public class PaletteColour {
+public class PaletteColour 
+{
     public string name;
     public Color colour;
 }
 
-public class AssetManager : Singleton<AssetManager> {
-
+public class AssetManager : Singleton<AssetManager> 
+{
     [Header("Materials")]
     public Material vertexColorMaterial;
 
@@ -59,10 +63,14 @@ public class AssetManager : Singleton<AssetManager> {
     private List<Tuple<string, string>> usedNames = new List<Tuple<string, string>>();
 
     // Gets a VertexColour material with a certain colour, or create a new one if it doesn't exist
-    public static Material GetColouredMaterial(Color colour) {
-        if (instance.colouredMaterialDictionary.ContainsKey(colour)) {
+    public static Material GetColouredMaterial(Color colour) 
+    {
+        if (instance.colouredMaterialDictionary.ContainsKey(colour)) 
+        {
             return instance.colouredMaterialDictionary[colour];
-        } else {
+        } 
+        else 
+        {
             Material material = new Material(instance.vertexColorMaterial);
             material.SetColor("_Color", colour);
             material.EnableKeyword ("_EMISSION"); // Needs this to be able to set emission colour
@@ -71,8 +79,10 @@ public class AssetManager : Singleton<AssetManager> {
         }
     }
 
-    public MeshMaterialSet[] GetMeshesFromBodyPart(BodyPart bodyPart) {
-        switch(bodyPart) {
+    public MeshMaterialSet[] GetMeshesFromBodyPart(BodyPart bodyPart) 
+    {
+        switch(bodyPart) 
+        {
             case BodyPart.Hair: return hairMeshes;
             case BodyPart.Body: return bodyMeshes;
             case BodyPart.Hands: return handMeshes;
@@ -81,22 +91,27 @@ public class AssetManager : Singleton<AssetManager> {
         }
     }
 
-    public int GetColouredMaterialCount() {
+    public int GetColouredMaterialCount() 
+    {
         return colouredMaterialDictionary.Count;
     }
 
-    public void ClearMaterialDictionary() {
+    public void ClearMaterialDictionary() 
+    {
         colouredMaterialDictionary.Clear();
     }
 
     // Keep checking random generated names against the list of already used names
-    public Tuple<string, string> GetUniqueNpcName() {
+    public Tuple<string, string> GetUniqueNpcName()
+    {
         Tuple<string, string> name;
-        do {
+        do 
+        {
             string firstName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)];
             string lastName = lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
             name = new Tuple<string, string>(firstName, lastName);
-        } while(usedNames.Contains(name));
+        } 
+        while(usedNames.Contains(name));
         usedNames.Add(name);
         return name;
     }

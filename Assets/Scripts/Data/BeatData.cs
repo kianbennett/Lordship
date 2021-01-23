@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// public enum ChoiceDefineType { Predefined, Random }
 public enum SpeechType { Greeting, Listening, FlatterResponse, ThreatenResponse, BribeResponse, RumourStart, RumourEnd }
 
 [Serializable]
@@ -14,20 +13,13 @@ public class BeatData
     // Predefined choices or randomised
     [SerializeField] private bool _copyChoicesFromBeat; // To reuse choices from another beat
     [SerializeField] private int _beatIdToCopyFrom;
-    // [SerializeField] private ChoiceDefineType _choicesType;
     [SerializeField] private List<ChoiceData> _choices;
-    // [SerializeField] private ChoiceTextType _choiceTextType;
     
     // The type of beat
     [SerializeField] private DialogueType _beatType;
-    // These are only used depending on what _beatCategory is set to
-    // [SerializeField] private CharacterAge _ageType;
-    // [SerializeField] private CharacterWealth _wealthType;
-    // [SerializeField] private CharacterOccupation _occupationType;
 
-    // [SerializeField] private BeatTextType _textType;
     // [SerializeField] private string _text;
-    // [SerializeField] private TextList _textListPositive, _textListNeutral, _textListNegative;
+
     // Speech type determines which TextLists to pull the text from
     [SerializeField] private SpeechType _displayTextType;
 

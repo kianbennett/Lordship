@@ -4,13 +4,15 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class Tooltip : MonoBehaviour {
-
+public class Tooltip : MonoBehaviour 
+{
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI textComponent;
 
-    void LateUpdate() {
-        if(EventSystem.current.IsPointerOverGameObject()) {
+    void LateUpdate() 
+    {
+        if(EventSystem.current.IsPointerOverGameObject()) 
+        {
             Hide();
         }
 
@@ -19,14 +21,16 @@ public class Tooltip : MonoBehaviour {
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
     }
 
-    public void Show(string text) {
+    public void Show(string text) 
+    {
         if(EventSystem.current.IsPointerOverGameObject()) return;
         textComponent.text = text;
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0);
         gameObject.SetActive(true);
     }
 
-    public void Hide() {
+    public void Hide() 
+    {
         gameObject.SetActive(false);
     }
 }

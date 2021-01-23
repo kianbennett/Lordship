@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class GridPoint {
-    public enum Type {
-        Path, Pavement, Grass, Obstacle
-    }
+// Generates a town from specified parameters and sets the types of each grid point for pathfinding
+
+public class GridPoint 
+{
+    public enum Type { Path, Pavement, Grass, Obstacle }
 
     public int x, y;
     public Type type;
 
     // Pathfinding data
     public List<GridPoint> connections;
-    public float cost {
+    public float cost 
+    {
         get { 
             if(type == Type.Grass) return 6;
             if(type == Type.Path) return 2;
@@ -21,7 +23,8 @@ public class GridPoint {
         }
     }
 
-    public GridPoint(int x, int y, Type type) {
+    public GridPoint(int x, int y, Type type) 
+    {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -29,38 +32,38 @@ public class GridPoint {
 }
 
 [ExecuteInEditMode]
-public class TownGenerator : Singleton<TownGenerator> {
-
+public class TownGenerator : Singleton<TownGenerator> 
+{
     public NpcSpawner npcSpawner;
 
     [Header("Debug")]
-    public bool debugGrid;
-    public bool debugRoadPath;
-    public bool debugBuildingBounds;
-    public bool debugNoise;
+    [SerializeField] private bool debugGrid;
+    [SerializeField] private bool debugRoadPath;
+    [SerializeField] private bool debugBuildingBounds;
+    [SerializeField] private bool debugNoise;
     [Range(0f, 1f)]
-    public float debugNoiseScale, debugNoiseThreshold;
+    [SerializeField] private float debugNoiseScale, debugNoiseThreshold;
 
     [Header("Parameters")]
-    public int width;
-    public int height;
-    public int borderSize;
-    public int minNodeSize, maxNodeSize;
-    public int seed;
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+    [SerializeField] private int borderSize;
+    [SerializeField] private int minNodeSize, maxNodeSize;
+    [SerializeField] private int seed;
 
     [Header("Noise Parameters")]
-    public float treeNoiseScale;
+    [SerializeField] private float treeNoiseScale;
     [Range(0f, 1f)]
-    public float treeNoiseThreshold;
-    public float bushNoiseScale;
+    [SerializeField] private float treeNoiseThreshold;
+    [SerializeField] private float bushNoiseScale;
     [Range(0f, 1f)]
-    public float bushNoiseThreshold;
-    public float grassNoiseScale;
+    [SerializeField] private float bushNoiseThreshold;
+    [SerializeField] private float grassNoiseScale;
     [Range(0f, 1f)]
-    public float grassNoiseThresholdSmall, grassNoiseThresholdBig;
-    public float buildingNoiseScale;
+    [SerializeField] private float grassNoiseThresholdSmall, grassNoiseThresholdBig;
+    [SerializeField] private float buildingNoiseScale;
     [Range(0f, 1f)]
-    public float buildingNoiseThreshold;
+    [SerializeField] private float buildingNoiseThreshold;
 
     [Header("Objects")]
     [SerializeField] private Transform basePlane;
@@ -83,15 +86,16 @@ public class TownGenerator : Singleton<TownGenerator> {
 
     public GridPoint[,] GridPoints { get { return gridPoints; }}
     public GridPoint[] RoadGridPoints { get { return roadGridPoints; } }
+    public int Width { get { return width; } }
+    public int Height { get { return height; } }
+    public List<Light> LampLights { get { return lampLights; } }
 
-    protected override void Awake() {
-        base.Awake();
-        // Generate();
-    }
-
-    void Update() {
-        if(debugRoadPath && nodes != null) {
-            foreach(BSPNode node in nodes) {
+    void Update() 
+    {
+        if(debugRoadPath && nodes != null) 
+        {
+            foreach(BSPNode node in nodes) 
+            {
                 float x = node.x - width / 2f + borderSize;
                 float y = node.y - height / 2f + borderSize;
                 Debug.DrawLine(new Vector3(x, 0, y), new Vector3(x + node.width, 0, y));
@@ -101,20 +105,29 @@ public class TownGenerator : Singleton<TownGenerator> {
             }
         }
 
-        if(debugGrid && gridPoints != null) {
+        if(debugGrid && gridPoints != null) 
+        {
             float originX = -width / 2f;
             float originZ = -height / 2f;
-            for(int i = 0; i < width; i++) Debug.DrawLine(new Vector3(originX + i, 0, originZ), new Vector3(originX + i, 0, originZ + height), new Color(1, 1, 1, 0.2f));
-            for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) 
+            {
+                Debug.DrawLine(new Vector3(originX + i, 0, originZ), new Vector3(originX + i, 0, originZ + height), new Color(1, 1, 1, 0.2f));
+            }
+            for(int j = 0; j < height; j++) 
+            {
                 Debug.DrawLine(new Vector3(originX, 0, originZ + j), new Vector3(originX + width, 0, originZ + j), new Color(1, 1, 1, 0.2f));
-                for(int i = 0; i < width; i++) {
-                    if(debugNoise) {
+                for(int i = 0; i < width; i++) 
+                {
+                    if(debugNoise) 
+                    {
                         float noiseValue = Mathf.PerlinNoise(i * debugNoiseScale, j * debugNoiseScale);  
-                        if(noiseValue > debugNoiseThreshold) {
+                        if(noiseValue > debugNoiseThreshold) 
+                        {
                             Debug.DrawLine(new Vector3(originX + i + 0.5f, 0, originZ + j + 0.25f), new Vector3(originX + i + 0.5f, 0, originZ + j + 0.75f), Color.white);
                             Debug.DrawLine(new Vector3(originX + i + 0.25f, 0, originZ + j + 0.5f), new Vector3(originX + i + 0.75f, 0, originZ + j + 0.5f), Color.white);
                         }
-                    } else {
+                    } else 
+                    {
                         Color color = Color.green;
                         if(gridPoints[i, j].type == GridPoint.Type.Path) color = Color.blue;
                         if(gridPoints[i, j].type == GridPoint.Type.Pavement) color = Color.cyan;
@@ -127,10 +140,13 @@ public class TownGenerator : Singleton<TownGenerator> {
             }
         }
 
-        if(debugBuildingBounds) {
-            foreach(Building building in objectContainer.GetComponentsInChildren<Building>()) {
-                float w = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.depth : building.width;
-                float h = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.width : building.depth;
+        if(debugBuildingBounds)
+        {
+            foreach(Building building in objectContainer.GetComponentsInChildren<Building>()) 
+            {
+                // Switch width and height depending on if the building is rotated or not
+                float w = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.Size.y : building.Size.x;
+                float h = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.Size.x : building.Size.y;
                 float x = building.transform.position.x - w / 2f;
                 float y = building.transform.position.z - h / 2f;
 
@@ -147,7 +163,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
     }
 
-    public void Generate(bool randomSeed) {
+    public void Generate(bool randomSeed) 
+    {
         if(randomSeed) seed = (int) System.DateTime.UtcNow.Ticks; // Get unique seed based on system time
         Random.InitState(seed);
 
@@ -157,8 +174,10 @@ public class TownGenerator : Singleton<TownGenerator> {
         splitBSPNode(rootNode);
 
         gridPoints = new GridPoint[width, height];
-        for(int j = 0; j < height; j++) {
-            for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) 
+        {
+            for(int i = 0; i < width; i++) 
+            {
                 GridPoint.Type type = GridPoint.Type.Grass;
                 // Make sure nothing spawns right at the edge next to the wall
                 if(i == 0 || i == width - 1 || j == 0 || j == height - 1) type = GridPoint.Type.Obstacle;
@@ -169,8 +188,10 @@ public class TownGenerator : Singleton<TownGenerator> {
         Build();
 
         // Set grid connections after placing objects so grid point types have been set
-        for(int j = 0; j < height; j++) {
-            for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) 
+        {
+            for(int i = 0; i < width; i++) 
+            {
                 setGridPointConnections(gridPoints[i, j]);
             }
         }
@@ -182,11 +203,13 @@ public class TownGenerator : Singleton<TownGenerator> {
     }
 
     // Place objects from the generated BSP
-    public void Build() {
+    public void Build() 
+    {
         if(nodes == null) return;
 
         // Destroy all children in base plane
-        for(int i = objectContainer.childCount - 1; i >= 0; i--) {
+        for(int i = objectContainer.childCount - 1; i >= 0; i--) 
+        {
             DestroyImmediate(objectContainer.GetChild(i).gameObject);
         }
 
@@ -195,13 +218,15 @@ public class TownGenerator : Singleton<TownGenerator> {
 
         lampLights = new List<Light>();
 
-        for(int i = 0; i < nodes.Count; i++) {
+        for(int i = 0; i < nodes.Count; i++) 
+        {
             BSPNode node = nodes[i];
             int x = (int) (node.x - width / 2f + borderSize);
             int y = (int) (node.y - height / 2f + borderSize);
 
             // Add roads
-            if(node.y != 0) {
+            if(node.y != 0) 
+            {
                 // TODO: Add function that adds a road and sets the grid types all in one
                 // Roads and pavements are raised by a small random value to avoid graphical glitches
                 // when point light interacts with overlapping geometry = needs changing
@@ -210,7 +235,8 @@ public class TownGenerator : Singleton<TownGenerator> {
                 setGridPointsFromRect(node.x + borderSize, node.y + borderSize - 1, node.width, 2, GridPoint.Type.Path);
 
             }
-            if(node.x != 0) {
+            if(node.x != 0) 
+            {
                 GameObject roadV = Instantiate(roadPrefab, new Vector3(x, 0.01f + Random.value * 0.001f, y + node.height / 2f), Quaternion.Euler(90, 0, 0), objectContainer);
                 roadV.transform.localScale = new Vector3(2, node.height, 1);
                 setGridPointsFromRect(node.x + borderSize - 1, node.y + borderSize, 2, node.height, GridPoint.Type.Path);
@@ -290,14 +316,17 @@ public class TownGenerator : Singleton<TownGenerator> {
         placeBuildingsAlongEdge(null, new Vector3(-roadAreaWidth / 2 - 2, 0, roadAreaHeight / 2), new Vector3(-roadAreaWidth / 2 - 2, 0, -roadAreaHeight / 2), 0.5f, 2.5f, false, gate1Bounds);
 
         // Add walls (TODO: Put this into functions to reduce number of lines)
-        if(gate1Left) {
+        if(gate1Left) 
+        {
             GameObject wallL1 = Instantiate(wallPrefab, new Vector3(-width / 2f, 0, (-height / 2f + gate1Pos) / 2f - 1), Quaternion.Euler(0, 90, 0), objectContainer);
             GameObject wallL2 = Instantiate(wallPrefab, new Vector3(-width / 2f, 0, (height / 2f + gate1Pos) / 2f + 1), Quaternion.Euler(0, 90, 0), objectContainer);
             GameObject wallR = Instantiate(wallPrefab, new Vector3(width / 2f, 0, 0), Quaternion.Euler(0, 90, 0), objectContainer);
             wallL1.transform.localScale = new Vector3(height / 2f + gate1Pos - 4, 1, 1);
             wallL2.transform.localScale = new Vector3(height / 2f - gate1Pos - 4, 1, 1);
             wallR.transform.localScale = new Vector3(height - 2, 1, 1);
-        } else {
+        } 
+        else 
+        {
             GameObject wallL = Instantiate(wallPrefab, new Vector3(-width / 2f, 0, 0), Quaternion.Euler(0, 90, 0), objectContainer);
             GameObject wallR1 = Instantiate(wallPrefab, new Vector3(width / 2f, 0, (-height / 2f + gate1Pos) / 2f - 1), Quaternion.Euler(0, 90, 0), objectContainer);
             GameObject wallR2 = Instantiate(wallPrefab, new Vector3(width / 2f, 0, (height / 2f + gate1Pos) / 2f + 1), Quaternion.Euler(0, 90, 0), objectContainer);
@@ -305,14 +334,17 @@ public class TownGenerator : Singleton<TownGenerator> {
             wallR1.transform.localScale = new Vector3(height / 2f + gate1Pos - 4, 1, 1);
             wallR2.transform.localScale = new Vector3(height / 2f - gate1Pos - 4, 1, 1);
         }
-        if(gate2Bottom) {
+        if(gate2Bottom) 
+        {
             GameObject wallB1 = Instantiate(wallPrefab, new Vector3((-width / 2f + gate2Pos) / 2f - 1, 0, -height / 2f), Quaternion.identity, objectContainer);
             GameObject wallB2 = Instantiate(wallPrefab, new Vector3((width / 2f + gate2Pos) / 2f + 1, 0, -height / 2f), Quaternion.identity, objectContainer);
             GameObject wallT = Instantiate(wallPrefab, new Vector3(0, 0, height / 2f), Quaternion.identity, objectContainer);
             wallB1.transform.localScale = new Vector3(width / 2f + gate2Pos - 4, 1, 1);
             wallB2.transform.localScale = new Vector3(width / 2f - gate2Pos - 4, 1, 1);
             wallT.transform.localScale = new Vector3(width - 2, 1, 1);
-        } else {
+        } 
+        else 
+        {
             GameObject wallB = Instantiate(wallPrefab, new Vector3(0, 0, -height / 2f), Quaternion.identity, objectContainer);
             GameObject wallT1 = Instantiate(wallPrefab, new Vector3((-width / 2f + gate2Pos) / 2f - 1, 0, height / 2f), Quaternion.identity, objectContainer);
             GameObject wallT2 = Instantiate(wallPrefab, new Vector3((width / 2f + gate2Pos) / 2f + 1, 0, height / 2f), Quaternion.identity, objectContainer);
@@ -336,7 +368,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         GameObject wallCorner4 = Instantiate(wallCornerPrefab, new Vector3(-width / 2f, 0, height / 2f), Quaternion.Euler(0, 180, 0), objectContainer);
 
         // Add lampposts at all 4 corners of the map
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 4; i++) 
+        {
             float indent = 1.8f;
             Vector3 pos = new Vector3(-roadAreaWidth / 2f - indent + (i > 1 ? roadAreaWidth + indent * 2 : 0), 0, -roadAreaHeight / 2f - indent + (i == 1 || i == 2 ? roadAreaHeight + indent * 2 : 0));
             GameObject lamppost = Instantiate(lamppostPrefab, pos, Quaternion.Euler(0, 45 + 90 * i, 0), objectContainer);
@@ -345,15 +378,18 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         // Add trees
-        for(int j = 0; j < height; j += 2) {
-            for(int i = 0; i < width; i += 2) {
+        for(int j = 0; j < height; j += 2) 
+        {
+            for(int i = 0; i < width; i += 2)
+            {
                 // Make sure there are no obstacles in the 2x2 area around the tree
                 if(gridPoints[i, j].type != GridPoint.Type.Grass || gridPoints[i + 1, j].type != GridPoint.Type.Grass || gridPoints[i, j + 1].type != GridPoint.Type.Grass ||
                     gridPoints[i + 1, j + 1].type != GridPoint.Type.Grass) continue;
 
                 float noiseValue = Mathf.PerlinNoise(i * treeNoiseScale, j * treeNoiseScale);
 
-                if(noiseValue > treeNoiseThreshold) {
+                if(noiseValue > treeNoiseThreshold) 
+                {
                     Vector3 offset = MathHelper.RandomVector2(0.2f, 0.8f);
                     Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
                     GameObject treeObject = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)], pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
@@ -365,13 +401,16 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         // Add bushes
-        for(int j = 0; j < height; j++) {
-            for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) 
+        {
+            for(int i = 0; i < width; i++)
+            {
                 if(gridPoints[i, j].type != GridPoint.Type.Grass) continue;
 
                 float noiseValue = Mathf.PerlinNoise(i * bushNoiseScale, j * bushNoiseScale);
 
-                if(noiseValue > bushNoiseThreshold) {
+                if(noiseValue > bushNoiseThreshold) 
+                {
                     Vector3 offset = MathHelper.RandomVector2(0.2f, 0.8f);
                     Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
                     GameObject bushObject = Instantiate(bushPrefabs[Random.Range(0, bushPrefabs.Length)], pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
@@ -384,8 +423,10 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
 
         // Add grass
-        for(int j = 0; j < height; j++) {
-            for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) 
+        {
+            for(int i = 0; i < width; i++) 
+            {
                 if(gridPoints[i, j].type != GridPoint.Type.Grass) continue;
                 
                 float noiseValue = Mathf.PerlinNoise(i * grassNoiseScale, j * grassNoiseScale);
@@ -394,7 +435,8 @@ public class TownGenerator : Singleton<TownGenerator> {
                 if(noiseValue > grassNoiseThresholdSmall) grassNumber = 1;
                 if(noiseValue > grassNoiseThresholdBig) grassNumber = 2;
 
-                for(int g = 0; g < grassNumber; g++) {
+                for(int g = 0; g < grassNumber; g++) 
+                {
                     Vector3 offset = MathHelper.RandomVector2(0.2f, 0.8f);
                     Vector3 pos = new Vector3(-width / 2f + i + offset.x, 0, -height / 2f + j + offset.y);
                     GameObject grassObject = Instantiate(grassPrefab, pos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), objectContainer);
@@ -404,18 +446,23 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
     }
 
-    private void splitBSPNode(BSPNode node) {
+    private void splitBSPNode(BSPNode node) 
+    {
         bool split = node.width > maxNodeSize || node.height > maxNodeSize || Random.value > 0.25f;
-        if(split && node.Split()) {
+        if(split && node.Split()) 
+        {
             splitBSPNode(node.leftChild);
             splitBSPNode(node.rightChild);
-        } else {
+        } 
+        else 
+        {
             nodes.Add(node);
         }
     }
 
     // Returns building that would be placed at the start of the next edge
-    private Building placeBuildingsAlongEdge(Building buildingStart, Vector3 start, Vector3 end, float gapMin, float gapMax, bool leaveGapForLastBuilding = true, Bounds ignoreBounds = default) {
+    private Building placeBuildingsAlongEdge(Building buildingStart, Vector3 start, Vector3 end, float gapMin, float gapMax, bool leaveGapForLastBuilding = true, Bounds ignoreBounds = default) 
+    {
         float edgeLength = (end - start).magnitude;
         Vector3 edgeDir = (end - start).normalized;
         if (!buildingStart) buildingStart = buildingPrefabs[Random.Range(0, buildingPrefabs.Length)];
@@ -424,41 +471,48 @@ public class TownGenerator : Singleton<TownGenerator> {
 
         // Left edge
         float dist = 0;
-        while(dist < edgeLength) {
+        while(dist < edgeLength)
+        {
             buildingPrefab = buildingPrefabNext;
             buildingPrefabNext = buildingPrefabs[Random.Range(0, buildingPrefabs.Length)];
 
             float length = edgeLength;
-            if(leaveGapForLastBuilding) length -= buildingPrefabNext.depth;
+            if(leaveGapForLastBuilding) length -= buildingPrefabNext.Size.y;
             
-            if(dist + buildingPrefab.width < length) {
+            if(dist + buildingPrefab.Size.x < length) 
+            {
                 Quaternion rot = Quaternion.LookRotation(edgeDir, Vector3.up);
-                Vector3 pos = start + edgeDir * dist + rot * new Vector3(buildingPrefab.size.y / 2, 0, buildingPrefab.size.x / 2);
+                Vector3 pos = start + edgeDir * dist + rot * new Vector3(buildingPrefab.Size.y / 2, 0, buildingPrefab.Size.x / 2);
                 GridPoint gridPoint = GridPointFromWorldPos(pos);
                 float noiseValue = Mathf.PerlinNoise(gridPoint.x * buildingNoiseScale, gridPoint.y * buildingNoiseScale);
-                if (!ignoreBounds.Contains(pos) && noiseValue > buildingNoiseThreshold) {
+                if (!ignoreBounds.Contains(pos) && noiseValue > buildingNoiseThreshold) 
+                {
                     Building building = Instantiate(buildingPrefab, pos, rot * Quaternion.Euler(0, 90, 0), objectContainer);
                     building.transform.localScale = MathHelper.RandomVector3(0.9f, 1.1f);    
                     setGridPointsFromBuilding(building);
                 }
             }
-            dist += buildingPrefab.width + Random.Range(gapMin, gapMax);
+            dist += buildingPrefab.Size.x + Random.Range(gapMin, gapMax);
         }
 
         return buildingPrefabNext;
     }
 
     // Set up connections between adjacent grid points - check each adjacent tile and make sure it is within bounds and walkable
-    private void setGridPointConnections(GridPoint gridPoint) {
+    private void setGridPointConnections(GridPoint gridPoint) 
+    {
         gridPoint.connections = new List<GridPoint>();
 
-        for(int x = -1; x < 2; x++) {
-            for(int y = -1; y < 2; y++) {
+        for(int x = -1; x < 2; x++) 
+        {
+            for(int y = -1; y < 2; y++) 
+            {
                 if(x == 0 && y == 0) continue;
                 int i = gridPoint.x + x;
                 int j = gridPoint.y + y;
 
-                if(isInBounds(i, j) && gridPoints[i, j].type != GridPoint.Type.Obstacle) {
+                if(isInBounds(i, j) && gridPoints[i, j].type != GridPoint.Type.Obstacle) 
+                {
                     gridPoint.connections.Add(gridPoints[i, j]);
                 }
             }
@@ -466,18 +520,23 @@ public class TownGenerator : Singleton<TownGenerator> {
     }
 
     // Is point within the bounds of the grid points array
-    private bool isInBounds(int i, int j) {
+    private bool isInBounds(int i, int j) 
+    {
         return (i >= 0 && i < width && j >= 0 && j < height);
     }
 
     // Set a rectangle of points within a grid to a specific type
-    private void setGridPointsFromRect(int x, int y, int w, int h, GridPoint.Type type) {
+    private void setGridPointsFromRect(int x, int y, int w, int h, GridPoint.Type type) 
+    {
         if(gridPoints == null) return;
 
-        for(int j = y; j < y + h; j++) {
+        for(int j = y; j < y + h; j++) 
+        {
             // Check if position is within bounds of array
             if(j < 0 || j >= height) continue;
-            for(int i = x; i < x + w; i++) {
+
+            for(int i = x; i < x + w; i++) 
+            {
                 if(i < 0 || i >= width) continue;
 
                 gridPoints[i, j].type = type;
@@ -485,15 +544,17 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
     }
 
-    private void setGridPointsFromBuilding(Building building) {
-        float w = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.depth : building.width;
-        float h = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.width : building.depth;
+    private void setGridPointsFromBuilding(Building building) 
+    {
+        float w = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.Size.y : building.Size.x;
+        float h = building.transform.rotation.eulerAngles.y % 180 != 0 ? building.Size.x : building.Size.y;
         float x = building.transform.position.x - w / 2f;
         float y = building.transform.position.z - h / 2f;
         setGridPointsFromRectWorldPos(x, y, w, h, GridPoint.Type.Obstacle);
     }
 
-    private void setGridPointsFromRectWorldPos(float x, float y, float w, float h, GridPoint.Type type) {
+    private void setGridPointsFromRectWorldPos(float x, float y, float w, float h, GridPoint.Type type) 
+    {
         int w_i = Mathf.CeilToInt(x + w) - Mathf.FloorToInt(x);
         int h_i = Mathf.CeilToInt(y + h) - Mathf.FloorToInt(y);
         int x_i = (int) (Mathf.FloorToInt(x) + width / 2f);
@@ -501,14 +562,16 @@ public class TownGenerator : Singleton<TownGenerator> {
         setGridPointsFromRect(x_i, y_i, w_i, h_i, type);
     }
 
-    private void setGridPointFromWorldPos(Vector3 worldPos, GridPoint.Type type) {
+    private void setGridPointFromWorldPos(Vector3 worldPos, GridPoint.Type type) 
+    {
         int x = Mathf.FloorToInt(worldPos.x + width / 2f);
         int y = Mathf.FloorToInt(worldPos.z + height / 2f);
         if(x < 0 || x >= width || y < 0 || y >= height || gridPoints == null) return;
         gridPoints[x, y].type = type;
     }
 
-    public GridPoint GridPointFromWorldPos(Vector3 worldPos) {
+    public GridPoint GridPointFromWorldPos(Vector3 worldPos) 
+    {
         int x = Mathf.FloorToInt(worldPos.x + width / 2f);
         int y = Mathf.FloorToInt(worldPos.z + height / 2f);
         if(x < 0 || x >= width || y < 0 || y >= height || gridPoints == null) 
@@ -517,24 +580,30 @@ public class TownGenerator : Singleton<TownGenerator> {
         return gridPoints[x, y];
     }
 
-    public Vector3 GridPointToWorldPos(float x, float y) {
+    public Vector3 GridPointToWorldPos(float x, float y) 
+    {
         return new Vector3(x - width / 2f, 0, y - height / 2f);
     }
 
-    public Vector3 GridPointToWorldPos(GridPoint gridPoint) {
+    public Vector3 GridPointToWorldPos(GridPoint gridPoint) 
+    {
         return new Vector3(gridPoint.x - width / 2f, 0, gridPoint.y - height / 2f);
     }
 
-    private bool checkGridPointsAreType(int x, int y, int w, int h, GridPoint.Type type) {
+    private bool checkGridPointsAreType(int x, int y, int w, int h, GridPoint.Type type) 
+    {
         if(gridPoints == null) return false;
 
-        for(int j = y; j < y + h; j++) {
+        for(int j = y; j < y + h; j++) 
+        {
             // Check if position is within bounds of array
             if(j < 0 || j >= height) return false;
-            for(int i = x; i < x + w; i++) {
+            for(int i = x; i < x + w; i++) 
+            {
                 if(i < 0 || i >= width) return false;
 
-                if(gridPoints[i, j].type != type) {
+                if(gridPoints[i, j].type != type) 
+                {
                     return false;
                 }
             }
@@ -543,7 +612,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         return true;
     }
 
-    private bool checkGridPointsAreTypeWorldPos(float x, float y, float w, float h, GridPoint.Type type) {
+    private bool checkGridPointsAreTypeWorldPos(float x, float y, float w, float h, GridPoint.Type type) 
+    {
         int w_i = Mathf.CeilToInt(x + w) - Mathf.FloorToInt(x);
         int h_i = Mathf.CeilToInt(y + h) - Mathf.FloorToInt(y);
         int x_i = (int) (Mathf.FloorToInt(x) + width / 2f);
@@ -552,10 +622,13 @@ public class TownGenerator : Singleton<TownGenerator> {
     }
 
     // Returns a subset of grid points that are within the bounds of the rect
-    private GridPoint[,] getGridPointsFromRect(int x, int y, int w, int h) {
+    private GridPoint[,] getGridPointsFromRect(int x, int y, int w, int h) 
+    {
         GridPoint[,] points = new GridPoint[w, h];
-        for(int j = 0; j < h; j++) {
-            for(int i = 0; i < w; i++) {
+        for(int j = 0; j < h; j++) 
+        {
+            for(int i = 0; i < w; i++) 
+            {
                 if(!isInBounds(x + i, y + j)) return null;
                 points[i, j] = gridPoints[x + i, y + j];
             }
@@ -563,7 +636,8 @@ public class TownGenerator : Singleton<TownGenerator> {
         return points;
     }
 
-    private void buildFootpath(GridPoint start, GridPoint end) {
+    private void buildFootpath(GridPoint start, GridPoint end) 
+    {
         float midX = (end.x + start.x) / 2f - width / 2f + 0.5f;
         float midY = (end.y + start.y) / 2f - height / 2f + 0.5f;
         Vector3 dir = new Vector3(end.x - start.x, 0, end.y - start.y);
@@ -574,22 +648,26 @@ public class TownGenerator : Singleton<TownGenerator> {
         path.transform.localScale = new Vector3(1, dir.magnitude + 1, 1);
     }
 
-    private void buildFootpathFromPath(List<GridPoint> path) {
+    private void buildFootpathFromPath(List<GridPoint> path) 
+    {
         if(path == null || path.Count < 2) return;
         GridPoint lineStart = path[0];
         GridPoint prevPoint = lineStart;
         Vector2 lastDir = Vector2.zero;
-        for(int i = 1; i < path.Count; i++) {
+        for(int i = 1; i < path.Count; i++) 
+        {
             Vector2 dir = new Vector2(path[i].x - prevPoint.x, path[i].y - prevPoint.y).normalized;
 
             // The direction has changed so add a path object
-            if(dir != lastDir && lastDir != Vector2.zero) {
+            if(dir != lastDir && lastDir != Vector2.zero) 
+            {
                 buildFootpath(lineStart, prevPoint);
                 lineStart = path[i];
             }
 
             // If this is the last point there will be no next point to build the path, so build it now
-            if(i == path.Count - 1) {
+            if(i == path.Count - 1) 
+            {
                 buildFootpath(lineStart, path[i]);
             }
 
@@ -598,17 +676,17 @@ public class TownGenerator : Singleton<TownGenerator> {
         }
     }
 
-    public GridPoint[] GetGridPoints(params GridPoint.Type[] types) {
+    // Returns an array of grid points that have types equal to that of the parameters
+    public GridPoint[] GetGridPoints(params GridPoint.Type[] types) 
+    {
         List<GridPoint> points = new List<GridPoint>();
-        foreach(GridPoint point in gridPoints) {
-            if(types.Contains(point.type)) {
+        foreach(GridPoint point in gridPoints) 
+        {
+            if(types.Contains(point.type)) 
+            {
                 points.Add(point);
             }
         }
         return points.ToArray();
-    }
-
-    public List<Light> getLampLights() {
-        return lampLights;
     }
 }

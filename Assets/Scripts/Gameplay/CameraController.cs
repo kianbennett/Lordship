@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.PostProcessing;
 
-public class CameraController : Singleton<CameraController> {
+// Controls the camera panning, rotating and switching to dialogue
 
+public class CameraController : Singleton<CameraController> 
+{
     [Header("Transforms")]
     [ReadOnly] public Transform objectToFollow;
-
-    public new Camera camera;
+    [SerializeField] private new Camera camera;
     [SerializeField] private Transform cameraContainer;
     [SerializeField] private Transform dialogueCameraPos;
     [SerializeField] private PostProcessVolume postProcessVolume;
@@ -39,7 +40,10 @@ public class CameraController : Singleton<CameraController> {
     // Store reference to objects that block the characters and get hidden during dialogue so they can be reactivated
     private List<GameObject> objectsHiddenInDialogue;
 
-    protected override void Awake() {
+    public Camera Camera { get { return camera; } }
+
+    protected override void Awake() 
+    {
         base.Awake();
 
         // localCameraOffset = camera.transform.localPosition;
@@ -50,14 +54,17 @@ public class CameraController : Singleton<CameraController> {
         objectsHiddenInDialogue = new List<GameObject>();
     }
 
-    void LateUpdate() {
-        if(!inDialogue && !LevelManager.instance.IsPaused) {
+    void LateUpdate() 
+    {
+        if(!inDialogue && !LevelManager.instance.IsPaused) 
+        {
             // TODO: Move this to InputHandler
             // Hold middle mouse to rotate
             isRotating = Input.GetMouseButton(2);
             bool pivot = Input.GetKey(KeyCode.LeftShift);
 
-            if (isRotating && !isGrabbing) {
+            if (isRotating && !isGrabbing) 
+            {
                 float rot = Input.GetAxis("Mouse X") * rotationSpeed;
                 // TODO: RotateAround not working properly
                 if (pivot) transform.RotateAround(camera.transform.position, Vector3.up, rot);
@@ -65,7 +72,8 @@ public class CameraController : Singleton<CameraController> {
             }
 
             // Only zoom if the mouse isn't over a UI element to avoid zooming when scrolling
-            if (!EventSystem.current.IsPointerOverGameObject()) {
+            if (!EventSystem.current.IsPointerOverGameObject()) 
+            {
                 float scrollDelta = -Input.mouseScrollDelta.y;
                 zoom(scrollDelta * zoomSpeed * Time.deltaTime);
             }
@@ -73,9 +81,7 @@ public class CameraController : Singleton<CameraController> {
             // Lerp towards camera zoom dist
             camera.transform.localPosition = new Vector3(0, 0, Mathf.Lerp(camera.transform.localPosition.z, cameraDist, Time.deltaTime * 10));
 
-            if(objectToFollow != null) {
-                targetPosition = objectToFollow.transform.position;
-            }
+            if(objectToFollow != null) targetPosition = objectToFollow.transform.position;
             transform.position = targetPosition;
         }
 
@@ -83,50 +89,59 @@ public class CameraController : Singleton<CameraController> {
         // camera.transform.localPosition = Vector3.Lerp(camera.transform.localPosition, localCameraOffset, Time.deltaTime * 10);
     }
 
-    private void move(Vector3 delta) {
+    private void move(Vector3 delta) 
+    {
         if(inDialogue) return; // Can't move the camera when in dialogue
         targetPosition += delta;
         objectToFollow = null;
 
         // Limit camera position to bounds of town
-        targetPosition.x = Mathf.Clamp(targetPosition.x, -TownGenerator.instance.width / 2f, TownGenerator.instance.width / 2f);
-        targetPosition.z = Mathf.Clamp(targetPosition.z, -TownGenerator.instance.height / 2f, TownGenerator.instance.height / 2f);
+        targetPosition.x = Mathf.Clamp(targetPosition.x, -TownGenerator.instance.Width / 2f, TownGenerator.instance.Width / 2f);
+        targetPosition.z = Mathf.Clamp(targetPosition.z, -TownGenerator.instance.Height / 2f, TownGenerator.instance.Height / 2f);
     }
 
-    public void PanLeft() {
+    public void PanLeft() 
+    {
         if (isGrabbing) return;
         move(-transform.right * panSpeed * Time.deltaTime);
     }
 
-    public void PanRight() {
+    public void PanRight() 
+    {
         if (isGrabbing) return;
         move(transform.right * panSpeed * Time.deltaTime);
     }
 
-    public void PanForward() {
+    public void PanForward() 
+    {
         if (isGrabbing) return;
         move(transform.forward * panSpeed * Time.deltaTime);
     }
 
-    public void PanBackward() {
+    public void PanBackward() 
+    {
         if (isGrabbing) return;
         move(-transform.forward * panSpeed * Time.deltaTime);
     }
 
-    public void SetPositionImmediate(Vector3 pos) {
+    public void SetPositionImmediate(Vector3 pos) 
+    {
         targetPosition = pos;
         transform.position = pos;
         worldSpaceGrab = Vector3.zero;
         worldSpaceGrabLast = Vector3.zero;
     }
 
-    public void ResetCameraDist() {
+    public void ResetCameraDist() 
+    {
         camera.transform.localPosition = Vector3.forward * cameraDist;
     }
 
     // Gets the ground position where the mouse right clicks
-    public void Grab() {
-        if(GetMousePointOnGround(out Vector3 point)) {
+    public void Grab() 
+    {
+        if(GetMousePointOnGround(out Vector3 point)) 
+        {
             worldSpaceGrab = point;
             worldSpaceGrabLast = worldSpaceGrab;
             isGrabbing = true;
@@ -135,36 +150,43 @@ public class CameraController : Singleton<CameraController> {
     }
 
     // Called when the mouse moves while grabbing - find the new position and translate the camera in the opposite direction
-    public void Pan() {
-        if(GetMousePointOnGround(out Vector3 point)) {
+    public void Pan() 
+    {
+        if(GetMousePointOnGround(out Vector3 point)) 
+        {
             worldSpaceGrab = point;
             Vector3 delta = worldSpaceGrab - worldSpaceGrabLast;
             move(-delta);
         }
     }
 
-    public void Release() {
+    public void Release() 
+    {
         isGrabbing = false;
     }
 
-    private void zoom(float dist) {
+    private void zoom(float dist) 
+    {
         // zoom faster the further out the camera is
         dist *= (cameraDist / 4);
 
-        if(cameraDist + dist > minCameraDist && cameraDist + dist < maxCameraDist) {
+        if(cameraDist + dist > minCameraDist && cameraDist + dist < maxCameraDist) 
+        {
             cameraDist += dist;
         }
     }
 
     // Gets the point at which the mouse position ray hits a plane at y = 0
-    public bool GetMousePointOnGround(out Vector3 point) {
+    public bool GetMousePointOnGround(out Vector3 point) 
+    {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         bool hit = raycastPlane.Raycast(ray, out float distance);
         point = ray.GetPoint(distance);
         return hit;
     }
 
-    public void SetInDialogue(Character characterFocus, Character characterSpeaking) {
+    public void SetInDialogue(Character characterFocus, Character characterSpeaking) 
+    {
         transform.position = characterFocus.transform.position;
         rotBeforeDialogue = transform.rotation.eulerAngles.y;
         transform.rotation = Quaternion.LookRotation(characterFocus.transform.position - characterSpeaking.transform.position, Vector3.up);
@@ -175,14 +197,16 @@ public class CameraController : Singleton<CameraController> {
 
         // Cast rays to each character's feet and head to check if anything is blocking them from view of the camera
         // Keep ray directions separate to rays as once you create a ray it normalises the direction
-        Vector3[] rayDirections = new Vector3[] {
+        Vector3[] rayDirections = new Vector3[] 
+        {
             characterFocus.transform.position - camera.transform.position,
             characterSpeaking.transform.position - camera.transform.position,
             characterFocus.transform.position + Vector3.up * 2f - camera.transform.position,
             characterSpeaking.transform.position + Vector3.up * 2f - camera.transform.position
         };
 
-        for(int i = 0; i < rayDirections.Length; i++) {
+        for(int i = 0; i < rayDirections.Length; i++) 
+        {
             // Move each ray back incase it's inside a collider
             Ray ray = new Ray(camera.transform.position, rayDirections[i]);
             ray.origin -= rayDirections[i] * 5; 
@@ -195,7 +219,8 @@ public class CameraController : Singleton<CameraController> {
         }
     }
 
-    public void CancelDialogue() {
+    public void CancelDialogue() 
+    {
         if(!inDialogue) return;
         // Restore the camera Y rotation
         transform.rotation = Quaternion.Euler(Vector3.up * rotBeforeDialogue);
@@ -204,21 +229,26 @@ public class CameraController : Singleton<CameraController> {
         inDialogue = false;
         SetPostProcessingEffectEnabled<DepthOfField>(false);
 
-        foreach(GameObject gameObject in objectsHiddenInDialogue) {
+        // Reactivate the objects that got hidden by the dialogue
+        foreach(GameObject gameObject in objectsHiddenInDialogue) 
+        {
             gameObject.SetActive(true);
         }
         objectsHiddenInDialogue.Clear();
     }
 
-    public void SetPostProcessingEffectEnabled<T>(bool enabled) where T : PostProcessEffectSettings {
+    public void SetPostProcessingEffectEnabled<T>(bool enabled) where T : PostProcessEffectSettings 
+    {
         postProcessVolume.profile.TryGetSettings(out T settings);
-        if(settings != null) {
+        if(settings != null) 
+        {
             settings.enabled.value = enabled;
             settings.active = enabled;
         }
     }
 
-    public void SetAntialiasingEnabled(bool enabled) {
+    public void SetAntialiasingEnabled(bool enabled) 
+    {
         postProcessLayer.antialiasingMode = enabled ? PostProcessLayer.Antialiasing.FastApproximateAntialiasing : PostProcessLayer.Antialiasing.None;
     }
 }

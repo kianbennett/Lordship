@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class DialogueMenu : MonoBehaviour {
-
+public class DialogueMenu : MonoBehaviour 
+{
     [SerializeField] private TextDisplay npcSpeechText;
     [SerializeField] private TextMeshProUGUI textNpcName;
     [SerializeField] private TextMeshProUGUI textNpcAge;
@@ -24,16 +24,13 @@ public class DialogueMenu : MonoBehaviour {
     public TextDisplay NpcSpeechText { get { return npcSpeechText; }}
 
     private List<DialogueChoiceButton> choiceButtons;
-
     private bool isActive;
     private bool isChoicesActive;
     private float choicePanelHeight;
     private int npcDisposition;
 
-    void Awake() {
-    }
-
-    void Update() {
+    void Update() 
+    {
         // Update dialogue option panel position
         float velocity = 0;
         float targetY = isActive && isChoicesActive ? choicePanelHeight : -15;
@@ -42,46 +39,53 @@ public class DialogueMenu : MonoBehaviour {
 
         float scaleX = Mathf.Lerp(dispositionBar.transform.localScale.x, npcDisposition / 100f, Time.deltaTime * 10);
         dispositionBar.transform.localScale = new Vector3(scaleX, 1, 1);
-        if(scaleX < 0.5f) {
+        if(scaleX < 0.5f) 
+        {
             dispositionBar.color = Color.Lerp(dispositionColourNegative, dispositionColourNeutral, scaleX / 0.5f);
-        } else {
+        } 
+        else 
+        {
             dispositionBar.color = Color.Lerp(dispositionColourNeutral, dispositionColourPositive, (scaleX - 0.5f) / 0.5f);
         }
 
         textGold.text = LevelManager.instance.GoldRemaining + "g";
     }
 
-    public void SetActive() {
+    public void SetActive() 
+    {
         isActive = true;
         gameObject.SetActive(true);
         HideAllImmediate();
         dispositionBar.transform.localScale = new Vector3(0, 1, 1);
-        // npcSpeechAnim.SetTrigger(active ? "Appear" : "Hide");
-        // npcInfoAnim.SetTrigger(active ? "Appear" : "Hide");
     }
 
-    public void ShowChoicesPanel(NPC npc, params ChoiceData[] choices) {
+    public void ShowChoicesPanel(NPC npc, params ChoiceData[] choices) 
+    {
         // Delete existing option buttons
-        if(choiceButtons != null) {
+        if(choiceButtons != null) 
+        {
             foreach(DialogueChoiceButton button in choiceButtons) Destroy(button.gameObject);
         }
         choiceButtons = new List<DialogueChoiceButton>();
 
         float buttonY = -15;
-        for(int i = 0; i < choices.Length; i++) {
+        for(int i = 0; i < choices.Length; i++) 
+        {
             DialogueChoiceButton button = Instantiate(choiceButtonPrefab, Vector3.zero, Quaternion.identity);
             button.transform.SetParent(choicesPanel, false);
             button.SetValues(i, choices[i].FormattedDisplayText(PlayerController.instance.npcSpeaking), choices[i].Type);
             button.transform.localPosition = Vector3.up * buttonY;
             // button.GetComponent<RectTransform>().localPosition = Vector2.zero;
             // Debug.Log(choicesPanel.anchoredPosition);
-            buttonY -= button.GetHeight() + 14;
+            buttonY -= button.Height + 14;
 
             // Give a special golden border to unlocked rumours
-            if(choices[i].TextType == ChoiceTextType.RumourMid) {
+            if(choices[i].TextType == ChoiceTextType.RumourMid) 
+            {
                 button.SetSpecial();
             }
-            if(choices[i].TextType == ChoiceTextType.BribeAmount) {
+            if(choices[i].TextType == ChoiceTextType.BribeAmount) 
+            {
                 button.SetInteractible(LevelManager.instance.CanAffordBribe(i));
             }
             button.SetInteractible(!npc.HasUsedDialogueType(choices[i].Type));
@@ -96,21 +100,25 @@ public class DialogueMenu : MonoBehaviour {
         isChoicesActive = true;
     }
 
-    public void HideChoicesPanel() {
+    public void HideChoicesPanel() 
+    {
         isChoicesActive = false;
     }
 
-    public void ShowNpcSpeech(string text, bool showAnimation = true) {
+    public void ShowNpcSpeech(string text, bool showAnimation = true) 
+    {
         npcSpeechAnim.gameObject.SetActive(true);
         npcSpeechAnim.SetTrigger("Appear");
         npcSpeechText.Display(text);
     }
 
-    public void HideNpcSpeech() {
+    public void HideNpcSpeech() 
+    {
         npcSpeechAnim.SetTrigger("Hide");
     }
 
-    public void ShowNpcInfo(NPC npc) {
+    public void ShowNpcInfo(NPC npc) 
+    {
         npcInfoAnim.gameObject.SetActive(true);
         npcInfoAnim.SetTrigger("Appear");
         textNpcName.text = npc.DisplayName;
@@ -120,11 +128,13 @@ public class DialogueMenu : MonoBehaviour {
         UpdateDispositionBar(npc.disposition);
     }
 
-    public void HideNpcInfo() {
+    public void HideNpcInfo() 
+    {
         npcInfoAnim.SetTrigger("Hide");
     }
 
-    public void HideAll() {
+    public void HideAll() 
+    {
         if(!gameObject.activeSelf || !isActive) return;
         isActive = false;
         HideNpcSpeech();
@@ -132,14 +142,17 @@ public class DialogueMenu : MonoBehaviour {
         HideChoicesPanel();
     }
 
-    public void HideAllImmediate() {
+    public void HideAllImmediate() 
+    {
         npcSpeechAnim.gameObject.SetActive(false);
         npcInfoAnim.gameObject.SetActive(false);
         choicesPanel.gameObject.SetActive(false);
     }
 
-    public Color GetDialogueChoiceColour(DialogueType type) {
-        switch(type) {
+    public Color GetDialogueChoiceColour(DialogueType type) 
+    {
+        switch(type) 
+        {
             case DialogueType.Flatter:
                 return flatterColour;
             case DialogueType.Threaten:
@@ -154,7 +167,8 @@ public class DialogueMenu : MonoBehaviour {
         return Color.white;
     }
 
-    public void UpdateDispositionBar(int disposition) {
+    public void UpdateDispositionBar(int disposition)
+    {
         npcDisposition = disposition;
     }
 }

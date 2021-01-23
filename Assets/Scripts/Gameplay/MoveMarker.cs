@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine; 
 
-public class MoveMarker : MonoBehaviour {
+public class MoveMarker : MonoBehaviour 
+{
 
-    void Awake() {
+    void Awake() 
+    {
         // Destroy after the animation has finished playing
         Destroy(gameObject, GetComponentInChildren<Animator>().GetCurrentAnimatorStateInfo(0).length);    
     }

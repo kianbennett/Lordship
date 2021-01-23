@@ -41,8 +41,10 @@ public class DialogueTextData : ScriptableObject
     // Rumours
     [SerializeField] private TextList _rumourFail, _rumourUnknown;
 
-    public string GetRandomGreeting(DispositionType disposition) {
-        switch(disposition) {
+    public string GetRandomGreeting(DispositionType disposition) 
+    {
+        switch(disposition) 
+        {
             case DispositionType.Positive:
                 return _greetingsPositive.RandomText;
             case DispositionType.Neutral:
@@ -53,8 +55,10 @@ public class DialogueTextData : ScriptableObject
         return "";
     }
 
-    public string GetRandomListening(DispositionType disposition) {
-        switch(disposition) {
+    public string GetRandomListening(DispositionType disposition) 
+    {
+        switch(disposition) 
+        {
             case DispositionType.Positive:
                 return _listeningPositive.RandomText;
             case DispositionType.Neutral:
@@ -65,28 +69,35 @@ public class DialogueTextData : ScriptableObject
         return "";
     }
 
-    public string GetRandomFlattery(CharacterOccupation occupation) {
-        if(_flatteryOccupation.ContainsKey(occupation)) {
+    public string GetRandomFlattery(CharacterOccupation occupation) 
+    {
+        if(_flatteryOccupation.ContainsKey(occupation)) 
+        {
             return _flatteryOccupation.GetValue(occupation).RandomText;
         }
         return "";
     }
 
-    public string GetRandomFlattery(CharacterAge age) {
-        if(_flatteryAge.ContainsKey(age)) {
+    public string GetRandomFlattery(CharacterAge age) 
+    {
+        if(_flatteryAge.ContainsKey(age)) 
+        {
             return _flatteryAge.GetValue(age).RandomText;
         }
         return "";
     }
 
-    public string GetRandomFlattery(CharacterWealth wealth) {
-        if(_flatteryWealth.ContainsKey(wealth)) {
+    public string GetRandomFlattery(CharacterWealth wealth) 
+    {
+        if(_flatteryWealth.ContainsKey(wealth)) 
+        {
             return _flatteryWealth.GetValue(wealth).RandomText;
         }
         return "";
     }
 
-    public string GetRandomFlattery(NPC npc, bool correct) {
+    public string GetRandomFlattery(NPC npc, bool correct) 
+    {
         float occupationCount = System.Enum.GetNames(typeof(CharacterOccupation)).Length;
         float ageCount = 2; // only old and young, not middle-aged
         float wealthCount = 2; // only rich and poor, not average
@@ -95,68 +106,77 @@ public class DialogueTextData : ScriptableObject
         float rVal = Random.value;
         
         // Picks wealth (there are no lines for average age and wealth so default to occupation for those)
-        if(rVal < wealthCount / totalCount && npc.wealth != CharacterWealth.GettingBy) {
+        if(rVal < wealthCount / totalCount && npc.wealth != CharacterWealth.GettingBy) 
+        {
             // Pick the NPCs if correct, otherwise pick the other age (average wealth doesn't reach here)
-            if(correct) {
-                return GetRandomFlattery(npc.wealth);
-            } else {
-                return GetRandomFlattery(npc.wealth == CharacterWealth.Poor ? CharacterWealth.Rich : CharacterWealth.Poor);
-            }
+            if(correct) return GetRandomFlattery(npc.wealth);
+                else return GetRandomFlattery(npc.wealth == CharacterWealth.Poor ? CharacterWealth.Rich : CharacterWealth.Poor);
         }
         // Picks age
-        else if(rVal < (wealthCount + ageCount) / totalCount && npc.age != CharacterAge.MiddleAged) {
+        else if(rVal < (wealthCount + ageCount) / totalCount && npc.age != CharacterAge.MiddleAged) 
+        {
             // Pick the NPCs if correct, otherwise pick the other age (middle aged doesn't reach here)
-            if(correct) {
-                return GetRandomFlattery(npc.age);
-            } else {
-                return GetRandomFlattery(npc.age == CharacterAge.Youthful ? CharacterAge.Elderly : CharacterAge.Youthful);
-            }
+            if(correct) return GetRandomFlattery(npc.age);
+                else return GetRandomFlattery(npc.age == CharacterAge.Youthful ? CharacterAge.Elderly : CharacterAge.Youthful);
         }
         // Picks occupation
-        else {
+        else 
+        {
             CharacterOccupation occupation = npc.occupation;
-            if(!correct) {
+            if(!correct) 
+            {
                 // Keep picking an occupation that isn't the same as the NPCs
-                do {
+                do 
+                {
                     occupation = (CharacterOccupation) Random.Range(0, occupationCount);
-                } while(occupation == npc.occupation);
+                } 
+                while(occupation == npc.occupation);
             }
             return GetRandomFlattery(occupation);
         }
     }
 
-    public string GetRandomFlatteryResponse(bool success) {
+    public string GetRandomFlatteryResponse(bool success) 
+    {
         if(success) return _flatteryResponsesSuccess.RandomText;
             else return _flatteryResponsesFail.RandomText;
     }
 
-    public string GetRandomThreaten(CharacterOccupation occupation) {
-        if(_threatenOccupation.ContainsKey(occupation)) {
+    public string GetRandomThreaten(CharacterOccupation occupation) 
+    {
+        if(_threatenOccupation.ContainsKey(occupation)) 
+        {
             return _threatenOccupation.GetValue(occupation).RandomText;
         }
         return "";
     }
 
-    public string GetRandomThreaten(CharacterAge age) {
-        if(_threatenAge.ContainsKey(age)) {
+    public string GetRandomThreaten(CharacterAge age) 
+    {
+        if(_threatenAge.ContainsKey(age)) 
+        {
             return _threatenAge.GetValue(age).RandomText;
         }
         return "";
     }
 
-    public string GetRandomThreaten(CharacterWealth wealth) {
-        if(_threatenWealth.ContainsKey(wealth)) {
+    public string GetRandomThreaten(CharacterWealth wealth) 
+    {
+        if(_threatenWealth.ContainsKey(wealth)) 
+        {
             return _threatenWealth.GetValue(wealth).RandomText;
         }
         return "";
     }
 
-    public string GetRandomThreatenResponse(bool success) {
+    public string GetRandomThreatenResponse(bool success) 
+    {
         if(success) return _threatenResponsesSuccess.RandomText;
             else return _threatenResponsesFail.RandomText;
     }
 
-    public string GetRandomThreaten(NPC npc, bool correct) {
+    public string GetRandomThreaten(NPC npc, bool correct) 
+    {
         float occupationCount = System.Enum.GetNames(typeof(CharacterOccupation)).Length;
         float ageCount = 2; // only old and young, not middle-aged
         float wealthCount = 2; // only rich and poor, not average
@@ -165,46 +185,49 @@ public class DialogueTextData : ScriptableObject
         float rVal = Random.value;
         
         // Picks wealth (there are no lines for average age and wealth so default to occupation for those)
-        if(rVal < wealthCount / totalCount && npc.wealth != CharacterWealth.GettingBy) {
+        if(rVal < wealthCount / totalCount && npc.wealth != CharacterWealth.GettingBy) 
+        {
             // Pick the NPCs if correct, otherwise pick the other age (average wealth doesn't reach here)
-            if(correct) {
-                return GetRandomThreaten(npc.wealth);
-            } else {
-                return GetRandomThreaten(npc.wealth == CharacterWealth.Poor ? CharacterWealth.Rich : CharacterWealth.Poor);
-            }
+            if(correct) return GetRandomThreaten(npc.wealth);
+                else return GetRandomThreaten(npc.wealth == CharacterWealth.Poor ? CharacterWealth.Rich : CharacterWealth.Poor);
         }
         // Picks age
-        else if(rVal < (wealthCount + ageCount) / totalCount && npc.age != CharacterAge.MiddleAged) {
+        else if(rVal < (wealthCount + ageCount) / totalCount && npc.age != CharacterAge.MiddleAged) 
+        {
             // Pick the NPCs if correct, otherwise pick the other age (middle aged doesn't reach here)
-            if(correct) {
-                return GetRandomThreaten(npc.age);
-            } else {
-                return GetRandomThreaten(npc.age == CharacterAge.Youthful ? CharacterAge.Elderly : CharacterAge.Youthful);
-            }
+            if(correct) return GetRandomThreaten(npc.age);
+                else return GetRandomThreaten(npc.age == CharacterAge.Youthful ? CharacterAge.Elderly : CharacterAge.Youthful);
         }
         // Picks occupation
-        else {
+        else 
+        {
             CharacterOccupation occupation = npc.occupation;
-            if(!correct) {
+            if(!correct) 
+            {
                 // Keep picking an occupation that isn't the same as the NPCs
-                do {
+                do 
+                {
                     occupation = (CharacterOccupation) Random.Range(0, occupationCount);
-                } while(occupation == npc.occupation);
+                }
+                while(occupation == npc.occupation);
             }
             return GetRandomThreaten(occupation);
         }
     }
 
-    public string GetRandomBribeResponse(bool success) {
+    public string GetRandomBribeResponse(bool success) 
+    {
         if(success) return _bribeResponsesSuccess.RandomText;
             else return _bribeResponsesFail.RandomText;
     }
 
-    public string GetRandomRumourFail() {
+    public string GetRandomRumourFail() 
+    {
         return _rumourFail.RandomText;
     }
 
-    public string GetRandomRumourUnknown() {
+    public string GetRandomRumourUnknown() 
+    {
         return _rumourUnknown.RandomText;
     }
 

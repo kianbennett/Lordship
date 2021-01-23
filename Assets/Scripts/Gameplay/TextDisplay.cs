@@ -2,6 +2,8 @@
 using UnityEngine;
 using TMPro;
 
+// Scrolling text sequence
+
 public class TextDisplay : MonoBehaviour
 {
     public enum State { Initialising, Idle, Busy }

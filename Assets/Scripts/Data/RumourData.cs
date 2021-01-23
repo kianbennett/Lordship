@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class Rumour {
+public class Rumour 
+{
     private string startText, middleText, endText;
     public NPC targetNpc;
 
@@ -14,7 +15,8 @@ public class Rumour {
     public string MiddleText { get { return middleText; } }
     public string EndText { get { return endText; } }
 
-    public Rumour(NPC npc, string start, string middle, string end) {
+    public Rumour(NPC npc, string start, string middle, string end) 
+    {
         targetNpc = npc;
         startText = start;
         middleText = middle;
@@ -33,15 +35,18 @@ public class RumourData : ScriptableObject
 
     public int RumourCount { get { return _startPoints.Count; } }
 
-    public string GetRumourStart(int index) {
+    public string GetRumourStart(int index) 
+    {
         return _startPoints[index];
     }
 
-    public string GetRumourMid(int index) {
+    public string GetRumourMid(int index) 
+    {
         return _midPoints[index];
     }
 
-    public string GetRumourEnd(int index) {
+    public string GetRumourEnd(int index) 
+    {
         return _endPoints[index];
     }
 

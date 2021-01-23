@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class HUD : Singleton<HUD> {
-
+public class HUD : Singleton<HUD> 
+{
     public Tooltip tooltip;
     public ScreenFader screenFader;
     public GameObject darkOverlay;

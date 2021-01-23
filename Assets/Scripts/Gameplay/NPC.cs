@@ -3,24 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public enum CharacterAge {
-    Youthful, MiddleAged, Elderly
-}
+public enum CharacterAge { Youthful, MiddleAged, Elderly }
+public enum CharacterWealth { Rich, GettingBy, Poor }
+public enum CharacterOccupation { Monk, Knight, Craftsman, Homemaker, Farmer, Politician }
+public enum DispositionType { Positive, Neutral, Negative }
 
-public enum CharacterWealth {
-    Rich, GettingBy, Poor
-}
-
-public enum CharacterOccupation {
-    Monk, Knight, Craftsman, Homemaker, Farmer, Politician
-}
-
-public enum DispositionType {
-    Positive, Neutral, Negative
-}
-
-public class NPC : Character {
-
+public class NPC : Character 
+{
     [SerializeField] private GameObject rumourIndicator;
 
     [Header("Attributes")]
@@ -48,25 +37,29 @@ public class NPC : Character {
             else return DispositionType.Neutral;
     } }
 
-    protected override void Awake() {
+    protected override void Awake() 
+    {
         base.Awake();
 
         // Give random initial delay so loads of paths don't get calculated all at once
         pauseTimer = Random.Range(0f, 3f);
-        usedDialogueOptions = new Dictionary<DialogueType, bool>() {
+        usedDialogueOptions = new Dictionary<DialogueType, bool>() 
+        {
             { DialogueType.Flatter, false},  
             { DialogueType.Threaten, false}, 
             { DialogueType.Bribe, false}
         };
     }
 
-    protected override void Update() {
+    protected override void Update() 
+    {
         base.Update();
 
-        if(wander && !movement.HasTarget && !movement.IsSpeaking && pauseTimer <= 0) {
+        if(wander && !Movement.HasTarget && !Movement.IsSpeaking && pauseTimer <= 0) 
+        {
             GridPoint[] roadGridPoints = TownGenerator.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
             GridPoint target = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
-            movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target), false, false);
+            Movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target), false, false);
             bool pause = Random.value > 0.75f; // 75% chance to pause after reaching target
             pauseTimer = pause ? Random.Range(1f, 5f) : 0;
         }
@@ -74,9 +67,10 @@ public class NPC : Character {
     }
 
     // Assign random attributes
-    public void Randomise() {
-        appearance.Randomise(false, false);
-        movement.LookDir = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+    public void Randomise() 
+    {
+        Appearance.Randomise(false, false);
+        Movement.LookDir = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
 
         charName = AssetManager.instance.GetUniqueNpcName();
         age = (CharacterAge) Random.Range(0, System.Enum.GetNames(typeof(CharacterAge)).Length);
@@ -85,156 +79,177 @@ public class NPC : Character {
         disposition = Random.Range(40, 60);
 
         // If poor then high chance of wearing rags and fingerless gloves
-        if(wealth == CharacterWealth.Poor && Random.value > 0.2f) {
-            appearance.hands = 2;
-            appearance.body = 3;
+        if(wealth == CharacterWealth.Poor && Random.value > 0.2f) 
+        {
+            Appearance.hands = 2;
+            Appearance.body = 3;
         }
-        if(occupation == CharacterOccupation.Monk) {
+        if(occupation == CharacterOccupation.Monk) 
+        {
             // Monk hairstyle
-            appearance.hair = 2;
-            appearance.hat = 0;
+            Appearance.hair = 2;
+            Appearance.hat = 0;
         }
-        if(occupation == CharacterOccupation.Knight) {
+        if(occupation == CharacterOccupation.Knight) 
+        {
             // Helmet and armour
-            appearance.hat = 5;
-            appearance.body = 2;
-            appearance.hair = 0; // Bald head so hair doesn't clip through helmet
+            Appearance.hat = 5;
+            Appearance.body = 2;
+            Appearance.hair = 0; // Bald head so hair doesn't clip through helmet
         }
 
         // Randomise colours AFTER setting body parts so it picks colours from the new palettes
-        appearance.RandomiseColours();
-        appearance.ApplyAll();
+        Appearance.RandomiseColours();
+        Appearance.ApplyAll();
     }
 
-    public override void SetHovered(bool hovered) {
+    public override void SetHovered(bool hovered) 
+    {
         base.SetHovered(hovered);
-        if(hovered) {
-            HUD.instance.tooltip.Show(DisplayName);
-        } else {
-            HUD.instance.tooltip.Hide();
-        }
-        appearance.SetHighlighted(hovered);
+
+        if(hovered) HUD.instance.tooltip.Show(DisplayName);
+            else HUD.instance.tooltip.Hide();
+
+        Appearance.SetHighlighted(hovered);
     }
 
-    public override void OnRightClick() {
+    public override void OnRightClick() 
+    {
         PlayerController.instance.TalkToNpc(this);
     }
 
-    public void ChangeDisposition(int change) {
+    public void ChangeDisposition(int change) 
+    {
         // Clamp disposition to 0-100
         disposition = Mathf.Clamp(disposition + change, 0, 100);
         HUD.instance.dialogueMenu.UpdateDispositionBar(disposition);
-        if(change > 0) {
+        if(change > 0) 
+        {
             AudioManager.instance.sfxDispositionRaise.PlayAsSFX();
-        } else if(change < 0) {
+        } 
+        else if(change < 0) 
+        {
             AudioManager.instance.sfxDispositionLower.PlayAsSFX();
         }
     }
 
-    public bool RespondToFlattery(bool success) {
+    public bool RespondToFlattery(bool success) 
+    {
         usedDialogueOptions[DialogueType.Flatter] = true;
 
-        if(success) {
+        if(success) 
+        {
             int disposition = Random.Range(14, 20);
             if(occupation == CharacterOccupation.Knight) disposition += 10; // Knights particularly enjoy flattery
             ChangeDisposition(disposition);
-        } else {
+        }
+        else 
+        {
             ChangeDisposition(-Random.Range(14, 20));
         }
         return success;
     }
 
-    public bool RespondToThreaten(bool success) {
+    public bool RespondToThreaten(bool success) 
+    {
         usedDialogueOptions[DialogueType.Threaten] = true;
 
         if(occupation == CharacterOccupation.Knight) success = false; // Knights can't be threatened
 
-        if(success) {
-            ChangeDisposition(Random.Range(14, 20));
-        } else {
-            ChangeDisposition(-Random.Range(14, 20));
-        }
+        if(success) ChangeDisposition(Random.Range(14, 20));
+            else ChangeDisposition(-Random.Range(14, 20));
+
         return success;
     }
 
     // bribeAmount = 0 (low), 1 (mid), 2 (height), returns success
-    public bool ReceiveBribe(int bribeAmount) {
+    public bool ReceiveBribe(int bribeAmount) 
+    {
         usedDialogueOptions[DialogueType.Bribe] = true;
 
         // Monks and Politicians hate being bribed (by a rival polition at least)
-        if(occupation == CharacterOccupation.Monk || occupation == CharacterOccupation.Politician) {
+        if(occupation == CharacterOccupation.Monk || occupation == CharacterOccupation.Politician) 
+        {
             ChangeDisposition(-40);
             return false;
         }
         // Wealthy citizens need high bribes
-        if(wealth == CharacterWealth.Rich) {
-            if(bribeAmount == 2) {
+        if(wealth == CharacterWealth.Rich) 
+        {
+            if(bribeAmount == 2) 
+            {
                 ChangeDisposition(20);
                 return true;
-            } else {
+            }
+            else 
+            {
                 ChangeDisposition(-30);
                 return false;
             }
         }
         // Young and poor people will always respond well to bribes
-        if(age == CharacterAge.Youthful || wealth == CharacterWealth.Poor) {
+        if(age == CharacterAge.Youthful || wealth == CharacterWealth.Poor) 
+        {
             ChangeDisposition(10 + bribeAmount * 10);
             return true;
         }
 
-        if(bribeAmount > 0) {
+        if(bribeAmount > 0) 
+        {
             ChangeDisposition(bribeAmount * 10);
             return true;
-        } else {
+        } 
+        else 
+        {
             ChangeDisposition(-8);
             return false;
         }
     }
 
-    public bool HasUsedDialogueType(DialogueType type) {
-        if(usedDialogueOptions.ContainsKey(type)) {
-            return usedDialogueOptions[type];
-        }
+    public bool HasUsedDialogueType(DialogueType type) 
+    {
+        if(usedDialogueOptions.ContainsKey(type)) return usedDialogueOptions[type];
         return false;
     }
 
-    public void ResetUsedDialogueTypes() {
+    public void ResetUsedDialogueTypes() 
+    {
         usedDialogueOptions[DialogueType.Flatter] = false;
         usedDialogueOptions[DialogueType.Threaten] = false;
         usedDialogueOptions[DialogueType.Bribe] = false;
     }
 
-    public bool CanGiveRumour() {
+    public bool CanGiveRumour() 
+    {
         return disposition > 60;
     }
 
-    public void CompleteRumour() {
+    public void CompleteRumour() 
+    {
         ChangeDisposition(Random.Range(40, 50));
         ShowRumourIndicator(false);
     }
 
     // Most enums can be represented by a string from a direct cast, but some need changes (spaces, hyphons etc)
-    public string GetAgeString() {
-        if(age == CharacterAge.MiddleAged) {
-            return "Middle-aged";
-        } else {
-            return age.ToString();
-        }
+    public string GetAgeString() 
+    {
+        if(age == CharacterAge.MiddleAged) return "Middle-aged";
+            else return age.ToString();
     }
 
-    public string GetWealthString() {
-        if(wealth == CharacterWealth.GettingBy) {
-            return "Getting by";
-        } else {
-            return wealth.ToString();
-        }
+    public string GetWealthString() 
+    {
+        if(wealth == CharacterWealth.GettingBy) return "Getting by";
+            else return wealth.ToString();
     }
 
-    public string GetOccupationString() {
+    public string GetOccupationString() 
+    {
         return occupation.ToString();
     }
 
-    public void ShowRumourIndicator(bool show) {
+    public void ShowRumourIndicator(bool show) 
+    {
         rumourIndicator.SetActive(show);
     }
 }

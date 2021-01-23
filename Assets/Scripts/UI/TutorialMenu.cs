@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class TutorialMenu : MonoBehaviour {
-
+public class TutorialMenu : MonoBehaviour 
+{
     [SerializeField] private TextMeshProUGUI textTitle;
-    [SerializeField] private TextMeshProUGUI textTutorialInfo, textControlsInfo;
+    [SerializeField] private TextMeshProUGUI textTutorialInfo, textControlsInfo, accessInfo;
     [SerializeField] private Button buttonPlay, buttonControls, buttonContinue;
 
     private bool fromPauseMenu;
 
-    private void show(bool controls) {
+    private void show(bool controls) 
+    {
         gameObject.SetActive(true);
         textTitle.text = controls ? "Controls" : "Tutorial";
         textTutorialInfo.gameObject.SetActive(!controls);
@@ -22,27 +23,33 @@ public class TutorialMenu : MonoBehaviour {
         buttonContinue.gameObject.SetActive(controls);
     }
 
-    public void ShowTutorial(Season season, int year) {
+    public void ShowTutorial(Season season, int year) 
+    {
         show(false);
         textTutorialInfo.text = textTutorialInfo.text.Replace("{season}", season.ToString()).Replace("{year}", year.ToString());
         fromPauseMenu = false;
     }
 
-    public void ShowControls(bool fromPauseMenu) {
+    public void ShowControls(bool fromPauseMenu) 
+    {
         this.fromPauseMenu = fromPauseMenu;
+        accessInfo.gameObject.SetActive(!fromPauseMenu);
         show(true);
     }
 
-    public void Play() {
+    public void Play() 
+    {
         AudioManager.instance.PlayButtonClick();
         gameObject.SetActive(false);
 
-        if(!fromPauseMenu) {
+        if(!fromPauseMenu)
+        {
             LevelManager.instance.SetPaused(false, false);
         }
     }
 
-    public void Controls() {
+    public void Controls()
+    {
         AudioManager.instance.PlayButtonClick();
         ShowControls(false);
     }

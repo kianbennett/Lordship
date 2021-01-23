@@ -4,16 +4,18 @@ using UnityEngine;
 using System;
 using System.Linq;
 
+// Weight maps defines a weight for each value which affect how often that value gets picked randomly
+
 [Serializable] public class MeshFloatDictionary : SerializableDictionary<MeshMaterialSet, float> {}
 [Serializable] public class ColourFloatDictionary : SerializableDictionary<PaletteColour, float> {}
 
-public class WeightMap<T> : ScriptableObject {
+public class WeightMap<T> : ScriptableObject 
+{
+    // This property gets overriden
+    public virtual SerializableDictionary<T, float> Map { get { return null; } }
 
-    public virtual SerializableDictionary<T, float> Map {
-        get { return null; }
-    }
-
-    public int GetRandomIndex() {
+    public int GetRandomIndex() 
+    {
         float totalWeight = 0;
         foreach(float weight in Map.Values) totalWeight += weight;
 
@@ -21,9 +23,11 @@ public class WeightMap<T> : ScriptableObject {
         float rWeight = totalWeight * r;
         float weightCumul = 0;
 
-        for(int i = 0; i < Map.Keys.Count; i++) {
+        for(int i = 0; i < Map.Keys.Count; i++) 
+        {
             float weight = Map.GetValue(Map.Keys[i]);
-            if (weight > 0) {
+            if (weight > 0) 
+            {
                 weightCumul += weight;
                 if (weightCumul > rWeight) return i;
             }
@@ -31,7 +35,8 @@ public class WeightMap<T> : ScriptableObject {
         return 0;
     }
 
-    public T GetRandom() {
+    public T GetRandom() 
+    {
         return Map.Keys[GetRandomIndex()];
     }
 }

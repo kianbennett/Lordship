@@ -3,20 +3,19 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 
-/*
-    Defines a custom layout for the inspector of a CharacterAppearance component
- */
+// Custom inspector for CharacterAppearance that has dropdowns for body parts and colours
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(CharacterAppearance))]
-public class CharacterAppearanceEditor : Editor {
-
+public class CharacterAppearanceEditor : Editor 
+{
     private string[] hairNames, bodyNames, handsNames, legsNames, feetNames, hatNames;
     private ColourPalette skinColors;
 
     private Dictionary<ColourPalette, string[]> colourNames = new Dictionary<ColourPalette, string[]>();
 
-    void OnEnable() {
+    void OnEnable() 
+    {
         hairNames = AssetManager.instance.hairMeshes.Select(o => o.name).ToArray();
         bodyNames = AssetManager.instance.bodyMeshes.Select(o => o.name).ToArray();
         handsNames = AssetManager.instance.handMeshes.Select(o => o.name).ToArray();
@@ -24,7 +23,8 @@ public class CharacterAppearanceEditor : Editor {
         skinColors = AssetManager.instance.skinColours;
     }
 
-    public override void OnInspectorGUI() {
+    public override void OnInspectorGUI() 
+    {
         DrawDefaultInspector();
         CharacterAppearance appearance = (CharacterAppearance) target;
 
@@ -67,7 +67,8 @@ public class CharacterAppearanceEditor : Editor {
         serializedObject.ApplyModifiedProperties();
     }
 
-    private void drawColourPair(string name, string propName1, string propName2, MaterialSet materialSet) {
+    private void drawColourPair(string name, string propName1, string propName2, MaterialSet materialSet) 
+    {
         // Get object properties
         SerializedProperty prop1 = serializedObject.FindProperty(propName1);
         SerializedProperty prop2 = serializedObject.FindProperty(propName2);
@@ -75,7 +76,8 @@ public class CharacterAppearanceEditor : Editor {
         // Draw properties
         GUILayout.BeginHorizontal();
         GUILayout.Label(name, GUILayout.Width(EditorGUIUtility.labelWidth - 2));
-        if(materialSet.hasColour1) {
+        if(materialSet.hasColour1) 
+        {
             // Limit property values to colour palette size
             if (materialSet.colourPalette1.colours.Length > 0 && prop1.intValue >= materialSet.colourPalette1.colours.Length) prop1.intValue = materialSet.colourPalette1.colours.Length - 1;
             prop1.intValue = EditorGUILayout.Popup("", prop1.intValue, getColourNames(materialSet.colourPalette1), EditorStyles.popup, GUILayout.MaxWidth(71));
@@ -83,7 +85,8 @@ public class CharacterAppearanceEditor : Editor {
             EditorGUILayout.ColorField(materialSet.colourPalette1.colours.Length > 0 ? materialSet.colourPalette1.colours[prop1.intValue].colour : Color.white, GUILayout.MaxWidth(35));
             GUI.enabled = true;
         }
-        if (materialSet.hasColour2) {
+        if (materialSet.hasColour2) 
+        {
             if (materialSet.colourPalette2.colours.Length > 0 && prop2.intValue >= materialSet.colourPalette2.colours.Length) prop2.intValue = materialSet.colourPalette2.colours.Length - 1;
             prop2.intValue = EditorGUILayout.Popup("", prop2.intValue, getColourNames(materialSet.colourPalette2), EditorStyles.popup, GUILayout.MaxWidth(71));
             GUI.enabled = false;
@@ -93,10 +96,14 @@ public class CharacterAppearanceEditor : Editor {
         GUILayout.EndHorizontal();
     }
 
-    private string[] getColourNames(ColourPalette palette) {
-        if (colourNames.ContainsKey(palette)) {
+    private string[] getColourNames(ColourPalette palette) 
+    {
+        if (colourNames.ContainsKey(palette)) 
+        {
             return colourNames[palette];
-        } else {
+        } 
+        else 
+        {
             string[] names = palette.colours.Select(o => o.name).ToArray();
             colourNames.Add(palette, names);
             return names;

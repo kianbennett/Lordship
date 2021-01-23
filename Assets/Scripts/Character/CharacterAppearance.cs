@@ -5,19 +5,21 @@ using System.Linq;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
-public enum BodyPart {
-    Hair, Body, Hands, Hat
-}
+// Handles setting meshes and materials for each body part of the character
 
-public class CharacterAppearance : MonoBehaviour {
+public enum BodyPart { Hair, Body, Hands, Hat }
 
-    public Animator modelAnim;
+public class CharacterAppearance : MonoBehaviour 
+{
+
+    [SerializeField] private Animator modelAnim;
     [SerializeField] private Character character;
     [SerializeField] private Transform armature;
     [SerializeField] private Transform headBone;
     [SerializeField] private SkinnedMeshRenderer headMesh, hairMesh, bodyMesh, handLMesh, handRMesh;
     [SerializeField] private MeshFilter hatMeshFilter;
     [SerializeField] private MeshRenderer hatMeshRenderer;
+    [SerializeField] private Transform selectionCone;
     [SerializeField] private bool randomiseOnAwake;
 
     [HideInInspector] public int hair, hairColour1, hairColour2;
@@ -28,27 +30,38 @@ public class CharacterAppearance : MonoBehaviour {
 
     private float headBoneHeightInit;
     private Renderer[] renderers;
+    private float selectionConeHeight;
 
-    void Awake() {
+    void Awake() 
+    {
         if (randomiseOnAwake) Randomise(true, true);
             else ApplyAll();
 
         headBoneHeightInit = headBone.transform.position.y;
         renderers = GetComponentsInChildren<Renderer>();
+        if(selectionCone) selectionConeHeight = selectionCone.localPosition.y;
     }
 
-    void Update() {
+    void Update() 
+    {
         // Lerp towards the desired animation speed
-        if (modelAnim && character && character.movement) {
-            float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.movement.AnimSpeed, Time.deltaTime * 10);
+        if (modelAnim && character && character.Movement) {
+            float speed = Mathf.Lerp(modelAnim.GetFloat("Speed"), character.Movement.AnimSpeed, Time.deltaTime * 10);
             modelAnim.SetFloat("Speed", speed);
         }
 
+        // Bob the cone up and down
+        if(selectionCone != null) {
+            selectionCone.localPosition = Vector3.up * (selectionConeHeight + 0.08f * Mathf.Sin(Time.time * 2.5f));
+        }
+
+        // Debug correct hair mesh position
         // Debug.DrawRay(transform.position + Vector3.up * hairMesh.sharedMesh.bounds.max.y, Vector3.up);
         // Debug.DrawLine(transform.position + Vector3.up * hairMesh.sharedMesh.bounds.min.y * modelAnim.transform.localScale.y, transform.position + Vector3.up * hairMesh.sharedMesh.bounds.max.y * modelAnim.transform.localScale.y, Color.white);
     }
 
-    private void applyHair() {
+    private void applyHair() 
+    {
         MeshMaterialSet meshSet = AssetManager.instance.hairMeshes[hair];
         updateMeshRenderer(hairMesh, meshSet.mesh);
         updateMeshMaterials(hairMesh, meshSet, hairColour1, hairColour2);
@@ -56,13 +69,15 @@ public class CharacterAppearance : MonoBehaviour {
         updateHatPos();
     }
 
-    private void applyBody() {
+    private void applyBody() 
+    {
         MeshMaterialSet meshSet = AssetManager.instance.bodyMeshes[body];
         updateMeshRenderer(bodyMesh, meshSet.mesh);
         updateMeshMaterials(bodyMesh, meshSet, bodyColour1, bodyColour2);
     }
 
-    private void applyHands() {
+    private void applyHands() 
+    {
         MeshPairMaterialSet meshSet = AssetManager.instance.handMeshes[hands];
         updateMeshRenderer(handLMesh, meshSet.left);
         updateMeshRenderer(handRMesh, meshSet.right);
@@ -70,7 +85,8 @@ public class CharacterAppearance : MonoBehaviour {
         updateMeshMaterials(handRMesh, meshSet, handsColour1, handsColour2);
     }
 
-    private void applyHat() {
+    private void applyHat() 
+    {
         MeshMaterialSet meshSet = AssetManager.instance.hatMeshes[hat];
         updateMeshFilter(hatMeshFilter, meshSet.mesh);
         updateMeshMaterials(hatMeshRenderer, meshSet, hatColour1, hatColour2);
@@ -78,7 +94,8 @@ public class CharacterAppearance : MonoBehaviour {
     }
 
     // Set hat position to top of hair (or head if there is no hair or the hair is below the top of the head, like the monk)
-    private void updateHatPos() {
+    private void updateHatPos() 
+    {
         float headHeight = headMesh.sharedMesh.bounds.max.y;
         float hairHeight = hairMesh.sharedMesh != null ? hairMesh.sharedMesh.bounds.max.y : 0;
         float hatHeight = Mathf.Max(hairHeight, headHeight) * modelAnim.transform.localScale.y;
@@ -88,19 +105,22 @@ public class CharacterAppearance : MonoBehaviour {
         hatMeshFilter.transform.position = headBone.transform.position + headBone.transform.up * heightFromHeadBone;
     }
 
-    private void applySkin() {
+    private void applySkin() 
+    {
         setMeshMaterialColour(headMesh, 0, getSkinColor());
         applyBody();
         applyHands();
     }
 
-    public void ApplyAll() {
+    public void ApplyAll() 
+    {
         applyHair();
         applySkin(); // applyBody and applyHands are both called from applySkin
         applyHat();
     }
 
-    public void Randomise(bool includeColours, bool apply) {
+    public void Randomise(bool includeColours, bool apply) 
+    {
         // Random seed from system time
         Random.InitState((int) System.DateTime.UtcNow.Ticks);
 
@@ -109,16 +129,12 @@ public class CharacterAppearance : MonoBehaviour {
         hands = AssetManager.instance.handsWeightMap.GetRandomIndex();
         hat = AssetManager.instance.hatWeightMap.GetRandomIndex();
 
-        if(includeColours) {
-            RandomiseColours();
-        }
-
-        if(apply) {
-            ApplyAll();
-        }
+        if(includeColours) RandomiseColours();
+        if(apply) ApplyAll();
     }
 
-    public void RandomiseColours() {
+    public void RandomiseColours() 
+    {
         ColourPalette palette;
         if (palette = AssetManager.instance.hairMeshes[hair].materials.colourPalette1) hairColour1 = palette.RandomColourIndex();
         if (palette = AssetManager.instance.hairMeshes[hair].materials.colourPalette2) hairColour2 = palette.RandomColourIndex();
@@ -131,21 +147,26 @@ public class CharacterAppearance : MonoBehaviour {
         skinColour = AssetManager.instance.skinColours.weightMap.GetRandomIndex();
     }
 
-    private Color getSkinColor() {
+    private Color getSkinColor() 
+    {
         if (skinColour < AssetManager.instance.skinColours.colours.Length) return AssetManager.instance.skinColours.colours[skinColour].colour;
         return Color.white;
     }
 
-    private void updateMeshMaterials(Renderer renderer, MeshMaterialSet materialSet, int colour1, int colour2) {
+    private void updateMeshMaterials(Renderer renderer, MeshMaterialSet materialSet, int colour1, int colour2) 
+    {
         List<Material> materials = new List<Material>();
 
-        if (materialSet.materials.hasColour1) {
+        if (materialSet.materials.hasColour1) 
+        {
             materials.Add(AssetManager.GetColouredMaterial(materialSet.materials.colourPalette1.colours[colour1].colour));
         }
-        if (materialSet.materials.hasColour2) {
+        if (materialSet.materials.hasColour2) 
+        {
             materials.Add(AssetManager.GetColouredMaterial(materialSet.materials.colourPalette2.colours[colour2].colour));
         }
-        if (materialSet.materials.hasSkin) {
+        if (materialSet.materials.hasSkin) 
+        {
             materials.Add(AssetManager.GetColouredMaterial(getSkinColor()));
         }
         foreach (Material material in materialSet.materials.additionalMaterials) {
@@ -155,7 +176,8 @@ public class CharacterAppearance : MonoBehaviour {
         renderer.sharedMaterials = materials.ToArray();
     }
 
-    private void setMeshMaterialColour(Renderer renderer, int materialIndex, Color color) {
+    private void setMeshMaterialColour(Renderer renderer, int materialIndex, Color color) 
+    {
         // Get a material from color dictionary or create one if doesn't exist
         Material newMaterial = AssetManager.GetColouredMaterial(color);
 
@@ -174,10 +196,12 @@ public class CharacterAppearance : MonoBehaviour {
         return;
     }
 
-    private void updateMeshRenderer(SkinnedMeshRenderer renderer, Mesh newMesh) {
+    private void updateMeshRenderer(SkinnedMeshRenderer renderer, Mesh newMesh) 
+    {
         renderer.sharedMesh = newMesh;
 
-        if (renderer.sharedMesh != null) {
+        if (renderer.sharedMesh != null) 
+        {
             Bounds bounds = renderer.localBounds;
             bounds.center = renderer.sharedMesh.bounds.center;
             bounds.extents = renderer.sharedMesh.bounds.extents;
@@ -186,18 +210,24 @@ public class CharacterAppearance : MonoBehaviour {
     }
 
     // For the hat mesh which uses a MeshFilter + MeshRenderer instead of SkinnedMeshRenderer
-    private void updateMeshFilter(MeshFilter filter, Mesh newMesh) {
+    private void updateMeshFilter(MeshFilter filter, Mesh newMesh) 
+    {
         filter.sharedMesh = newMesh;
     }
 
-    public void SetHighlighted(bool highlighted) {
-        foreach(Renderer renderer in renderers) {
-            if(highlighted) {
+    public void SetHighlighted(bool highlighted) 
+    {
+        foreach(Renderer renderer in renderers) 
+        {
+            if(highlighted) 
+            {
                 Material mat = renderer.material;
                 mat.SetColor("_EmissionColor", new Color(0.15f, 0.15f, 0.15f));
                 renderer.material = mat;
                 
-            } else {
+            } 
+            else 
+            {
                 // Set back to original material, since it won't have an emission it should be stored in AssetManager
                 Color materialColour = renderer.sharedMaterial.color;
                 Material mat = AssetManager.GetColouredMaterial(materialColour);
@@ -206,21 +236,27 @@ public class CharacterAppearance : MonoBehaviour {
         }
     }
 
-    public void SkipAnimation(string stateName) {
-        if (modelAnim.GetCurrentAnimatorStateInfo(0).IsName(stateName)) {
+    public void SkipAnimation(string stateName) 
+    {
+        if (modelAnim.GetCurrentAnimatorStateInfo(0).IsName(stateName)) 
+        {
             modelAnim.Play(0, 0, 1);
         }
     }
 
-    public bool IsPlayingAnimation(string name) {
+    public bool IsPlayingAnimation(string name) 
+    {
         return modelAnim.GetCurrentAnimatorStateInfo(0).IsName(name);
     }
 
-    public float CurrentAnimationTime() {
+    public float CurrentAnimationTime() 
+    {
         return modelAnim.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
-    public void CopyAppearanceFromOther(CharacterAppearance other) {
+    // Copy over all values from another character (like with heads on results screen)
+    public void CopyAppearanceFromOther(CharacterAppearance other) 
+    {
         hat = other.hat;
         hatColour1 = other.hatColour1;
         hatColour2 = other.hatColour2;

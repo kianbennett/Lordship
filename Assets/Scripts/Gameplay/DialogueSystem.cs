@@ -19,11 +19,7 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     private List<Rumour> availableRumours;
     private Dictionary<NPC, Rumour> unlockedRumours; // Key is the NPC that gives you the rumour
 
-    private bool IsTextScrolling {
-        get {
-            return HUD.instance.dialogueMenu.NpcSpeechText.IsBusy;
-        }
-    }
+    private bool IsTextScrolling { get { return HUD.instance.dialogueMenu.NpcSpeechText.IsBusy; } }
 
     protected override void Awake()
     {
@@ -73,32 +69,36 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         // }
         // else
         // {
-            KeyCode alpha = KeyCode.Alpha1;
-            KeyCode keypad = KeyCode.Keypad1;
 
-            if(_currentChoices == null) return;
-            
-            // Loops through each choice and check if the corresponding key is pressed
-            for (int count = 0; count < _currentChoices.Length; ++count)
+        KeyCode alpha = KeyCode.Alpha1;
+        KeyCode keypad = KeyCode.Keypad1;
+
+        if(_currentChoices == null) return;
+        
+        // Loops through each choice and check if the corresponding key is pressed
+        for (int count = 0; count < _currentChoices.Length; ++count)
+        {
+            if (alpha <= KeyCode.Alpha9 && keypad <= KeyCode.Keypad9)
             {
-                if (alpha <= KeyCode.Alpha9 && keypad <= KeyCode.Keypad9)
+                if (Input.GetKeyDown(alpha) || Input.GetKeyDown(keypad))
                 {
-                    if (Input.GetKeyDown(alpha) || Input.GetKeyDown(keypad))
-                    {
-                        // DisplayBeat(choice.NextID);
-                        handleChoice(count);
-                        break;
-                    }
+                    // DisplayBeat(choice.NextID);
+                    handleChoice(count);
+                    break;
                 }
-
-                ++alpha;
-                ++keypad;
             }
+
+            ++alpha;
+            ++keypad;
+        }
+
         // }
     }
 
-    public void PickChoice(int i) {
-        if(!IsTextScrolling && _currentBeat != null) {
+    public void PickChoice(int i) 
+    {
+        if(!IsTextScrolling && _currentBeat != null) 
+        {
             handleChoice(i);
         }
     }
@@ -161,10 +161,13 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     // success parameter is used for certain choice responses
     private IEnumerator DoDisplay(BeatData data, bool showAnimations, bool success = false)
     {
-        if(showAnimations) {
+        if(showAnimations) 
+        {
             HUD.instance.dialogueMenu.SetActive();
             yield return _waitInitial;
-        } else {
+        } 
+        else 
+        {
             HUD.instance.dialogueMenu.HideChoicesPanel();
         }
 
@@ -185,12 +188,17 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         else if(data.DisplayTextType == SpeechType.RumourStart) 
         {
             string text;
-            if(success) {
+            if(success) 
+            {
                 text = unlockedRumours[npcSpeaking].StartText;
-            } else if(HasRumourAvailable(npcSpeaking)) {
+            } 
+            else if(HasRumourAvailable(npcSpeaking)) 
+            {
                 // If there are rumours available but the NPC disposition is too low then give a rejection line
                 text = _textData.GetRandomRumourFail();
-            } else {
+            } 
+            else 
+            {
                 // If there aren't any rumours available give a neutral apology
                 text = _textData.GetRandomRumourUnknown();
             }
@@ -302,7 +310,8 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     }
 
     // Called from LevelManager to make sure the NPCs have been spawned beforehand
-    public void InitialiseRumours() {
+    public void InitialiseRumours() 
+    {
         availableRumours = new List<Rumour>();
         unlockedRumours = new Dictionary<NPC, Rumour>();
         List<NPC> availableNpcs = new List<NPC>(TownGenerator.instance.npcSpawner.NpcList);
@@ -315,15 +324,18 @@ public class DialogueSystem : Singleton<DialogueSystem> {
         }
     }
 
-    public bool HasRumourAvailable(NPC npcGiving) {
+    public bool HasRumourAvailable(NPC npcGiving) 
+    {
         // Get sub list of available rumours where the target npc is not the same as the npc giving the rumour
         List<Rumour> possible = availableRumours.Where(o => o.targetNpc != npcGiving).ToList();
         return possible.Count > 0;
     }
 
-    public Rumour UnlockRandomRumour(NPC npcGiving) {
+    public Rumour UnlockRandomRumour(NPC npcGiving) 
+    {
         List<Rumour> possible = availableRumours.Where(o => o.targetNpc != npcGiving).ToList();
-        if(possible.Count > 0) {
+        if(possible.Count > 0) 
+        {
             Rumour rumour = possible[Random.Range(0, possible.Count)];
             UnlockRumour(npcGiving, rumour);
             return rumour;
@@ -332,21 +344,26 @@ public class DialogueSystem : Singleton<DialogueSystem> {
     }
 
     // Returns the unlocked rumour with a specified target npc, or null if no rumour with that NPC exists
-    public Rumour GetRumourForTargetNpc(NPC targetNpc) {
+    public Rumour GetRumourForTargetNpc(NPC targetNpc) 
+    {
         List<Rumour> rumours = unlockedRumours.Values.Where(o => o.targetNpc == targetNpc).ToList();
         return rumours.Count > 0 ? rumours[0] : null;
     }
 
-    public void UnlockRumour(NPC npcGiving, Rumour rumour) {
+    public void UnlockRumour(NPC npcGiving, Rumour rumour) 
+    {
         availableRumours.Remove(rumour);
         unlockedRumours.Add(npcGiving, rumour);
         rumour.targetNpc.ShowRumourIndicator(true);
     }
 
-    public void CompleteRumour(Rumour rumour) {
+    public void CompleteRumour(Rumour rumour) 
+    {
         // Remove the rumour from unlockedRumours (Rumour is value so need to search all Keys to find it)
-        foreach(NPC npc in unlockedRumours.Keys) {
-            if(unlockedRumours[npc] == rumour) {
+        foreach(NPC npc in unlockedRumours.Keys) 
+        {
+            if(unlockedRumours[npc] == rumour) 
+            {
                 unlockedRumours.Remove(npc);
                 break;
             }

@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour {
+public class Building : MonoBehaviour 
+{
+    [SerializeField] private float width, depth;
+    [SerializeField] private ParticleSystem smokeParticles;
 
-    public float width, depth;
-    public ParticleSystem smokeParticles;
+    // Size is used get which grid points are underneath the building
+    public Vector2 Size { get { return new Vector2(width, depth); } }
 
-    public Vector2 size {
-        get { return new Vector2(width, depth); }
-    }
-
-    void Awake() {
+    void Awake() 
+    {
         // 50% chance to have smoke coming out of chimney
         smokeParticles.gameObject.SetActive(Random.value > 0.5f);
     }

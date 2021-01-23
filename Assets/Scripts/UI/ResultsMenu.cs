@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ResultsMenu : MonoBehaviour {
-
+public class ResultsMenu : MonoBehaviour 
+{
     [SerializeField] private TextMeshProUGUI textTitle, textElectionInfo;
     [SerializeField] private RectTransform[] bars;
     [SerializeField] private TextMeshProUGUI[] textVotes;
@@ -27,14 +27,17 @@ public class ResultsMenu : MonoBehaviour {
     private bool isElection, victory;
     private int playerVotes;
 
-    void Awake() {
+    void Awake() 
+    {
         headsLookingUp = new bool[headContainers.Length];
         headXRotations = new float[headContainers.Length];
         barScales = new float[bars.Length];
     }
 
-    void Update() {
-        for(int i = 0; i < headContainers.Length; i++) {
+    void Update() 
+    {
+        for(int i = 0; i < headContainers.Length; i++) 
+        {
             // This menu will be shown while the game is paused so use unscaledDeltaTime
             headXRotations[i] = Mathf.Lerp(headXRotations[i], headsLookingUp[i] ? -25f : 0, Time.unscaledDeltaTime * 5);
             headContainers[i].localRotation = Quaternion.Euler(headXRotations[i], headContainers[i].localEulerAngles.y, 0);
@@ -44,7 +47,8 @@ public class ResultsMenu : MonoBehaviour {
         }
     }
 
-    public void ShowResults(Season season, int year, Season electionSeason, int electionYear, CharacterAppearance[] characters, string[] names, int[] votes, int totalVotes) {
+    public void ShowResults(Season season, int year, Season electionSeason, int electionYear, CharacterAppearance[] characters, string[] names, int[] votes, int totalVotes) 
+    {
         gameObject.SetActive(true);
         headsParent.SetActive(true);
 
@@ -52,11 +56,14 @@ public class ResultsMenu : MonoBehaviour {
         playerVotes = votes[0];
         textTitle.text = season + " " + year;
         isElection = season == electionSeason && year == electionYear;
-        if(isElection) {
+        if(isElection) 
+        {
             textTitle.text += " Election";
             textButtonNext.text = "Continue >";
             textElectionInfo.text = "";
-        } else {
+        } 
+        else 
+        {
             textTitle.text += " Opinion Poll";
             textElectionInfo.text = "In preparation for the " + electionSeason + " " + electionYear + " election";
             Season nextSeason = (Season) (((int) season + 1) % 4);
@@ -67,7 +74,8 @@ public class ResultsMenu : MonoBehaviour {
 
         rectButtonNext.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textButtonNext.preferredWidth + 24);
 
-        for(int i = 0; i < characters.Length; i++) {
+        for(int i = 0; i < characters.Length; i++) 
+        {
             characterHeads[i].CopyAppearanceFromOther(characters[i]);
             characterHeads[i].ApplyAll();
             textNames[i].text = names[i];
@@ -77,23 +85,25 @@ public class ResultsMenu : MonoBehaviour {
         StartCoroutine(showResultsIEnum(votes, totalVotes));
     }
 
-    public void Hide() {
+    public void Hide() 
+    {
         gameObject.SetActive(false);
         headsParent.SetActive(false);
     }
 
-    private IEnumerator showResultsIEnum(int[] votes, int totalVotes) {
+    private IEnumerator showResultsIEnum(int[] votes, int totalVotes) 
+    {
         int[] currentVotes = new int[votes.Length];
 
         bool hasFinished = false;
 
         headsParent.SetActive(true);
 
-        for(int i = 0; i < headContainers.Length; i++) {
+        for(int i = 0; i < headContainers.Length; i++) 
+        {
             barScales[i] = 0;
             bars[i].localScale = new Vector3(1, 0, 1);
             headXRotations[i] = 0;
-            // headContainers[i].localEulerAngles = new Vector3(0, headContainers[i].localEulerAngles.y, 0);
         }
 
         textResult.text = "";
@@ -104,21 +114,27 @@ public class ResultsMenu : MonoBehaviour {
         float start = Time.realtimeSinceStartup;
         while(Time.realtimeSinceStartup < start + 1.5f) yield return null;
 
-        for(int i = 0; i < headsLookingUp.Length; i++) {
+        for(int i = 0; i < headsLookingUp.Length; i++) 
+        {
             headsLookingUp[i] = true;
         }
 
         float pitch = 1;
 
-        while(!hasFinished) {
+        while(!hasFinished) 
+        {
             hasFinished = true;
-            for(int i = 0; i < currentVotes.Length; i++) {
-                if(currentVotes[i] < votes[i]) {
+            for(int i = 0; i < currentVotes.Length; i++) 
+            {
+                if(currentVotes[i] < votes[i]) 
+                {
                     currentVotes[i]++;
                     hasFinished = false;
                     barScales[i] = (float) currentVotes[i] / totalVotes;
                     textVotes[i].text = currentVotes[i].ToString();
-                } else {
+                } 
+                else 
+                {
                     headsLookingUp[i] = false;
                 }
             }
@@ -135,7 +151,8 @@ public class ResultsMenu : MonoBehaviour {
         while(Time.realtimeSinceStartup < start + 0.6f) yield return null;
 
         int position = getPosition(votes);
-        switch(position) {
+        switch(position) 
+        {
             case 1:
                 textResult.text = isElection ? "You gained the most votes!" : "You are ahead in the polls!";
                 break;
@@ -150,35 +167,33 @@ public class ResultsMenu : MonoBehaviour {
                 break;
         }
 
-        if(position == 0) {
-            AudioManager.instance.sfxLeading.PlayAsSFX();
-        } else {
-            AudioManager.instance.sfxLosing.PlayAsSFX();
-        }
+        if(position == 0) AudioManager.instance.sfxLeading.PlayAsSFX();
+            else AudioManager.instance.sfxLosing.PlayAsSFX();
 
         buttonNext.interactable = true;
         textButtonNext.color = Color.white;
     }
 
     // Returns 1 for first place, 2 for second etc
-    private int getPosition(int[] votes) {
+    private int getPosition(int[] votes) 
+    {
         int playerVotes = votes[0];
         int position = 1;
-        for(int i = 1; i < votes.Length; i++) {
-            if(votes[i] > playerVotes) {
+        for(int i = 1; i < votes.Length; i++) 
+        {
+            if(votes[i] > playerVotes) 
+            {
                 position++;
             }
         }
         return position;
     }
 
-    public void Continue() {
+    public void Continue() 
+    {
         AudioManager.instance.PlayButtonClick();
         Hide();
-        if(isElection) {
-            HUD.instance.endingMenu.Show(victory, playerVotes);
-        } else {
-            LevelManager.instance.NextLevel();
-        }
+        if(isElection) HUD.instance.endingMenu.Show(victory, playerVotes);
+            else LevelManager.instance.NextLevel();
     }
 }

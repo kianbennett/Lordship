@@ -6,7 +6,8 @@ using UnityEngine;
 // Uses SO so multiple beats/choices can pull from the same array of strings
 // [CreateAssetMenu(fileName = "TextList", menuName = "Dialogue/Text List")]
 [System.Serializable]
-public class TextList {
+public class TextList 
+{
     [SerializeField] private string[] _textList;
 
     // Always returns a string even if if string array is empty

@@ -1,16 +1,20 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
-
+public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> 
+{
     private static T _instance;
     private static bool doesNotExist;
 
-    public static T instance {
-        get {
-            if(_instance == null && !doesNotExist) {
+    public static T instance 
+    {
+        get 
+        {
+            if(_instance == null && !doesNotExist) 
+            {
                 _instance = FindObjectOfType(typeof(T)) as T;
-                if (_instance == null) {
+                if (_instance == null) 
+                {
                     doesNotExist = true;
                     Debug.Log("[Singleton] No instance of " + typeof(T).ToString() + " found!");
                 }
@@ -21,14 +25,19 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
 
     protected bool Persist;
 
-    protected virtual void Awake() {
-        if(_instance == null) {
+    protected virtual void Awake() 
+    {
+        if(_instance == null) 
+        {
             _instance = this as T; 
             _instance.Init();
-            if(Persist) {
+            if(Persist) 
+            {
                 DontDestroyOnLoad(gameObject);
             }
-        } else if(_instance != this as T) {
+        } 
+        else if(_instance != this as T) 
+        {
             Destroy(gameObject);
             return;
         }

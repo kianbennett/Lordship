@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputHandler : Singleton<InputHandler> {
+// Centralised location for all player input
+
+public class InputHandler : Singleton<InputHandler> 
+{
+    [SerializeField] private bool allowSpeedUp;
 
     private Vector2 mouseDelta;
     private Vector2 lastMousePos;
@@ -12,7 +16,8 @@ public class InputHandler : Singleton<InputHandler> {
     private bool leftClickHeld, rightClickHeld;
     private const int minDistForDrag = 5;
 
-    void Update() {
+    void Update() 
+    {
         if(LevelManager.instance.IsPaused) return;
 
         handleKeys();
@@ -21,109 +26,142 @@ public class InputHandler : Singleton<InputHandler> {
         mouseDelta = (Vector2) Input.mousePosition - lastMousePos;
         lastMousePos = Input.mousePosition;
 
-        if (!EventSystem.current.IsPointerOverGameObject()) {
-            if (Input.GetMouseButtonDown(0)) {
+        if (!EventSystem.current.IsPointerOverGameObject()) 
+        {
+            if (Input.GetMouseButtonDown(0)) 
+            {
                 leftClickHeld = true;
                 leftClickInit = Input.mousePosition;
                 onLeftClickDown();
             }
-            if (Input.GetMouseButtonDown(1)) {
+            if (Input.GetMouseButtonDown(1)) 
+            {
                 rightClickHeld = true;
                 rightClickInit = Input.mousePosition;
                 onRightClickDown();
             }
         }
 
-        if (leftClickHeld) {
+        if (leftClickHeld) 
+        {
             leftClickMoveDelta = (Vector2) Input.mousePosition - leftClickInit;
             onLeftClickHold();
         }
 
-        if (rightClickHeld) {
+        if (rightClickHeld) 
+        {
             rightClickMoveDelta = (Vector2) Input.mousePosition - rightClickInit;
             onRightClickHold();
         }
 
-        if (Input.GetMouseButtonUp(0)) {
+        if (Input.GetMouseButtonUp(0)) 
+        {
             leftClickHeld = false;
             onLeftClickRelease();
         }
 
-        if (Input.GetMouseButtonUp(1)) {
+        if (Input.GetMouseButtonUp(1)) 
+        {
             rightClickHeld = false;
             onRightClickRelease();
         }
     }
 
-    private void handleKeys() {
+    // Keyboard input
+    private void handleKeys() 
+    {
         if (Input.GetKey(KeyCode.LeftArrow)) CameraController.instance.PanLeft();
         if (Input.GetKey(KeyCode.RightArrow)) CameraController.instance.PanRight();
         if (Input.GetKey(KeyCode.UpArrow)) CameraController.instance.PanForward();
         if (Input.GetKey(KeyCode.DownArrow)) CameraController.instance.PanBackward();
 
-        if(Input.GetKeyDown(KeyCode.S)) {
-            PlayerController.instance.playerCharacter.movement.StopMoving();
+        if(Input.GetKeyDown(KeyCode.S)) 
+        {
+            PlayerController.instance.playerCharacter.Movement.StopMoving();
         }
 
         // Cycle between selected characters
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            if(CameraController.instance.objectToFollow == PlayerController.instance.playerCharacter.cameraTarget) {
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+            if(CameraController.instance.objectToFollow == PlayerController.instance.playerCharacter.CameraTarget) 
+            {
                 CameraController.instance.objectToFollow = null;
-            } else {
-                CameraController.instance.objectToFollow = PlayerController.instance.playerCharacter.cameraTarget;
+            } 
+            else 
+            {
+                CameraController.instance.objectToFollow = PlayerController.instance.playerCharacter.CameraTarget;
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Escape)) {
-            if(HUD.instance.optionsMenu.gameObject.activeSelf) {
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            if(HUD.instance.optionsMenu.gameObject.activeSelf) 
+            {
                 HUD.instance.optionsMenu.SetActive(false);
                 AudioManager.instance.PlayButtonClick();
-            } else {
+            } 
+            else 
+            {
                 LevelManager.instance.TogglePaused();
             }
         }
 
-        // Use f8 to speed the game up
-        if(Input.GetKeyDown(KeyCode.F8) && !LevelManager.instance.IsPaused) {
-            Time.timeScale = 4;
+        // Use f8 to speed the game up (only used for testing)
+        if(allowSpeedUp) 
+        {
+            if(Input.GetKeyDown(KeyCode.F8) && !LevelManager.instance.IsPaused) 
+            {
+                Time.timeScale = 4;
+            }
+            if(Input.GetKeyUp(KeyCode.F8)) 
+            {
+                Time.timeScale = LevelManager.instance.IsPaused ? 0 : 1;
+            }
         }
-        if(Input.GetKeyUp(KeyCode.F8)) {
-            Time.timeScale = LevelManager.instance.IsPaused ? 0 : 1;
-        }
-    }
+    } 
 
-    private void onLeftClickDown() {
+    private void onLeftClickDown() 
+    {
         CameraController.instance.Grab();
     }
 
-    private void onLeftClickHold() {
-        if (leftClickMoveDelta.magnitude >= minDistForDrag && mouseDelta.magnitude > 0) {
+    private void onLeftClickHold() 
+    {
+        if (leftClickMoveDelta.magnitude >= minDistForDrag && mouseDelta.magnitude > 0) 
+        {
             CameraController.instance.Pan();
         }
     }
 
-    private void onLeftClickRelease() {
+    private void onLeftClickRelease() 
+    {
         CameraController.instance.Release();
-        if (leftClickMoveDelta.magnitude == 0) {
+        if (leftClickMoveDelta.magnitude == 0) 
+        {
             // PlayerController.instance.DeselectSelectedCharacter();
-            if (PlayerController.instance.characterHovered && !PlayerController.instance.IsInDialogue) {
+            if (PlayerController.instance.characterHovered && !PlayerController.instance.IsInDialogue) 
+            {
                 PlayerController.instance.characterHovered.OnLeftClick();
             }
         }
     }
 
-    private void onRightClickDown() {
-    }
+    private void onRightClickDown() {}
 
-    private void onRightClickHold() {
-    }
+    private void onRightClickHold() {}
 
-    private void onRightClickRelease() {
-        if (rightClickMoveDelta.magnitude < minDistForDrag && !PlayerController.instance.IsInDialogue) {
-            if (PlayerController.instance.characterHovered) {
+    private void onRightClickRelease() 
+    {
+        if (rightClickMoveDelta.magnitude < minDistForDrag && !PlayerController.instance.IsInDialogue) 
+        {
+            if (PlayerController.instance.characterHovered) 
+            {
                 PlayerController.instance.characterHovered.OnRightClick();
-            } else {
-                if(CameraController.instance.GetMousePointOnGround(out Vector3 point)) {
+            } 
+            else 
+            {
+                if(CameraController.instance.GetMousePointOnGround(out Vector3 point)) 
+                {
                     PlayerController.instance.MoveCharacter(point, true);
                 }
             }

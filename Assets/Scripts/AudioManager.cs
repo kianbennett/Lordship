@@ -5,21 +5,23 @@ using UnityEngine;
 public class AudioManager : Singleton<AudioManager> {
 
     [System.Serializable]
-    public class CustomAudio {
-
+    public class CustomAudio 
+    {
         [SerializeField] private AudioClip clip;
         [SerializeField] private float volume = 1;
 
         public float Volume { get { return volume; } }
 
-        public void PlayAsMusic() {
+        public void PlayAsMusic() 
+        {
             instance.sourceMusic.clip = clip;
             instance.sourceMusic.Play();
             instance.sourceMusic.volume = (OptionsManager.instance.volumeMusic.Value / 10f) * volume;
             instance.musicPlaying = this;
         }
 
-        public void PlayAsSFX(float pitch = 1) {
+        public void PlayAsSFX(float pitch = 1) 
+        {
             instance.sourceSFX.pitch = pitch;
 
             instance.sourceSFX.PlayOneShot(clip, volume);
@@ -46,32 +48,39 @@ public class AudioManager : Singleton<AudioManager> {
 
     public float MusicPlayingVolume { get { return musicPlaying != null ? musicPlaying.Volume : 0; } }
 
-    void Update() {
-        if(sourceMusic.isPlaying) {
+    void Update() 
+    {
+        if(sourceMusic.isPlaying) 
+        {
             float musicVolume = musicMuted ? 0 : (OptionsManager.instance.volumeMusic.Value / 10f) * MusicPlayingVolume;
             sourceMusic.volume = Mathf.MoveTowards(sourceMusic.volume, musicVolume, Time.deltaTime * 2f);
         }
     }
 
     // Put this in its own function so it can be called by buttons
-    public void PlayButtonClick() {
+    public void PlayButtonClick() 
+    {
         sfxButtonClick.PlayAsSFX();
     }
 
-    public void FadeOutMusic() {
+    public void FadeOutMusic() 
+    {
         musicMuted = true;
     }
 
-    public void FadeInMusic() {
+    public void FadeInMusic() 
+    {
         musicMuted = false;
         sourceMusic.volume = 0;
     }
 
-    public void PauseMusic() {
+    public void PauseMusic() 
+    {
         sourceMusic.Pause();
     }
 
-    public void ResumeMusic() {
+    public void ResumeMusic() 
+    {
         sourceMusic.Play();
     }
 }

@@ -164,6 +164,7 @@ MonoBehaviour:
   handRMesh: {fileID: 6374164882151581798}
   hatMeshFilter: {fileID: 1230735375365356065}
   hatMeshRenderer: {fileID: 1230735375365356067}
+  selectionCone: {fileID: 0}
   randomiseOnAwake: 0
   hair: 4
   hairColour1: 3
@@ -190,8 +191,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ad5f3e6bd8e4e48982e998dbad7dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 9141767775161292007}
   moveMarkerPrefab: {fileID: 9169958776656652624, guid: 393c948fd0b1cd5428da9c3df94dfdbe, type: 3}
-  movementParams: {fileID: 11400000, guid: 772517790917d99409383d87a9cf3744, type: 2}
+  walkSpeed: 1.25
+  runSpeed: 2.5
+  accCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  decCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -4
+      outSlope: -4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2
+      value: 0.2
+      inSlope: -4
+      outSlope: -4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   drawDebugLines: 0
   debugLogMessages: 0
 --- !u!136 &1230735375572812977
