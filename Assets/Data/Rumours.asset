@@ -22,15 +22,27 @@ MonoBehaviour:
   - '{name}''s been having trouble with rats in their basement again. Typical.'
   - '{name} has just come back from yet ANOTHER trip up to the big city. I swear
     they spend more time up there than here.'
+  - I heard that {name} broke their leg on the ice last winter.
+  - Apparently {name}'s been having trouble with wolves attacking their parents'
+    chickens.
+  - Have you heard {name} got pickpocketed last week? In broad daylight too!
   _midPoints:
   - If you vote for me I'll lower apple tax!
   - If I get elected I'll be sure to import lots more winter berries.
   - A vote for me is a vote to bring back the summer fete!
   - If I win this election, I'll send someone over to sort out those rats.
   - I'm off on a business trip to the big city next month, want to join me?
+  - If I get elected I'll make it my priority to salt the roads and keep them safe!
+  - If you vote for me I'll make sure every farmer gets the help they need to protected
+    their livestock!
+  - If I get elected I'll crack down on crime in this town. Harsher punishments to
+    thieves and looters!
   _endPoints:
   - Oh that would be wonderful! You've got my vote!
   - Oh that would be just lovely!
   - Oh how I've missed that fete! I'd so love to see it return.
   - How thoughtful! I'll be sure to tell everyone I know to vote for you!
   - Oh yes, that would be wonderful! Any excuse to get out of this place.
+  - Excellent news, those roads are a death trap in the winter. Bless you!
+  - My parents will be delighted! Those wolves have been troubling them for years.
+  - That's just the kind of tough action this town needs!
