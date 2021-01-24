@@ -59,13 +59,14 @@ public class OptionsManager : Singleton<OptionsManager>
 
     public Option volumeMusic, volumeSFX, highQuality, fullscreen;
 
+    // Default windowed resolution
     private int screenInitX, screenInitY;
 
     protected override void Awake() 
     {
         base.Awake();
-        screenInitX = Screen.width;
-        screenInitY = Screen.height;
+        // screenInitX = Screen.width;
+        // screenInitY = Screen.height;
     }
 
     void Start() 
@@ -73,7 +74,7 @@ public class OptionsManager : Singleton<OptionsManager>
         volumeMusic = new Option("volumeMusic", 8, onChangeVolumeMusic);
         volumeSFX = new Option("volumeSFX", 8, onChangeVolumeSFX);
         highQuality = new Option("highQuality", 1, onChangeHighQuality);
-        fullscreen = new Option("fullscreen", 0, onChangeFullscreen);
+        fullscreen = new Option("fullscreen", 1, onChangeFullscreen);
     }
 
     private void onChangeVolumeMusic(int value) 
@@ -109,7 +110,8 @@ public class OptionsManager : Singleton<OptionsManager>
         } 
         else 
         {
-            Screen.SetResolution(screenInitX, screenInitY, false);
+            // Screen.SetResolution(screenInitX, screenInitY, false);
+            Screen.SetResolution(1280, 720, false);
         }
     }
 }

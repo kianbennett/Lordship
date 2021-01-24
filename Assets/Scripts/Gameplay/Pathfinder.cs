@@ -200,7 +200,7 @@ public class Pathfinder : Singleton<Pathfinder>
             Vector3 dirFromPrevious = (path[i] - path[i - 1]).normalized;
             Vector3 dirToNext = (path[i + 1] - path[i]).normalized;
 
-            if(dirToNext == dirFromPrevious) 
+            if(dirToNext == dirFromPrevious)
             {
                 nodesToRemove.Add(path[i]);
             }

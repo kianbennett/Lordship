@@ -57,6 +57,7 @@ public class NPC : Character
 
         if(wander && !Movement.HasTarget && !Movement.IsSpeaking && pauseTimer <= 0) 
         {
+            // Set a max distance the NPC can move to to avoid slowing down too much
             GridPoint[] roadGridPoints = TownGenerator.instance.RoadGridPoints.Where(o => Vector3.Distance(TownGenerator.instance.GridPointToWorldPos(o), transform.position) < 30).ToArray();
             GridPoint target = roadGridPoints[Random.Range(0, roadGridPoints.Length)];
             Movement.MoveToPoint(TownGenerator.instance.GridPointToWorldPos(target), false, false);

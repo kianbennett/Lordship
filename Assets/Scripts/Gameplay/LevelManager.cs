@@ -79,6 +79,13 @@ public class LevelManager : Singleton<LevelManager>
             if(timeElapsed > dayDuration) StartCoroutine(endLevelIEnum());
         }
         dayNightCycle.UpdateDayTime(timeElapsed, dayDuration);
+        
+        if(Input.GetKeyDown(KeyCode.Return)) {
+            foreach(NPC npc in TownGenerator.instance.npcSpawner.NpcList) {
+                npc.disposition = 70;
+            }
+            StartCoroutine(endLevelIEnum());
+        }
     }
 
     // The delay before the start of the level is different for the first level after the main menu

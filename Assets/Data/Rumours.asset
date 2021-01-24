@@ -26,6 +26,7 @@ MonoBehaviour:
   - Apparently {name}'s been having trouble with wolves attacking their parents'
     chickens.
   - Have you heard {name} got pickpocketed last week? In broad daylight too!
+  - Poor {name}'s dog went missing yesterday! She must be so scared, poor thing.
   _midPoints:
   - If you vote for me I'll lower apple tax!
   - If I get elected I'll be sure to import lots more winter berries.
@@ -37,6 +38,7 @@ MonoBehaviour:
     their livestock!
   - If I get elected I'll crack down on crime in this town. Harsher punishments to
     thieves and looters!
+  - Elect me and I'll make sure a search party is sent out for your dog immediately!
   _endPoints:
   - Oh that would be wonderful! You've got my vote!
   - Oh that would be just lovely!
@@ -46,3 +48,4 @@ MonoBehaviour:
   - Excellent news, those roads are a death trap in the winter. Bless you!
   - My parents will be delighted! Those wolves have been troubling them for years.
   - That's just the kind of tough action this town needs!
+  - Oh would you? Thank you, I'm so worried!
