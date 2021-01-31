@@ -1,4 +1,5 @@
 .vs/
+.vscode/
 Assembly-CSharp.csproj
 Assembly-CSharp.csproj.user
 Assembly-CSharp-Editor.csproj
